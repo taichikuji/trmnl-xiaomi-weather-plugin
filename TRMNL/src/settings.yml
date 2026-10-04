@@ -44,12 +44,7 @@ custom_fields:
   - keyname: author_bio
     field_type: author_bio
     name: About This Plugin
-    description: >-
-      Current conditions, hourly temperatures and a five-day outlook from Xiaomi. No personal weather API key or separate server is needed.<br/>
-      Enter Location or Coordinates, choose Celsius or Fahrenheit, save, and use Force Refresh to load your forecast. Coordinates take priority; Location then becomes the display label.<br/>
-      Weather and provider-reported alerts come from Xiaomi's upstream sources. This is an unofficial integration; use the provider for warning details.<br/>
-      Created by Ivan Perez. Questions or problems? <a href="https://github.com/taichikuji/trmnl-xiaomi-weather-plugin/issues">Open a GitHub issue</a>.<br/>
-      Original code and layouts: <a href="https://github.com/taichikuji/trmnl-xiaomi-weather-plugin/blob/main/LICENSE">CC BY 4.0 / MIT</a>.
+    description: 'Created by Ivan Perez. This plugin displays current conditions and forecasts for your chosen location using Xiaomi weather data.'
     category: environment
     github_url: https://github.com/taichikuji/trmnl-xiaomi-weather-plugin
     learn_more_url: https://github.com/taichikuji/trmnl-xiaomi-weather-plugin/tree/main/TRMNL#setup

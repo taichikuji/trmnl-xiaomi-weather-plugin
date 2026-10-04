@@ -85,7 +85,7 @@ All four layouts use Framework 3.4.0 utilities without custom CSS. Their OG area
 Reviewed against [TRMNL's publishing best practices](https://trmnl.com/blog/plugin-recipe-publishing-tips):
 
 - Xiaomi provides a distinct data source; all four layouts ship in one recipe.
-- The About section includes setup instructions, a GitHub issue link and the environment category. Settings contain no personal defaults or weather credentials.
+- The About section links to setup instructions and the GitHub repository for support, with the environment category. Settings contain no personal defaults or weather credentials.
 - Polling handles coordinate forecasts directly; city-name lookup uses a bounded Serverless request. Markup uses native Framework classes and Liquid, a shared embedded title-bar icon, and an SVG chart without chart libraries or client-side API calls.
 - Chromium checks covered all four views on OG landscape, X landscape and X portrait, including Fahrenheit, long names, stale observations and unavailable forecasts. Narrow title bars retain attribution, observation time and unit.
 
