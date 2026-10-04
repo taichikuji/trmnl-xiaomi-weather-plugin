@@ -5,7 +5,7 @@ async function run(input) {
   const location = String(fields.location || 'Barcelona, Spain').trim();
   const coordinates = String(fields.coordinates ?? '').trim();
   const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
-  const [name, ...qualifiers] = location.split(',').map(normalize).filter(Boolean);
+  const qualifiers = location.split(',').slice(1).map(normalize).filter(Boolean);
   const unavailable = message => ({ ...transform({ trmnl: input.trmnl }), error_message: message });
   let point;
   if (coordinates) {
@@ -16,18 +16,15 @@ async function run(input) {
     point = parts.map(Number);
   }
   if (!Array.isArray(input.data)) return unavailable('Xiaomi location lookup is unavailable. Try the next refresh.');
-  const exact = input.data.filter(city => city?.status === 0 && (point || normalize(city.name) === name));
-  const matches = exact.filter(city => {
-    const affiliation = String(city.affiliation || '').split(',').map(normalize);
-    return point || qualifiers.every(part => affiliation.includes(part));
+  // ponytail: the first result can be a namesake; refine Location or use Coordinates.
+  const city = input.data.find(city => {
+    const affiliation = String(city?.affiliation || '').split(',').map(normalize);
+    return city?.status === 0 && (point || qualifiers.every(part => affiliation.includes(part)));
   });
-  const unique = [...new Map(matches.map(city => [city.locationKey, city])).values()];
-  if (unique.length !== 1) {
+  if (!city) {
     if (point) return unavailable('Xiaomi could not resolve these coordinates. Try a nearby location.');
-    const example = exact[0] ? `${exact[0].name}, ${exact[0].affiliation}` : 'Barcelona, Spain';
-    return unavailable(`${unique.length > 1 ? 'Several cities match' : 'No matching city'}. Try ${example}.`);
+    return unavailable('No matching city. Try a full city name with an optional country or region.');
   }
-  const city = unique[0];
   const key = city.locationKey;
   if (!/^(accu|weathercn):[A-Za-z0-9_-]+$/.test(key || '')) return unavailable('Xiaomi returned an unsupported location. Try another nearby city.');
   const url = new URL('https://weatherapi.market.xiaomi.com/wtr-v3/weather/all');

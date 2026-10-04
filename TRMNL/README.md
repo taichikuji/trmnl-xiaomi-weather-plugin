@@ -68,16 +68,17 @@ All four layouts use Framework 3.4.0 utilities without custom CSS. Their OG area
 
 With Coordinates filled, Location is ignored for lookup and display. Xiaomi supplies the nearest supported locality and its name, which may be a district rather than a whole city. Your Barcelona example resolves to **Muette**. The forecast request includes the supplied coordinates and the resolved key. No key needs to be entered manually.
 
-Invalid or unresolved coordinates display an error; they do not silently fall back to a different city's forecast. Leave Coordinates empty to use **Location**, a full city name followed by its country. Add a region when multiple cities share that name. Location defaults to `Barcelona, Spain`; `temperature_unit` accepts `celsius` or `fahrenheit`.
+Invalid or unresolved coordinates display an error; they do not silently fall back to a different city's forecast. Leave Coordinates empty to use **Location**, a city name with an optional country or region. Location defaults to `Barcelona, Spain`; `temperature_unit` accepts `celsius` or `fahrenheit`.
 
 | Location example | Display name |
 |------------------|--------------|
+| `Barcelona` | Barcelona |
 | `Barcelona, Spain` | Barcelona |
 | `Paris, France` | Paris |
 | `Amsterdam, Netherlands` | Amsterdam |
 | `New York, New York, United States` | New York |
 
-Use the city spelling returned by Xiaomi. Country and region qualifiers match the returned affiliation names, ignoring case and accent differences. A city name alone is accepted only when it resolves uniquely. The plugin never selects the first namesake automatically: ambiguous or missing matches display instructions to refine Location, without fetching another city's weather.
+The plugin uses Xiaomi's first successful result, preserving its search order and displaying the returned name. For `Barcelona`, the supplied search results put Spain first. This order does not guarantee your intended country: if the forecast is for the wrong place, add a country or region, such as `Barcelona, Venezuela`, or use Coordinates. Country and region qualifiers match the returned affiliation names, ignoring case and accent differences; the first result satisfying them is used. Missing matches display instructions to refine Location without fetching a forecast.
 
 Use full names rather than airport codes or abbreviations such as `BCN` or `NY`; Xiaomi returned no matches for those searches. To inspect spelling or region names, open [Xiaomi city search](https://weatherapi.market.xiaomi.com/wtr-v3/location/city/search?name=Barcelona&locale=en_us) and replace `name` in the URL. Its `name` and `affiliation` values are the human-readable city and region/country names you can enter. You do not need to copy its location key.
 
@@ -95,7 +96,15 @@ The [TRMNL Node Serverless runtime](https://help.trmnl.com/en/articles/14130649-
 
 ## Verification and references
 
-Both name and coordinate lookup succeeded live around Barcelona, Paris and Amsterdam. Checks covered coordinate priority over a conflicting name, blank-coordinate fallback, zero/negative/boundary values, invalid coordinate rejection, country/region disambiguation, duplicate results, missing cities, invalid keys, forecast errors and timeouts; uncertain locations made no forecast request. Transform checks also covered missing and zero weather values, partial forecasts, old observations, local timestamps, night icons and Fahrenheit. All four Liquid templates compiled against real responses and unavailable data. Chromium renders with the pinned official framework fitted all eight OG/X areas; long locality names, coordinate errors and ambiguous names were also checked. The committed WebP previews preserve the verified e-ink palettes losslessly.
+Run the dependency-free location check from this directory:
+
+```sh
+node check.cjs
+```
+
+It checks provider ordering, optional country/region qualifiers, canonical display names, coordinate priority and rejection of invalid or unmatched inputs.
+
+Both name and coordinate lookup succeeded live around Barcelona, Paris and Amsterdam. Checks covered coordinate priority over a conflicting name, blank-coordinate fallback, zero/negative/boundary values, invalid coordinate rejection, country/region disambiguation, duplicate results, missing cities, invalid keys, forecast errors and timeouts; invalid or unmatched locations made no forecast request. Transform checks also covered missing and zero weather values, partial forecasts, old observations, local timestamps, night icons and Fahrenheit. All four Liquid templates compiled against real responses and unavailable data. Chromium renders with the pinned official framework fitted all eight OG/X areas; long locality names and coordinate errors were also checked. The committed WebP previews preserve the verified e-ink palettes losslessly.
 
 The local rendering checks used LiquidJS. Account-side import, scheduled refresh and a physical e-ink panel remain unverified.
 

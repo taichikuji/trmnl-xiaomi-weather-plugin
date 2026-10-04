@@ -19,8 +19,8 @@ custom_fields:
     default: 'Barcelona, Spain'
     optional: true
     maxlength: 120
-    description: 'Used when Coordinates is blank. Enter a full city name and country, e.g. Barcelona, Spain or Paris, France.'
-    help_text: 'Add the region if needed, e.g. Paris, Texas, United States. Use full names rather than abbreviations such as BCN or NY.'
+    description: 'Used when Coordinates is blank. Enter a city name, e.g. Barcelona or Paris.'
+    help_text: 'The first Xiaomi match is used. If it is the wrong place, add its country or region, e.g. Barcelona, Spain or Paris, Texas, United States, or use Coordinates. Use full names rather than airport codes.'
   - keyname: coordinates
     field_type: string
     name: Coordinates
