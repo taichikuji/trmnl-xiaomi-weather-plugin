@@ -19,6 +19,8 @@ Open `TRMNL/` with [TRMNLP](https://github.com/usetrmnl/trmnlp), configure Locat
 
 See [the plugin README](TRMNL/README.md) for previews, setup, city lookup, data behavior and verification details.
 
+Changes to the plugin source, media or publishing workflow pushed to `main` publish to TRMNL through GitHub Actions. Configure `TRMNL_API_KEY` with a scoped, Content-only account key and `TRMNL_PLUGIN_SETTING_ID` with your installed plugin setting ID as described in [setup](TRMNL/README.md#setup).
+
 ## References
 
 - [Xiaomi weather API reference](https://github.com/saving/China-Apps-Api/blob/master/XiaomiWeather.md)
