@@ -1,5 +1,5 @@
 // TRMNL polls forecasts directly for coordinates, or searches by city name.
-// TRMNL Serverless (Node) awaits run(input); transform keeps formatting separate.
+// Serverless prepares forecast data; shared Liquid handles display formatting.
 async function run(input) {
   const fields = input.trmnl?.plugin_settings?.custom_fields_values || {};
   const location = String(fields.location ?? '').trim();
@@ -46,22 +46,13 @@ async function run(input) {
 function transform(input, locationName) {
   const fields = input.trmnl?.plugin_settings?.custom_fields_values || {};
   const label = String(fields.location ?? '').split(',')[0].trim();
-  const city = String(locationName || label || 'Weather').trim().slice(0, 60);
+  const city = String(locationName || label || 'Weather').trim();
   const fahrenheit = fields.temperature_unit === 'fahrenheit';
   const number = value => {
     if (value === null || value === undefined || String(value).trim() === '') return null;
     const n = Number(value);
     return Number.isFinite(n) ? n : null;
   };
-  const degrees = value => {
-    const n = number(value);
-    return n === null ? '—' : `${Math.round(fahrenheit ? n * 9 / 5 + 32 : n)}°`;
-  };
-  const metric = (value, unit = '') => {
-    const n = number(value);
-    return n === null ? '—' : `${Math.round(n)}${unit}`;
-  };
-  const time = iso => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(iso || '') ? iso.slice(11, 16) : '—';
   const epoch = iso => iso ? Date.parse(iso) : NaN;
   const values = block => block && (block.status === undefined || block.status === 0) && Array.isArray(block.value) ? block.value : [];
   const names = ['Clear sky', 'Partly cloudy', 'Overcast', 'Showers', 'Thunderstorms', 'Storms with hail',
@@ -101,15 +92,13 @@ function transform(input, locationName) {
     const first = number(range?.from), second = number(range?.to);
     if (first === null || second === null) return null;
     const stamp = Date.parse(`${dayBase}T12:00:00Z`) + i * 86400000;
-    const date = new Date(stamp);
-    const label = i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getUTCDay()];
     const state = condition(dailyWeather[i]?.from);
     const probability = number(rain[i]);
     return {
-      label, date: Number.isFinite(stamp) ? `${date.getUTCDate()}/${date.getUTCMonth() + 1}` : '—',
-      high: degrees(Math.max(first, second)), low: degrees(Math.min(first, second)),
+      offset: i, date: Number.isFinite(stamp) ? new Date(stamp).toISOString().slice(0, 10) : null,
+      high: Math.max(first, second), low: Math.min(first, second),
       condition: state.text, icon_url: state.icon_url,
-      rain: probability !== null && probability >= 0 && probability <= 100 ? `${Math.round(probability)}%` : '—'
+      rain: probability !== null && probability >= 0 && probability <= 100 ? probability : null
     };
   }).filter(Boolean);
   const hourTemps = values(hourly.temperature), hourWeather = values(hourly.weather);
@@ -126,7 +115,7 @@ function transform(input, locationName) {
     const rise = epoch(sun?.from), set = epoch(sun?.to);
     const isNight = Number.isFinite(rise) && Number.isFinite(set) && (stamp < rise || stamp >= set);
     const state = condition(hourWeather[i], isNight);
-    return { time: time(local), timestamp: stamp, temperature: degrees(n), value: fahrenheit ? n * 9 / 5 + 32 : n, icon_url: state.icon_url, condition: state.text };
+    return { time: local, timestamp: stamp, temperature: n, value: fahrenheit ? n * 9 / 5 + 32 : n, icon_url: state.icon_url, condition: state.text };
   }).filter(Boolean).slice(0, 12);
   const minimum = hours.length ? Math.min(...hours.map(h => h.value)) - 1 : 0;
   const maximum = hours.length ? Math.max(...hours.map(h => h.value)) + 1 : 1;
@@ -140,15 +129,14 @@ function transform(input, locationName) {
   const available = number(current.temperature?.value) !== null;
   const stale = Number.isFinite(observed) && Number.isFinite(reference) && reference - observed > 3 * 3600000;
   return {
-    city, unit: fahrenheit ? '°F' : '°C', available, stale,
-    observed_at: time(current.pubTime), observed_date: (current.pubTime || '').slice(0, 10),
-    date_label: Number.isFinite(observed) ? `${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][new Date(`${current.pubTime.slice(0, 10)}T12:00:00Z`).getUTCDay()]} · ${Number(current.pubTime.slice(8, 10))} ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][Number(current.pubTime.slice(5, 7)) - 1]}` : 'Waiting for weather',
-    now: { temperature: degrees(current.temperature?.value), feels_like: degrees(current.feelsLike?.value), condition: weather.text, icon_url: weather.icon_url,
-      humidity: metric(current.humidity?.value, '%'), wind: metric(current.wind?.speed?.value), wind_unit: current.wind?.speed?.unit || 'km/h', wind_direction: windDirection,
-      uv: metric(current.uvIndex) },
+    city, fahrenheit, available, stale,
+    observed_at: Number.isFinite(observed) ? current.pubTime : null,
+    now: { temperature: number(current.temperature?.value), feels_like: number(current.feelsLike?.value), condition: weather.text, icon_url: weather.icon_url,
+      humidity: number(current.humidity?.value), wind: number(current.wind?.speed?.value), wind_unit: current.wind?.speed?.unit || 'km/h', wind_direction: windDirection,
+      uv: number(current.uvIndex) },
     days, hours: hours.filter((_, i) => i % 2 === 0).slice(0, 6),
-    chart: { points: chart.map(p => `${p.x},${p.y}`).join(' '), markers: chart.filter((_, i) => i % 2 === 0), low: `${Math.round(minimum + 1)}°`, high: `${Math.round(maximum - 1)}°`, from: hours[0]?.time || '—', to: hours[hours.length - 1]?.time || '—' },
-    sunrise: time(sunTimes[0]?.from), sunset: time(sunTimes[0]?.to),
+    chart: { points: chart.map(p => `${p.x},${p.y}`).join(' '), markers: chart.filter((_, i) => i % 2 === 0), low: hours.length ? minimum + 1 : null, high: hours.length ? maximum - 1 : null, from: hours[0]?.time, to: hours[hours.length - 1]?.time },
+    sunrise: Number.isFinite(sunrise) ? sunTimes[0].from : null, sunset: Number.isFinite(sunset) ? sunTimes[0].to : null,
     alert_count: alerts.length, alert_title: String(alerts[0]?.title || ''), source,
     error_message: available ? '' : 'Xiaomi returned no current temperature. Try the next refresh.'
   };

@@ -57,7 +57,7 @@ trmnlp push --id YOUR_PLUGIN_SETTING_ID
 
 With a scoped `trmnl_...` account key, interactive `trmnlp login` needs **Profile** access and uploading needs **Content** access. **Read** is needed only for commands such as `list` and `pull`. CI supplies the key through `TRMNL_API_KEY` instead of logging in, so it can use a Content-only key restricted to this plugin.
 
-Alternatively, copy `src/settings.yml` into the matching dashboard settings, paste `shared.liquid` into Shared and each layout into its matching markup tab, then paste the complete `transform.js` into **Serverless** and select **Node**. The entry point is the asynchronous `run(input)` function, which calls the formatting helper `transform`. Force Refresh, check the preview and add the plugin to your playlist. Existing installs should set the new Location field after updating; the separate display name and key fields have been removed.
+Alternatively, copy `src/settings.yml` into the matching dashboard settings, paste `shared.liquid` into Shared and each layout into its matching markup tab, then paste the complete `transform.js` into **Serverless** and select **Node**. The entry point is the asynchronous `run(input)` function, which calls the data preparation helper `transform`. Force Refresh, check the preview and add the plugin to your playlist. Existing installs should set the new Location field after updating; the separate display name and key fields have been removed.
 
 The GitHub **Publish to TRMNL** workflow runs when changes to `TRMNL/src/`, `TRMNL/media/` or the workflow file are pushed to `main`. You can also run it manually from Actions. To configure it:
 
@@ -71,8 +71,8 @@ The workflow uses the official `trmnl/trmnlp:v0.16.0` image and passes the key t
 
 ## Templates
 
-- **transform.js**: Validates optional coordinates, fetches a forecast only for city-name searches, and converts Xiaomi's response into display-ready variables, official weather icon URLs and numeric chart coordinates.
-- **shared.liquid**: Attribution, unavailable-data state, provider notices and hourly chart.
+- **transform.js**: Validates inputs, fetches a forecast only for city-name searches, aligns Xiaomi's forecast arrays, filters elapsed hours, maps weather codes and calculates chart coordinates. It passes validated numbers and timestamps to Liquid.
+- **shared.liquid**: Native date formatting, rounding, temperature conversion and reusable value/day-label templates, plus attribution, unavailable-data state, provider notices and hourly chart.
 - **full.liquid**: Current conditions, hourly temperatures, five daily forecasts, wind, humidity, sun times and UV.
 - **half_horizontal.liquid**: Current weather beside three daily forecasts and a provider notice.
 - **half_vertical.liquid**: Large current temperature, sun times, three daily forecasts and a provider notice.
@@ -86,7 +86,7 @@ Reviewed against [TRMNL's publishing best practices](https://trmnl.com/blog/plug
 
 - Xiaomi provides a distinct data source; all four layouts ship in one recipe.
 - The About section links to setup instructions and the GitHub repository for support, with the environment category. Settings contain no personal defaults or weather credentials.
-- Polling handles coordinate forecasts directly; city-name lookup uses a bounded Serverless request. Markup uses native Framework classes and Liquid, a shared embedded title-bar icon, and an SVG chart without chart libraries or client-side API calls.
+- Polling handles coordinate forecasts directly; city-name lookup uses a bounded Serverless request because the forecast depends on the search result. Shared Liquid handles display formatting; Serverless handles validation and forecast preparation. Markup uses native Framework classes, a shared embedded title-bar icon, and an SVG chart without chart libraries or client-side API calls.
 - Chromium checks covered all four views on OG landscape, X landscape and X portrait, including Fahrenheit, long names, stale observations and unavailable forecasts. Narrow title bars retain attribution, observation time and unit.
 
 Before submitting in TRMNL, save and Force Refresh with a public demo city such as `Barcelona, Spain`, leaving Coordinates blank. Confirm that the install preview shows the city rather than a personal label, and save both location methods and temperature units once to check the account-side form behavior. Run CHEF and address any feedback before acknowledging the practices. Keep the Recipe Master configured for public demo weather and install a separate copy for personal use. These account-side steps and the human review are not confirmed by a successful GitHub upload.

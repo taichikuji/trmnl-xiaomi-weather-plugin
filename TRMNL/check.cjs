@@ -52,12 +52,33 @@ const venezuela = { status: 0, name: 'Barcelona', affiliation: 'Anzoátegui, Ven
     const result = await context.run({ current: { temperature: { value: '0' } }, trmnl: { plugin_settings: { custom_fields_values: { location: 'My Barcelona, Spain', coordinates, temperature_unit: 'fahrenheit' } } } });
     assert.equal(result.available, true);
     assert.equal(result.city, 'My Barcelona');
-    assert.equal(result.now.temperature, '32°');
+    assert.equal(result.now.temperature, 0);
+    assert.equal(result.fahrenheit, true);
     assert.equal(requests.length, 0);
   }
   const missing = await context.run({ trmnl: { plugin_settings: { custom_fields_values: { coordinates: '48.8584,2.2945' } } } });
   assert.equal(missing.available, false);
   assert.ok(missing.error_message);
+  const stamp = '2026-10-04T00:00:00+02:00';
+  const prepared = await context.run({
+    current: { pubTime: stamp, temperature: { value: '0' }, humidity: { value: '' } },
+    forecastDaily: { status: 0, pubTime: stamp, temperature: { value: [{ from: '', to: 10 }, { from: 10, to: 0 }] }, weather: { value: [0, 0] }, precipitationProbability: { value: [0, 101] } },
+    forecastHourly: { status: 0, temperature: { pubTime: stamp, value: [0, 1, 2] }, weather: { value: [0, 0, 0] } },
+    trmnl: { system: { timestamp_utc: Date.parse(stamp) / 1000 }, plugin_settings: { custom_fields_values: { coordinates: '41,2', temperature_unit: 'fahrenheit' } } }
+  });
+  assert.equal(prepared.now.temperature, 0);
+  assert.equal(prepared.now.humidity, null);
+  assert.equal(prepared.observed_at, stamp);
+  assert.equal(prepared.days[0].offset, 1, 'An omitted forecast must keep the following day at Tomorrow');
+  assert.equal(prepared.days[0].date, '2026-10-05');
+  assert.equal(prepared.days[0].low, 0);
+  assert.equal(prepared.days[0].high, 10);
+  assert.equal(prepared.days[0].rain, null);
+  assert.equal(prepared.hours[0].time, '2026-10-04T00:00:00.000Z', 'Fallback hourly timestamps preserve the provider local clock');
+  assert.equal(prepared.chart.low, 32, 'Chart geometry and bounds still use the selected unit');
+  assert.equal(prepared.chart.high, 35.6);
+  assert.equal(missing.chart.low, null);
+  assert.equal(missing.chart.high, null);
   for (const [location, coordinates, data] of [
     ['Barcelona', '', []],
     [', Spain', '', [spain]],

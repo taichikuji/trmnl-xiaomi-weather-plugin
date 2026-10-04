@@ -6,11 +6,11 @@
   </div>
   <div class="flex flex--col flex--left gap--small w--full">
     <div class="flex flex--row flex--center-y flex--between w--full">
-      <span class="value value--xxxlarge lg:value--mega" data-fit-value="true">{{ now.temperature }}</span>
+      <span class="value value--xxxlarge lg:value--mega" data-fit-value="true">{% render 'weather_value', value: now.temperature, unit: '°', fahrenheit: fahrenheit %}</span>
       <div class="w--24 h--24 lg:w--32 lg:h--32 no-shrink"><img class="w--full h--full" src="{{ now.icon_url }}" alt="{{ now.condition | escape }}"></div>
     </div>
     <span class="title lg:title--large w--full" data-clamp="1">{{ now.condition | escape }}</span>
-    <span class="label">Feels {{ now.feels_like }} · Wind {{ now.wind }} {{ now.wind_unit | escape }}</span>
+    <span class="label">Feels {% render 'weather_value', value: now.feels_like, unit: '°', fahrenheit: fahrenheit %} · Wind {% render 'weather_value', value: now.wind, unit: '' %} {{ now.wind_unit | escape }}</span>
   </div>
   <div class="flex flex--row flex--between w--full border--h-10 py--2">
     <span class="label">Sunrise {{ sunrise }}</span>
@@ -19,10 +19,10 @@
   <div class="grid grid--cols-3 gap--small">
     {% for day in days limit:3 %}
     <div class="flex flex--col flex--center gap--small">
-      <span class="label text--bold">{{ day.label }}</span>
+      <span class="label text--bold">{% render 'weather_day_label', day: day %}</span>
       <div class="w--11 h--11 lg:w--16 lg:h--16"><img class="w--full h--full" src="{{ day.icon_url }}" alt="{{ day.condition | escape }}"></div>
-      <span class="value value--xsmall lg:value--small">{{ day.high }} <span class="label">/ {{ day.low }}</span></span>
-      <span class="label">Precip. {{ day.rain }}</span>
+      <span class="value value--xsmall lg:value--small">{% render 'weather_value', value: day.high, unit: '°', fahrenheit: fahrenheit %} <span class="label">/ {% render 'weather_value', value: day.low, unit: '°', fahrenheit: fahrenheit %}</span></span>
+      <span class="label">Precip. {% render 'weather_value', value: day.rain, unit: '%' %}</span>
     </div>
     {% else %}<span class="label col--span-3">Daily forecast unavailable</span>{% endfor %}
   </div>

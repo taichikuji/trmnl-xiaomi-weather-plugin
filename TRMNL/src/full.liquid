@@ -8,28 +8,28 @@
   <div class="grid grid--cols-12 portrait:grid--cols-1 gap--large">
     <div class="col--span-5 portrait:col--span-1 flex flex--col flex--left gap--small">
       <div class="flex flex--row flex--center-y gap--small w--full">
-        <span class="value value--xxxlarge lg:value--mega" data-fit-value="true">{{ now.temperature }}</span>
+        <span class="value value--xxxlarge lg:value--mega" data-fit-value="true">{% render 'weather_value', value: now.temperature, unit: '°', fahrenheit: fahrenheit %}</span>
         <div class="w--24 h--24 lg:w--36 lg:h--36 no-shrink"><img class="w--full h--full" src="{{ now.icon_url }}" alt="{{ now.condition | escape }}"></div>
       </div>
       <span class="title lg:title--large w--full" data-clamp="1">{{ now.condition | escape }}</span>
-      <span class="label">Feels {{ now.feels_like }}{% if days.size > 0 %} · High {{ days[0].high }} / Low {{ days[0].low }}{% endif %}</span>
+      <span class="label">Feels {% render 'weather_value', value: now.feels_like, unit: '°', fahrenheit: fahrenheit %}{% if days.size > 0 %} · High {% render 'weather_value', value: days[0].high, unit: '°', fahrenheit: fahrenheit %} / Low {% render 'weather_value', value: days[0].low, unit: '°', fahrenheit: fahrenheit %}{% endif %}</span>
       <div class="flex flex--row gap--medium">
-        <span class="label">Wind {{ now.wind }} {{ now.wind_unit | escape }} {{ now.wind_direction }}</span>
-        <span class="label">Humidity {{ now.humidity }}</span>
+        <span class="label">Wind {% render 'weather_value', value: now.wind, unit: '' %} {{ now.wind_unit | escape }} {{ now.wind_direction }}</span>
+        <span class="label">Humidity {% render 'weather_value', value: now.humidity, unit: '%' %}</span>
       </div>
     </div>
     <div class="col--span-7 portrait:col--span-1 flex flex--col gap--small flex--between border--v-10 pl--3">
       <div class="flex flex--row flex--between w--full">
         <span class="label text--uppercase text--bold">The next hours</span>
-        <span class="label">{{ chart.low }} — {{ chart.high }}</span>
+        <span class="label">{% render 'weather_value', value: chart.low, unit: '°' %} — {% render 'weather_value', value: chart.high, unit: '°' %}</span>
       </div>
       {{ hourly_chart }}
       {% if hours.size > 0 %}
       <div class="grid grid--cols-6 gap--small">
         {% for hour in hours %}
         <div class="flex flex--col flex--center gap--none">
-          <span class="label">{{ hour.time }}</span>
-          <span class="value value--xsmall lg:value--small">{{ hour.temperature }}</span>
+          <span class="label">{{ hour.time | date: '%H:%M' | escape }}</span>
+          <span class="value value--xsmall lg:value--small">{% render 'weather_value', value: hour.temperature, unit: '°', fahrenheit: fahrenheit %}</span>
           <div class="w--7 h--7 lg:w--10 lg:h--10"><img class="w--full h--full" src="{{ hour.icon_url }}" alt="{{ hour.condition | escape }}"></div>
         </div>
         {% endfor %}
@@ -37,7 +37,7 @@
       {% endif %}
       <div class="flex flex--row flex--between w--full pt--1">
         <span class="label">Sunrise {{ sunrise }} · Sunset {{ sunset }}</span>
-        <span class="label">UV {{ now.uv }}</span>
+        <span class="label">UV {% render 'weather_value', value: now.uv, unit: '' %}</span>
       </div>
     </div>
   </div>
@@ -52,17 +52,17 @@
       {% for day in days %}
       <div class="flex flex--col flex--left gap--small p--1 {% if forloop.first %}bg--gray-75{% endif %}">
         <div class="flex flex--row flex--between w--full">
-          <span class="label text--bold">{{ day.label }}</span>
-          <span class="label">{{ day.date }}</span>
+          <span class="label text--bold">{% render 'weather_day_label', day: day %}</span>
+          <span class="label">{{ day.date | date: '%-d/%-m' | default: '—' }}</span>
         </div>
         <div class="flex flex--row flex--between w--full">
           <div class="w--9 h--9 lg:w--14 lg:h--14"><img class="w--full h--full" src="{{ day.icon_url }}" alt="{{ day.condition | escape }}"></div>
           <div class="flex flex--row flex--center-y gap--small">
-            <span class="value value--small lg:value--base">{{ day.high }}</span>
-            <span class="label label--large">{{ day.low }}</span>
+            <span class="value value--small lg:value--base">{% render 'weather_value', value: day.high, unit: '°', fahrenheit: fahrenheit %}</span>
+            <span class="label label--large">{% render 'weather_value', value: day.low, unit: '°', fahrenheit: fahrenheit %}</span>
           </div>
         </div>
-        <span class="label">Precip. {{ day.rain }}</span>
+        <span class="label">Precip. {% render 'weather_value', value: day.rain, unit: '%' %}</span>
       </div>
       {% endfor %}
     </div>
