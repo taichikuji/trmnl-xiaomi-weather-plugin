@@ -16,7 +16,8 @@ custom_fields:
   - keyname: location
     field_type: string
     name: Location
-    default: 'Barcelona, Spain'
+    default: ''
+    placeholder: 'Barcelona, Spain'
     optional: true
     maxlength: 120
     description: 'Enter a city name, e.g. Barcelona or Paris. With Coordinates filled, this becomes the display label.'

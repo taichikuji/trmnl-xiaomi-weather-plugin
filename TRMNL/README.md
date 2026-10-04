@@ -4,7 +4,7 @@ Atmosphere displays Xiaomi's current conditions and forecasts with native TRMNL 
 
 ## Icon
 
-The plugin listing icon uses the supplied sun-and-cloud artwork, simplified to one path and tightly cropped with a small margin in TRMNL orange (`#E76F55`), stored in the bundle and referenced from `settings.yml`. Each layout's title bar embeds the same artwork in black (`#000000`). Weather condition icons load from TRMNL's hosted pack, with clear and partly cloudy night variants and the official unavailable icon for unknown codes.
+The plugin listing icon uses the supplied sun-and-cloud artwork, simplified to one path and centered on a square 512 × 512 canvas with a small side margin in TRMNL orange (`#E76F55`), stored in the bundle and referenced from `settings.yml`. Each layout's title bar embeds the same artwork in black (`#000000`). Weather condition icons load from TRMNL's hosted pack, with clear and partly cloudy night variants and the official unavailable icon for unknown codes.
 
 <div align="center">
   <img src="media/icon.svg" alt="Plugin Icon" width="90">
@@ -76,9 +76,9 @@ All four layouts use Framework 3.4.0 utilities without custom CSS. Their OG area
 
 **Coordinates take priority over Location.** Enter decimal degrees in **latitude, longitude** order, for example `48.8584,2.2945`. Find a place on [latlong.net](https://www.latlong.net/) and copy its Latitude and Longitude values into this field, separated by a comma. Negative values represent south/west; latitude must be between −90 and 90, and longitude between −180 and 180.
 
-With Coordinates filled, TRMNL polls Xiaomi's forecast endpoint directly with those coordinates, without a location key or a separate lookup request. Location supplies the display label (the part before the first comma), so use `Barcelona` for your example. This label does not affect the forecast location: the returned provider URL identifies **Muette**. The forecast response has no separate city-name field.
+With Coordinates filled, TRMNL polls Xiaomi's forecast endpoint directly with those coordinates, without a location key or a separate lookup request. Location supplies the display label (the part before the first comma), so use `Barcelona` for your example. A blank Location displays the neutral title **Weather**. This label does not affect the forecast location: the returned provider URL identifies **Muette**. The forecast response has no separate city-name field.
 
-Invalid coordinates or a missing forecast display an error; they do not silently fall back to a city-name forecast. Leave Coordinates empty to use **Location**, a city name with an optional country or region. Location defaults to `Barcelona, Spain`; `temperature_unit` accepts `celsius` or `fahrenheit`.
+Invalid coordinates or a missing forecast display an error; they do not silently fall back to a city-name forecast. Leave Coordinates empty to use **Location**, a city name with an optional country or region. Location starts empty and stays empty when cleared; Barcelona is only a placeholder example. If both fields are empty, the plugin asks you to enter Location or Coordinates. `temperature_unit` accepts `celsius` or `fahrenheit`.
 
 | Location example | Display name |
 |------------------|--------------|

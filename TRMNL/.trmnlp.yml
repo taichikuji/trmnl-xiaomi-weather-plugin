@@ -5,7 +5,7 @@ watch:
   - .trmnlp.yml
 
 custom_fields:
-  location: 'Barcelona, Spain'
+  location: ''
   coordinates: ''
   temperature_unit: celsius
 

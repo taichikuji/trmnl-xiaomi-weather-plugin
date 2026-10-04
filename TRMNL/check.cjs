@@ -34,6 +34,18 @@ const venezuela = { status: 0, name: 'Barcelona', affiliation: 'Anzoátegui, Ven
     assert.equal(requests[0].searchParams.get('latitude'), '0');
     assert.equal(requests[0].searchParams.get('longitude'), '0');
   }
+  for (const location of ['', '   ', null, undefined]) {
+    requests = [];
+    const result = await context.run({ data: [spain], trmnl: { plugin_settings: { custom_fields_values: { location } } } });
+    assert.equal(result.available, false);
+    assert.equal(result.city, 'Weather');
+    assert.match(result.error_message, /Enter Location or Coordinates/);
+    assert.equal(requests.length, 0);
+    const forecast = await context.run({ current: { temperature: { value: '21' } }, trmnl: { plugin_settings: { custom_fields_values: { location, coordinates: '48.8584,2.2945' } } } });
+    assert.equal(forecast.available, true);
+    assert.equal(forecast.city, 'Weather');
+    assert.equal(requests.length, 0);
+  }
   // Coordinates arrive as a forecast from native polling; no lookup or fetch.
   for (const coordinates of ['48.8584,2.2945', ' 48.8584, 2.2945 ', '0,0', '-90,-180', '90,180']) {
     requests = [];
@@ -48,6 +60,7 @@ const venezuela = { status: 0, name: 'Barcelona', affiliation: 'Anzoátegui, Ven
   assert.ok(missing.error_message);
   for (const [location, coordinates, data] of [
     ['Barcelona', '', []],
+    [', Spain', '', [spain]],
     ['Barcelona, France', '', [spain, venezuela]],
     ['Barcelona', '91,2', [spain]],
     ['Barcelona', '41,181', [spain]],
@@ -62,5 +75,5 @@ const venezuela = { status: 0, name: 'Barcelona', affiliation: 'Anzoátegui, Ven
     assert.ok(result.error_message);
     assert.equal(requests.length, 0);
   }
-  console.log('Location check passed: provider order, qualifiers, canonical names, direct coordinate forecasts, display labels and invalid inputs.');
+  console.log('Location check passed: blank settings, provider order, qualifiers, canonical names, direct coordinate forecasts, display labels and invalid inputs.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

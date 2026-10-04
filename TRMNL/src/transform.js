@@ -2,7 +2,7 @@
 // TRMNL Serverless (Node) awaits run(input); transform keeps formatting separate.
 async function run(input) {
   const fields = input.trmnl?.plugin_settings?.custom_fields_values || {};
-  const location = String(fields.location || 'Barcelona, Spain').trim();
+  const location = String(fields.location ?? '').trim();
   const coordinates = String(fields.coordinates ?? '').trim();
   const unavailable = message => ({ ...transform({ trmnl: input.trmnl }), error_message: message });
   if (coordinates) {
@@ -12,6 +12,7 @@ async function run(input) {
     }
     return transform(input);
   }
+  if (!location.split(',')[0].trim()) return unavailable('Enter Location or Coordinates in the plugin settings.');
   const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
   const qualifiers = location.split(',').slice(1).map(normalize).filter(Boolean);
   if (!Array.isArray(input.data)) return unavailable('Xiaomi location lookup is unavailable. Try the next refresh.');
@@ -44,8 +45,8 @@ async function run(input) {
 
 function transform(input, locationName) {
   const fields = input.trmnl?.plugin_settings?.custom_fields_values || {};
-  const label = String(fields.location || 'Barcelona, Spain').split(',')[0];
-  const city = String(locationName || label).trim().slice(0, 60);
+  const label = String(fields.location ?? '').split(',')[0].trim();
+  const city = String(locationName || label || 'Weather').trim().slice(0, 60);
   const fahrenheit = fields.temperature_unit === 'fahrenheit';
   const number = value => {
     if (value === null || value === undefined || String(value).trim() === '') return null;
