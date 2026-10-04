@@ -5,8 +5,8 @@
     <span class="label label--large no-shrink">{{ date_label | escape }}</span>
   </div>
   {{ provider_notice }}
-  <div class="grid grid--cols-12 gap--large">
-    <div class="col--span-5 flex flex--col flex--left gap--small">
+  <div class="grid grid--cols-12 portrait:grid--cols-1 gap--large">
+    <div class="col--span-5 portrait:col--span-1 flex flex--col flex--left gap--small">
       <div class="flex flex--row flex--center-y gap--small w--full">
         <span class="value value--xxxlarge lg:value--mega" data-fit-value="true">{{ now.temperature }}</span>
         <div class="w--24 h--24 lg:w--36 lg:h--36 no-shrink"><img class="w--full h--full" src="{{ now.icon_url }}" alt="{{ now.condition | escape }}"></div>
@@ -18,7 +18,7 @@
         <span class="label">Humidity {{ now.humidity }}</span>
       </div>
     </div>
-    <div class="col--span-7 flex flex--col gap--small flex--between border--v-1 pl--3">
+    <div class="col--span-7 portrait:col--span-1 flex flex--col gap--small flex--between border--v-1 pl--3">
       <div class="flex flex--row flex--between w--full">
         <span class="label text--uppercase text--bold">The next hours</span>
         <span class="label">{{ chart.low }} — {{ chart.high }}</span>
@@ -48,7 +48,7 @@
       <span class="label label--small">High / low · Precipitation chance</span>
     </div>
     {% if days.size > 0 %}
-    <div class="grid grid--cols-5 gap--small">
+    <div class="grid grid--cols-5 portrait:grid--cols-3 gap--small">
       {% for day in days %}
       <div class="flex flex--col flex--left gap--small p--1 {% if forloop.first %}bg--gray-75{% endif %}">
         <div class="flex flex--row flex--between w--full">

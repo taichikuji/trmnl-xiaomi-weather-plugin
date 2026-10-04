@@ -30,6 +30,14 @@ Previews use a recorded Barcelona response from **4 October 2026**, not a curren
 |----------------------|-----------------|
 | ![TRMNL X Half Vertical](media/preview_trmnl_x_half_vertical.webp) | ![TRMNL X Quadrant](media/preview_trmnl_x_quadrant.webp) |
 
+| TRMNL X Portrait Full | TRMNL X Portrait Half Horizontal |
+|----------------------|---------------------------------|
+| ![TRMNL X Portrait Full](media/preview_trmnl_x_portrait.webp) | ![TRMNL X Portrait Half Horizontal](media/preview_trmnl_x_portrait_half_horizontal.webp) |
+
+| TRMNL X Portrait Half Vertical | TRMNL X Portrait Quadrant |
+|--------------------------------|--------------------------|
+| ![TRMNL X Portrait Half Vertical](media/preview_trmnl_x_portrait_half_vertical.webp) | ![TRMNL X Portrait Quadrant](media/preview_trmnl_x_portrait_quadrant.webp) |
+
 ## Setup
 
 Create a TRMNL Private Plugin with Polling / GET, Framework **3.4.0**, screen padding enabled and a **30-minute** refresh interval. Private plugins require Developer or BYOD access.
@@ -70,7 +78,18 @@ The workflow uses the official `trmnl/trmnlp:v0.16.0` image and passes the key t
 - **half_vertical.liquid**: Large current temperature, sun times, three daily forecasts and a provider notice.
 - **quadrant.liquid**: Current temperature, condition, feels-like temperature and alert count.
 
-All four layouts use Framework 3.4.0 utilities without custom CSS. Their OG areas are 800 × 480, 800 × 240, 400 × 480 and 400 × 240; X uses the corresponding portions of 1040 × 780. Platform margins and title bars reduce the usable content area.
+All four layouts use Framework 3.4.0 utilities without custom CSS. Their OG areas are 800 × 480, 800 × 240, 400 × 480 and 400 × 240; X uses the corresponding portions of 1040 × 780, or 780 × 1040 in portrait. The full portrait view stacks current conditions and hourly weather, with three columns for the daily forecasts. Platform margins and title bars reduce the usable content area.
+
+## Public recipe submission
+
+Reviewed against [TRMNL's publishing best practices](https://trmnl.com/blog/plugin-recipe-publishing-tips):
+
+- Xiaomi provides a distinct data source; all four layouts ship in one recipe.
+- The About section includes setup instructions, a GitHub issue link and the environment category. Settings contain no personal defaults or weather credentials.
+- Polling handles coordinate forecasts directly; city-name lookup uses a bounded Serverless request. Markup uses native Framework classes and Liquid, a shared embedded title-bar icon, and an SVG chart without chart libraries or client-side API calls.
+- Chromium checks covered all four views on OG landscape, X landscape and X portrait, including Fahrenheit, long names, stale observations and unavailable forecasts. Narrow title bars retain attribution, observation time and unit.
+
+Before submitting in TRMNL, save and Force Refresh with a public demo city such as `Barcelona, Spain`, leaving Coordinates blank. Confirm that the install preview shows the city rather than a personal label, and save both location methods and temperature units once to check the account-side form behavior. Run CHEF and address any feedback before acknowledging the practices. Keep the Recipe Master configured for public demo weather and install a separate copy for personal use. These account-side steps and the human review are not confirmed by a successful GitHub upload.
 
 ## Choose a city
 
@@ -114,9 +133,9 @@ node check.cjs
 
 It checks provider ordering, optional country/region qualifiers, canonical city-search names, direct coordinate forecasts without an additional fetch, Location display labels, Fahrenheit conversion and rejection of invalid or unmatched inputs.
 
-City searches and direct coordinate forecasts succeeded live around Barcelona, Paris and Amsterdam. The coordinate-only Barcelona response identified the same provider locality and returned the same current, daily and hourly weather as the request with its resolved key. Checks covered coordinate priority over a conflicting name, blank-coordinate fallback, zero/negative/boundary values, invalid coordinate rejection, country/region disambiguation, duplicate results, missing cities, invalid keys, forecast errors and timeouts; invalid or unmatched city searches made no forecast request. Invalid coordinates are rejected before displaying the polling response. Transform checks also covered missing and zero weather values, partial forecasts, old observations, local timestamps, night icons and Fahrenheit. All four Liquid templates compiled against real responses and unavailable data. Chromium renders with the pinned official framework fitted all eight OG/X areas; long locality names and coordinate errors were also checked. The committed WebP previews preserve the verified e-ink palettes losslessly.
+City searches and direct coordinate forecasts succeeded live around Barcelona, Paris and Amsterdam. The coordinate-only Barcelona response identified the same provider locality and returned the same current, daily and hourly weather as the request with its resolved key. Checks covered coordinate priority over a conflicting name, blank-coordinate fallback, zero/negative/boundary values, invalid coordinate rejection, country/region disambiguation, duplicate results, missing cities, invalid keys, forecast errors and timeouts; invalid or unmatched city searches made no forecast request. Invalid coordinates are rejected before displaying the polling response. Transform checks also covered missing and zero weather values, partial forecasts, old observations, local timestamps, night icons and Fahrenheit. All four Liquid templates compiled against real responses and unavailable data. Fresh Chromium verification covered 72 renders: all four views on OG landscape, X landscape and X portrait, each with Celsius, Fahrenheit, a long location name, stale data, missing forecasts and unavailable data. Content and title-bar text fit their areas. The committed WebP previews preserve the verified e-ink palettes losslessly.
 
-The local rendering checks used LiquidJS. Account-side import, scheduled refresh and a physical e-ink panel remain unverified.
+The local rendering checks used LiquidJS. Account-side form validation, scheduled refresh and a physical e-ink panel remain unverified.
 
 Design research included [Weather Glance](https://trmnl.com/recipes/181200), the [Extended Weather Dashboard](https://github.com/Baszert/trmnl-extended-weather-dashboard), TRMNL's [native weather fixture](https://github.com/usetrmnl/trmnl-framework/blob/main/public/framework/example_fixtures/weather/full.html), and the [official TRMNL agent skill](https://github.com/usetrmnl/trmnl-agent-skills). Reference application source was not copied.
 
