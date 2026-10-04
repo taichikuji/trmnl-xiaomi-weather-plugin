@@ -5,10 +5,10 @@
     {% if stale %}<span class="label label--outline no-shrink">Old data</span>{% elsif alert_count > 0 %}<span class="label label--filled no-shrink">{{ alert_count }} alerts</span>{% endif %}
   </div>
   <div class="flex flex--row flex--center-y flex--between w--full">
-    <span class="value value--xlarge lg:value--xxxlarge" data-fit-value="true">{% render 'weather_value', value: now.temperature, unit: '°', fahrenheit: fahrenheit %}</span>
+    <span class="value value--xlarge lg:value--xxxlarge" data-fit-value="true">{{ now.temperature }}</span>
     <div class="w--16 h--16 lg:w--24 lg:h--24 no-shrink"><img class="w--full h--full" src="{{ now.icon_url }}" alt="{{ now.condition | escape }}"></div>
   </div>
-  <span class="label label--large w--full" data-clamp="1">{{ now.condition | escape }} · Feels {% render 'weather_value', value: now.feels_like, unit: '°', fahrenheit: fahrenheit %}</span>
+  <span class="label label--large w--full" data-clamp="1">{{ now.condition | escape }} · Feels {{ now.feels_like }}</span>
 </div>
 {% else %}{{ weather_error }}{% endif %}
 {{ weather_footer }}
