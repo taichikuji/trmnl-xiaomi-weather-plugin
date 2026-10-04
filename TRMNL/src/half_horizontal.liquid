@@ -5,7 +5,7 @@
       <span class="title lg:title--large w--full" data-clamp="1">{{ city | escape }}</span>
       <div class="flex flex--row flex--center-y gap--medium">
         <span class="value value--xlarge lg:value--xxxlarge" data-fit-value="true">{{ now.temperature }}</span>
-        <div class="w--16 h--16 lg:w--24 lg:h--24 no-shrink">{{ now.icon_svg }}</div>
+        <div class="w--16 h--16 lg:w--24 lg:h--24 no-shrink"><img class="w--full h--full" src="{{ now.icon_url }}" alt="{{ now.condition | escape }}"></div>
       </div>
       <span class="label w--full" data-clamp="1">{{ now.condition | escape }} · Feels {{ now.feels_like }}</span>
     </div>
@@ -13,7 +13,7 @@
       {% for day in days limit:3 %}
       <div class="flex flex--col flex--center gap--small">
         <span class="label text--bold">{{ day.label }}</span>
-        <div class="w--12 h--12 lg:w--20 lg:h--20">{{ day.icon_svg }}</div>
+        <div class="w--12 h--12 lg:w--20 lg:h--20"><img class="w--full h--full" src="{{ day.icon_url }}" alt="{{ day.condition | escape }}"></div>
         <span class="value value--small lg:value--large">{{ day.high }} <span class="label label--large">/ {{ day.low }}</span></span>
         <span class="label">Precip. {{ day.rain }}</span>
       </div>

@@ -6,7 +6,7 @@ Atmosphere is a TRMNL weather plugin with full, half and quadrant layouts for TR
 
 ## Features
 
-- Large current temperature and monochrome SVG weather icons
+- Large current temperature and TRMNL's official SVG weather icons
 - Hourly temperature trend and five-day outlook
 - Precipitation chances, wind, humidity, sun times and UV
 - Celsius or Fahrenheit and configurable Xiaomi location keys
@@ -25,4 +25,5 @@ See [the plugin README](TRMNL/README.md) for previews, setup, city lookup, data 
 - [TRMNL Private Plugins](https://help.trmnl.com/en/articles/9510536-private-plugins)
 - [TRMNL weather recipes](https://trmnl.com/recipes?search=weather&sort-by=popularity)
 - [TRMNL Framework](https://trmnl.com/framework)
+- [TRMNL weather icons](https://help.trmnl.com/en/articles/11823386-weather-icons)
 - [Official TRMNL agent skill](https://github.com/usetrmnl/trmnl-agent-skills)

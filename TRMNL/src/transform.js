@@ -24,23 +24,17 @@ function transform(input) {
     'Snow showers', 'Light snow', 'Snow', 'Heavy snow', 'Blizzard', 'Fog', 'Freezing rain', 'Dust storm',
     'Rain', 'Heavy rain', 'Heavy rain', 'Torrential rain', 'Torrential rain', 'Snow', 'Heavy snow',
     'Blizzard', 'Dust', 'Blowing sand', 'Severe dust storm', 'Squall', 'Tornado', 'Blowing snow', 'Mist'];
-  const sun = '<circle cx="32" cy="32" r="11"/><path d="M32 7v7m0 36v7M7 32h7m36 0h7M14 14l5 5m26 26 5 5M14 50l5-5m26-26 5-5"/>';
-  const moon = '<path d="M45 45A22 22 0 0 1 23 9a23 23 0 1 0 22 36Z"/>';
-  const cloud = '<path d="M17 44h29a11 11 0 0 0 0-22h-2a16 16 0 0 0-30 5 9 9 0 0 0 3 17Z"/>';
+  const icons = ['day-sunny', 'day-cloudy', 'cloudy', 'showers', 'thunderstorm', 'hail',
+    'rain-mix', 'sprinkle', 'rain', 'rain', 'rain', 'rain', 'rain',
+    'snow', 'snow', 'snow', 'snow', 'snow-wind', 'fog', 'sleet', 'sandstorm',
+    'rain', 'rain', 'rain', 'rain', 'rain', 'snow', 'snow', 'snow-wind',
+    'dust', 'sandstorm', 'sandstorm', 'strong-wind', 'tornado', 'snow-wind', 'fog'];
   function condition(value, night = false) {
     const code = number(value);
-    let drawing = '<path d="M20 24a12 12 0 0 1 24 0c0 9-12 9-12 17"/><circle cx="32" cy="51" r="1"/>';
-    if (code === 0) drawing = night ? moon : sun;
-    else if (code === 1) drawing = `<g transform="translate(-6 -9) scale(.8)">${night ? moon : sun}</g>${cloud}`;
-    else if (code === 2) drawing = cloud;
-    else if ([4, 5].includes(code)) drawing = cloud + '<path d="m33 39-9 13h10l-6 10"/>';
-    else if ([6, 13, 14, 15, 16, 17, 26, 27, 28, 34].includes(code)) drawing = cloud + '<path d="M22 50v10m-4-8 8 6m-8 0 8-6m16-2v10m-4-8 8 6m-8 0 8-6"/>';
-    else if ([18, 20, 29, 30, 31, 35, 53].includes(code)) drawing = '<path d="M13 21h38M8 32h48M13 43h38M19 54h26"/>';
-    else if ([32, 33].includes(code)) drawing = '<path d="M8 22h36a7 7 0 1 0-7-7M8 33h43a7 7 0 1 1-7 7M8 44h21"/>';
-    else if (code === 3 || code === 7 || code === 8 || code === 9 || code === 19 || (code >= 10 && code <= 12) || (code >= 21 && code <= 25)) drawing = cloud + '<path d="m21 50-4 8m16-8-4 8m16-8-4 8"/>';
+    const icon = code === 0 && night ? 'night-clear' : code === 1 && night ? 'night-alt-cloudy' : code === 53 ? 'smog' : icons[code] || 'na';
     return {
       text: code === 0 && night ? 'Clear night' : code === 53 ? 'Haze' : names[code] || 'Conditions unavailable',
-      svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%" fill="none" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${drawing}</svg>`
+      icon_url: `https://trmnl.com/images/plugins/weather/wi-${icon}.svg`
     };
   }
   const current = input.current || {};
@@ -70,7 +64,7 @@ function transform(input) {
       label, date: Number.isFinite(stamp) ? `${date.getUTCDate()}/${date.getUTCMonth() + 1}` : '—',
       high: degrees(Math.max(first, second)), low: degrees(Math.min(first, second)),
       low_value: Math.min(first, second), high_value: Math.max(first, second),
-      condition: state.text, icon_svg: state.svg,
+      condition: state.text, icon_url: state.icon_url,
       rain: probability !== null && probability >= 0 && probability <= 100 ? `${Math.round(probability)}%` : '—'
     };
   }).filter(Boolean);
@@ -88,7 +82,7 @@ function transform(input) {
     const rise = epoch(sun?.from), set = epoch(sun?.to);
     const isNight = Number.isFinite(rise) && Number.isFinite(set) && (stamp < rise || stamp >= set);
     const state = condition(hourWeather[i], isNight);
-    return { time: time(local), timestamp: stamp, temperature: degrees(n), value: fahrenheit ? n * 9 / 5 + 32 : n, icon_svg: state.svg, condition: state.text };
+    return { time: time(local), timestamp: stamp, temperature: degrees(n), value: fahrenheit ? n * 9 / 5 + 32 : n, icon_url: state.icon_url, condition: state.text };
   }).filter(Boolean).slice(0, 12);
   const minimum = hours.length ? Math.min(...hours.map(h => h.value)) - 1 : 0;
   const maximum = hours.length ? Math.max(...hours.map(h => h.value)) + 1 : 1;
@@ -108,7 +102,7 @@ function transform(input) {
     status: !available ? 'Weather unavailable' : stale ? 'Old observation' : 'Observed',
     observed_at: time(current.pubTime), observed_date: (current.pubTime || '').slice(0, 10),
     date_label: Number.isFinite(observed) ? `${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][new Date(`${current.pubTime.slice(0, 10)}T12:00:00Z`).getUTCDay()]} · ${Number(current.pubTime.slice(8, 10))} ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][Number(current.pubTime.slice(5, 7)) - 1]}` : 'Waiting for weather',
-    now: { temperature: degrees(current.temperature?.value), feels_like: degrees(current.feelsLike?.value), condition: weather.text, icon_svg: weather.svg,
+    now: { temperature: degrees(current.temperature?.value), feels_like: degrees(current.feelsLike?.value), condition: weather.text, icon_url: weather.icon_url,
       humidity: metric(current.humidity?.value, '%'), wind: metric(current.wind?.speed?.value), wind_unit: current.wind?.speed?.unit || 'km/h', wind_direction: windDirection,
       uv: metric(current.uvIndex), pressure: metric(current.pressure?.value), pressure_unit: current.pressure?.unit || 'hPa' },
     days, hours: hours.filter((_, i) => i % 2 === 0).slice(0, 6),

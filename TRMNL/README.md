@@ -1,10 +1,10 @@
 # TRMNL Xiaomi Weather Plugin
 
-Atmosphere displays Xiaomi's current conditions and forecasts with native TRMNL typography and authored monochrome SVGs. It polls Xiaomi directly using the public client parameters in the [API reference](https://github.com/saving/China-Apps-Api/blob/master/XiaomiWeather.md); no separate server or personal weather API key is required.
+Atmosphere displays Xiaomi's current conditions and forecasts with native TRMNL typography and [TRMNL's official weather SVGs](https://help.trmnl.com/en/articles/11823386-weather-icons). It polls Xiaomi directly using the public client parameters in the [API reference](https://github.com/saving/China-Apps-Api/blob/master/XiaomiWeather.md); no separate server or personal weather API key is required.
 
 ## Icon
 
-The plugin icon is stored in the TRMNL bundle and referenced from `settings.yml`.
+The plugin icon is an unchanged copy of TRMNL's `wi-day-sunny.svg`, stored in the bundle and referenced from `settings.yml`. Display icons load from TRMNL's hosted pack, with clear and partly cloudy night variants and the official unavailable icon for unknown codes.
 
 <div align="center">
   <img src="media/icon.svg" alt="Plugin Icon" width="90">
@@ -53,7 +53,7 @@ The GitHub **Publish to TRMNL** workflow runs manually. Configure repository sec
 
 ## Templates
 
-- **transform.js**: Converts Xiaomi's nested responses into small display-ready variables, condition SVGs and numeric chart coordinates.
+- **transform.js**: Converts Xiaomi's nested responses into small display-ready variables, official weather icon URLs and numeric chart coordinates.
 - **shared.liquid**: Attribution, unavailable-data state, provider notices and hourly chart.
 - **full.liquid**: Current conditions, hourly temperatures, five daily forecasts, wind, humidity, sun times and UV.
 - **half_horizontal.liquid**: Current weather beside three daily forecasts and a provider notice.

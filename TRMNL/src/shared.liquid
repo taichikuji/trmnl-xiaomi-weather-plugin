@@ -1,10 +1,7 @@
-{%- comment -%}Shared fragments run before each layout. Graphics use only authored SVG and numeric chart coordinates.{%- endcomment -%}
-{%- capture weather_logo -%}
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 1v3m0 16v3M1 12h3m16 0h3M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2"/></svg>
-{%- endcapture -%}
+{%- comment -%}Shared fragments run before each layout. Weather icons use TRMNL's hosted SVG pack.{%- endcomment -%}
 {%- capture weather_footer -%}
 <div class="title_bar">
-  <img class="image" src="data:image/svg+xml;base64,{{ weather_logo | base64_encode }}" alt="">
+  <img class="image" src="https://trmnl.com/images/plugins/weather/wi-day-sunny.svg" alt="">
   <span class="title">{% if source == 'Xiaomi Weather' %}Xiaomi Weather{% else %}Xiaomi · {{ source | default: 'Weather' | escape }}{% endif %}</span>
   <span class="instance">{% if available %}{% if stale %}Old{% else %}Observed{% endif %} {{ observed_at | default: '—' }}{% else %}Waiting{% endif %} · {{ unit | default: '°C' }}</span>
 </div>

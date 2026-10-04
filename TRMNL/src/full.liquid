@@ -9,7 +9,7 @@
     <div class="col--span-5 flex flex--col flex--left gap--small">
       <div class="flex flex--row flex--center-y gap--small w--full">
         <span class="value value--xxxlarge lg:value--mega" data-fit-value="true">{{ now.temperature }}</span>
-        <div class="w--24 h--24 lg:w--36 lg:h--36 no-shrink">{{ now.icon_svg }}</div>
+        <div class="w--24 h--24 lg:w--36 lg:h--36 no-shrink"><img class="w--full h--full" src="{{ now.icon_url }}" alt="{{ now.condition | escape }}"></div>
       </div>
       <span class="title lg:title--large w--full" data-clamp="1">{{ now.condition | escape }}</span>
       <span class="label">Feels {{ now.feels_like }}{% if days.size > 0 %} · High {{ days[0].high }} / Low {{ days[0].low }}{% endif %}</span>
@@ -30,7 +30,7 @@
         <div class="flex flex--col flex--center gap--none">
           <span class="label">{{ hour.time }}</span>
           <span class="value value--xsmall lg:value--small">{{ hour.temperature }}</span>
-          <div class="w--7 h--7 lg:w--10 lg:h--10">{{ hour.icon_svg }}</div>
+          <div class="w--7 h--7 lg:w--10 lg:h--10"><img class="w--full h--full" src="{{ hour.icon_url }}" alt="{{ hour.condition | escape }}"></div>
         </div>
         {% endfor %}
       </div>
@@ -56,7 +56,7 @@
           <span class="label">{{ day.date }}</span>
         </div>
         <div class="flex flex--row flex--between w--full">
-          <div class="w--9 h--9 lg:w--14 lg:h--14">{{ day.icon_svg }}</div>
+          <div class="w--9 h--9 lg:w--14 lg:h--14"><img class="w--full h--full" src="{{ day.icon_url }}" alt="{{ day.condition | escape }}"></div>
           <div class="flex flex--row flex--center-y gap--small">
             <span class="value value--small lg:value--base">{{ day.high }}</span>
             <span class="label label--large">{{ day.low }}</span>
