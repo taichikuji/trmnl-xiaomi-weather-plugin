@@ -33,7 +33,7 @@ custom_fields:
     maxlength: 80
     placeholder: '48.8584, 2.2945'
     description: 'Required when Location is blank. Latitude, longitude in decimal degrees takes priority for the forecast; Location remains the display label. Leave blank to search by city name.'
-    help_text: 'Find your coordinates at <a href="https://www.latlong.net/" class="underline">latlong.net</a>. Enter latitude first, then longitude, separated by a comma.'
+    help_text: 'Find your coordinates at <a href="https://www.latlong.net/" class="underline">latlong.net</a>. Enter decimal latitude (-90 to 90), then longitude (-180 to 180), separated by a comma.'
   - keyname: temperature_unit
     field_type: select
     name: Temperature unit

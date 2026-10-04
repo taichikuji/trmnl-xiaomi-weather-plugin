@@ -33,7 +33,7 @@
 {%- endcapture -%}
 {%- capture hourly_chart -%}
 {% if chart.markers.size > 0 %}
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 90" class="w--full h--16 lg:h--40" role="img" aria-label="Hourly temperature trend from {{ chart.from }} to {{ chart.to }}; {{ chart.low }} to {{ chart.high }}">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 90" class="w--full h--16 lg:h--40 text--black" role="img" aria-label="Hourly temperature trend from {{ chart.from }} to {{ chart.to }}; {{ chart.low }} to {{ chart.high }}">
   <path d="M16 76H424" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 5"/>
   <polyline points="{{ chart.points }}" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
   {% for point in chart.markers %}<circle cx="{{ point.x }}" cy="{{ point.y }}" r="4" fill="white" stroke="currentColor" stroke-width="2"/>{% endfor %}
