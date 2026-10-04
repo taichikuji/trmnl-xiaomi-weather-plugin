@@ -1,7 +1,45 @@
-// Xiaomi wtr-v3 → small, display-ready merge variables. Default TRMNL JS runtime.
-function transform(input) {
+// Poll Xiaomi city search, then fetch the uniquely matched city's forecast.
+// TRMNL Serverless (Node) awaits run(input); transform keeps formatting separate.
+async function run(input) {
   const fields = input.trmnl?.plugin_settings?.custom_fields_values || {};
-  const city = String(fields.city_name || 'Barcelona').slice(0, 60);
+  const location = String(fields.location || 'Barcelona, Spain').trim();
+  const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+  const [name, ...qualifiers] = location.split(',').map(normalize).filter(Boolean);
+  const unavailable = message => ({ ...transform({ trmnl: input.trmnl }), error_message: message });
+  if (!Array.isArray(input.data)) return unavailable('Xiaomi city search is unavailable. Try the next refresh.');
+  const exact = input.data.filter(city => city?.status === 0 && normalize(city.name) === name);
+  const matches = exact.filter(city => {
+    const affiliation = String(city.affiliation || '').split(',').map(normalize);
+    return qualifiers.every(part => affiliation.includes(part));
+  });
+  const unique = [...new Map(matches.map(city => [city.locationKey, city])).values()];
+  if (unique.length !== 1) {
+    const example = exact[0] ? `${exact[0].name}, ${exact[0].affiliation}` : 'Barcelona, Spain';
+    return unavailable(`${unique.length > 1 ? 'Several cities match' : 'No matching city'}. Try ${example}.`);
+  }
+  const city = unique[0];
+  const key = city.locationKey;
+  if (!/^(accu|weathercn):[A-Za-z0-9_-]+$/.test(key || '')) return unavailable('Xiaomi returned an unsupported location. Try another nearby city.');
+  const url = new URL('https://weatherapi.market.xiaomi.com/wtr-v3/weather/all');
+  url.search = new URLSearchParams({
+    latitude: '0', longitude: '0', locationKey: key, days: '7',
+    appKey: 'weather20151024', sign: 'zUFJoAR2ZVrDy1vF3D07',
+    isGlobal: String(key.startsWith('accu:')), locale: 'en_us'
+  }).toString();
+  try {
+    const response = await fetch(url, { signal: AbortSignal.timeout(3500) });
+    if (!response.ok) return unavailable('Xiaomi weather is unavailable. Try the next refresh.');
+    const weather = await response.json();
+    if (!weather || typeof weather !== 'object' || Array.isArray(weather)) return unavailable('Xiaomi returned an invalid forecast. Try the next refresh.');
+    return transform({ ...weather, trmnl: input.trmnl }, city.name);
+  } catch {
+    return unavailable('Xiaomi weather could not be reached. Try the next refresh.');
+  }
+}
+
+function transform(input, locationName) {
+  const fields = input.trmnl?.plugin_settings?.custom_fields_values || {};
+  const city = String(locationName || fields.location || 'Barcelona, Spain').split(',')[0].trim().slice(0, 60);
   const fahrenheit = fields.temperature_unit === 'fahrenheit';
   const number = value => {
     if (value === null || value === undefined || String(value).trim() === '') return null;
@@ -111,6 +149,6 @@ function transform(input) {
     daylight: daylight === null ? '—' : `${Math.floor(daylight / 60)}h ${daylight % 60}m`,
     alerts, alert_count: alerts.length, alert_title: alerts[0]?.title || '',
     source, source_url: /^https?:\/\//.test(sourceUrl) ? sourceUrl.replace(/^http:/, 'https:') : '',
-    error_message: available ? '' : 'Xiaomi returned no current temperature. Check the location key and try the next refresh.'
+    error_message: available ? '' : 'Xiaomi returned no current temperature. Try the next refresh.'
   };
 }

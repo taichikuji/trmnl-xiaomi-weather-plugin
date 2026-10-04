@@ -3,7 +3,7 @@ name: Atmosphere · Xiaomi Weather
 description: A quiet window on the weather
 strategy: polling
 polling_verb: get
-polling_url: 'https://weatherapi.market.xiaomi.com/wtr-v3/weather/all?latitude=0&longitude=0&locationKey={{ location_key | url_encode }}&days=7&appKey=weather20151024&sign=zUFJoAR2ZVrDy1vF3D07&isGlobal={% if location_key contains "accu:" %}true{% else %}false{% endif %}&locale=en_us'
+polling_url: 'https://weatherapi.market.xiaomi.com/wtr-v3/location/city/search?name={{ location | split: "," | first | strip | url_encode }}&locale=en_us'
 polling_headers: ''
 polling_body: ''
 refresh_interval: 30
@@ -13,17 +13,13 @@ icon: media/icon.svg
 no_screen_padding: 'no'
 dark_mode: 'no'
 custom_fields:
-  - keyname: city_name
+  - keyname: location
     field_type: string
-    name: Display location
-    default: Barcelona
-    maxlength: 60
-    description: The place name printed on your display.
-  - keyname: location_key
-    field_type: string
-    name: Xiaomi location key
-    default: 'accu:307297'
-    description: 'Barcelona, Spain: accu:307297. Use Xiaomi city search for another location.'
+    name: Location
+    default: 'Barcelona, Spain'
+    maxlength: 120
+    description: 'Enter a full city name and country, e.g. Barcelona, Spain or Paris, France. The weather location and display name are resolved automatically.'
+    help_text: 'Add the region if needed, e.g. Paris, Texas, United States. Use full names rather than abbreviations such as BCN or NY.'
   - keyname: temperature_unit
     field_type: select
     name: Temperature unit

@@ -1,6 +1,6 @@
 # TRMNL Xiaomi Weather Plugin
 
-Atmosphere displays Xiaomi's current conditions and forecasts with native TRMNL typography and [TRMNL's official weather SVGs](https://help.trmnl.com/en/articles/11823386-weather-icons). It polls Xiaomi directly using the public client parameters in the [API reference](https://github.com/saving/China-Apps-Api/blob/master/XiaomiWeather.md); no separate server or personal weather API key is required.
+Atmosphere displays Xiaomi's current conditions and forecasts with native TRMNL typography and [TRMNL's official weather SVGs](https://help.trmnl.com/en/articles/11823386-weather-icons). Enter one **Location**, such as `Barcelona, Spain`; Xiaomi's city search supplies both the forecast key and the display name. No separate server or personal weather API key is required.
 
 ## Icon
 
@@ -34,26 +34,26 @@ Previews use a recorded Barcelona response from **4 October 2026**, not a curren
 
 Create a TRMNL Private Plugin with Polling / GET, Framework **3.4.0**, screen padding enabled and a **30-minute** refresh interval. Private plugins require Developer or BYOD access.
 
-Use a current [TRMNLP](https://github.com/usetrmnl/trmnlp) release, open this directory and run:
+Use [TRMNLP](https://github.com/usetrmnl/trmnlp) **0.16.0 or newer**, open this directory and run:
 
 ```sh
 trmnlp serve
 ```
 
-`.trmnlp.yml` contains the local custom-field values. The JavaScript transform runs automatically. Once ready to upload, authenticate and push to your own plugin:
+`.trmnlp.yml` contains the local custom-field values. The Node Serverless function runs automatically: polling searches for the city, then `run(input)` fetches its forecast. Once ready to upload, authenticate and push to your own plugin:
 
 ```sh
 trmnlp login
 trmnlp push --id YOUR_PLUGIN_SETTING_ID
 ```
 
-Alternatively, copy `src/settings.yml` into the matching dashboard settings, paste `shared.liquid` into Shared and each layout into its matching markup tab, then paste `transform.js` into the JavaScript transform editor. The adapter exposes `transform(input)` and is compatible with the current TRMNLP Node wrapper. Force Refresh, check the preview and add the plugin to your playlist.
+Alternatively, copy `src/settings.yml` into the matching dashboard settings, paste `shared.liquid` into Shared and each layout into its matching markup tab, then paste the complete `transform.js` into **Serverless** and select **Node**. The entry point is the asynchronous `run(input)` function, which calls the formatting helper `transform`. Force Refresh, check the preview and add the plugin to your playlist. Existing installs should set the new Location field after updating; the separate display name and key fields have been removed.
 
 The GitHub **Publish to TRMNL** workflow runs manually. Configure repository secrets `TRMNL_API_KEY` and `TRMNL_PLUGIN_SETTING_ID`, then run it from Actions. The setting ID is the number in `/plugin_settings/<ID>/edit`. Publishing the GitHub repository alone does not run this workflow.
 
 ## Templates
 
-- **transform.js**: Converts Xiaomi's nested responses into small display-ready variables, official weather icon URLs and numeric chart coordinates.
+- **transform.js**: Resolves Location, fetches the matched city's forecast, and converts Xiaomi's response into display-ready variables, official weather icon URLs and numeric chart coordinates.
 - **shared.liquid**: Attribution, unavailable-data state, provider notices and hourly chart.
 - **full.liquid**: Current conditions, hourly temperatures, five daily forecasts, wind, humidity, sun times and UV.
 - **half_horizontal.liquid**: Current weather beside three daily forecasts and a provider notice.
@@ -64,14 +64,20 @@ All four layouts use Framework 3.4.0 utilities without custom CSS. Their OG area
 
 ## Choose a city
 
-Update both `city_name` and `location_key`; changing the display name alone does not change the forecast. `temperature_unit` accepts `celsius` or `fahrenheit`.
+Set **Location** to a full city name followed by its country. Add a region when multiple cities share that name. `temperature_unit` accepts `celsius` or `fahrenheit`.
 
-| City | Country | Xiaomi location key |
-|------|---------|---------------------|
-| Barcelona | Spain | `accu:307297` |
-| Paris | France | `accu:623` |
+| Location example | Display name |
+|------------------|--------------|
+| `Barcelona, Spain` | Barcelona |
+| `Paris, France` | Paris |
+| `Amsterdam, Netherlands` | Amsterdam |
+| `New York, New York, United States` | New York |
 
-Resolve another location through [Xiaomi city search](https://weatherapi.market.xiaomi.com/wtr-v3/location/city/search?name=Barcelona&locale=en_us), replacing `name`. Check the returned country and city name because namesakes are common. Use the complete `accu:` key for European cities. The polling URL chooses `isGlobal=true` for `accu:` and `false` for `weathercn:`. Live Barcelona and Paris requests confirmed that the location key works with zero latitude/longitude.
+Use the city spelling returned by Xiaomi. Country and region qualifiers match the returned affiliation names, ignoring case and accent differences. A city name alone is accepted only when it resolves uniquely. The plugin never selects the first namesake automatically: ambiguous or missing matches display instructions to refine Location, without fetching another city's weather.
+
+Use full names rather than airport codes or abbreviations such as `BCN` or `NY`; Xiaomi returned no matches for those searches. To inspect spelling or region names, open [Xiaomi city search](https://weatherapi.market.xiaomi.com/wtr-v3/location/city/search?name=Barcelona&locale=en_us) and replace `name` in the URL. Its `name` and `affiliation` values are the human-readable city and region/country names you can enter. You do not need to copy its location key.
+
+The [TRMNL Node Serverless runtime](https://help.trmnl.com/en/articles/14130649-serverless) supports network requests. Polling supplies the city-search results under `data`; the function fetches the forecast using the matched key, including Xiaomi's public client parameters from the [API reference](https://github.com/saving/China-Apps-Api/blob/master/XiaomiWeather.md). The forecast request has a 3.5-second timeout within TRMNL's five-second execution budget. API failures produce an unavailable state and retry on the next refresh.
 
 ## Data behavior
 
@@ -85,7 +91,7 @@ Resolve another location through [Xiaomi city search](https://weatherapi.market.
 
 ## Verification and references
 
-Live city lookup and weather fetches succeeded for Barcelona and Paris. Transform checks covered missing and zero values, partial forecasts, old observations, local timestamps, night icons and Fahrenheit. All four Liquid templates compiled against real responses and unavailable data. Chromium renders with the pinned official framework fitted all eight OG/X areas; unavailable, stale Fahrenheit and missing-hourly variants were also checked. The committed WebP previews preserve the verified e-ink palettes losslessly.
+The single-Location flow succeeded live for Barcelona, Paris and Amsterdam. Checks covered country/region disambiguation, duplicate results, missing cities, invalid keys, forecast errors and timeouts; uncertain locations made no forecast request. Transform checks also covered missing and zero values, partial forecasts, old observations, local timestamps, night icons and Fahrenheit. All four Liquid templates compiled against real responses and unavailable data. Chromium renders with the pinned official framework fitted all eight OG/X areas; ambiguity and unavailable messages were checked in the compact layouts. The committed WebP previews preserve the verified e-ink palettes losslessly.
 
 The local rendering checks used LiquidJS. Account-side import, scheduled refresh and a physical e-ink panel remain unverified.
 

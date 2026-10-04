@@ -5,8 +5,7 @@ watch:
   - .trmnlp.yml
 
 custom_fields:
-  city_name: Barcelona
-  location_key: 'accu:307297'
+  location: 'Barcelona, Spain'
   temperature_unit: celsius
 
 time_zone: Europe/Madrid
