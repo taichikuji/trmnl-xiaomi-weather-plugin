@@ -1,6 +1,6 @@
 ---
-name: Atmosphere · Xiaomi Weather
-description: A quiet window on the weather
+name: Xiaomi Weather
+description: Current conditions and forecasts from Xiaomi
 strategy: polling
 polling_verb: get
 polling_url: '{% assign point = coordinates | default: "" | strip %}{% if point != "" %}https://weatherapi.market.xiaomi.com/wtr-v3/weather/all?latitude={{ point | split: "," | first | strip | url_encode }}&longitude={{ point | split: "," | last | strip | url_encode }}&days=7&appKey=weather20151024&sign=zUFJoAR2ZVrDy1vF3D07&isGlobal=true&locale=en_us{% else %}https://weatherapi.market.xiaomi.com/wtr-v3/location/city/search?name={{ location | split: "," | first | strip | url_encode }}&locale=en_us{% endif %}'
