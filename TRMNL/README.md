@@ -4,7 +4,7 @@ Atmosphere displays Xiaomi's current conditions and forecasts with native TRMNL 
 
 ## Icon
 
-The plugin icon is an unchanged copy of TRMNL's `wi-day-sunny.svg`, stored in the bundle and referenced from `settings.yml`. Display icons load from TRMNL's hosted pack, with clear and partly cloudy night variants and the official unavailable icon for unknown codes.
+The plugin listing icon uses the supplied sun-and-cloud artwork, simplified to one path and tightly cropped with a small margin in TRMNL orange (`#E76F55`), stored in the bundle and referenced from `settings.yml`. Each layout's title bar embeds the same artwork in black (`#000000`). Weather condition icons load from TRMNL's hosted pack, with clear and partly cloudy night variants and the official unavailable icon for unknown codes.
 
 <div align="center">
   <img src="media/icon.svg" alt="Plugin Icon" width="90">
