@@ -78,7 +78,7 @@ All four layouts use Framework 3.4.0 utilities without custom CSS. Their OG area
 
 With Coordinates filled, TRMNL polls Xiaomi's forecast endpoint directly with those coordinates, without a location key or a separate lookup request. Location supplies the display label (the part before the first comma), so use `Barcelona` for your example. A blank Location displays the neutral title **Weather**. This label does not affect the forecast location: the returned provider URL identifies **Muette**. The forecast response has no separate city-name field.
 
-Invalid coordinates or a missing forecast display an error; they do not silently fall back to a city-name forecast. Leave Coordinates empty to use **Location**, a city name with an optional country or region. Location starts empty and stays empty when cleared; Barcelona is only a placeholder example. If both fields are empty, the plugin asks you to enter Location or Coordinates. `temperature_unit` accepts `celsius` or `fahrenheit`.
+Invalid coordinates or a missing forecast display an error; they do not silently fall back to a city-name forecast. Leave Coordinates empty to use **Location**, a city name with an optional country or region. Location starts empty and stays empty when cleared; Barcelona is only a placeholder example. The settings form requires **Location or Coordinates**: TRMNL's [conditional field validation](https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder) makes Coordinates required when Location is blank. The Serverless guard also rejects both fields being empty. Temperature unit is required, defaults to Celsius, and accepts `celsius` or `fahrenheit`.
 
 | Location example | Display name |
 |------------------|--------------|
