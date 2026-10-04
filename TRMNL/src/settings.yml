@@ -3,7 +3,7 @@ name: Atmosphere · Xiaomi Weather
 description: A quiet window on the weather
 strategy: polling
 polling_verb: get
-polling_url: '{% assign point = coordinates | default: "" | strip %}{% if point != "" %}https://weatherapi.market.xiaomi.com/wtr-v3/location/city/geo?latitude={{ point | split: "," | first | strip | url_encode }}&longitude={{ point | split: "," | last | strip | url_encode }}&locale=en_us{% else %}https://weatherapi.market.xiaomi.com/wtr-v3/location/city/search?name={{ location | split: "," | first | strip | url_encode }}&locale=en_us{% endif %}'
+polling_url: '{% assign point = coordinates | default: "" | strip %}{% if point != "" %}https://weatherapi.market.xiaomi.com/wtr-v3/weather/all?latitude={{ point | split: "," | first | strip | url_encode }}&longitude={{ point | split: "," | last | strip | url_encode }}&days=7&appKey=weather20151024&sign=zUFJoAR2ZVrDy1vF3D07&isGlobal=true&locale=en_us{% else %}https://weatherapi.market.xiaomi.com/wtr-v3/location/city/search?name={{ location | split: "," | first | strip | url_encode }}&locale=en_us{% endif %}'
 polling_headers: ''
 polling_body: ''
 refresh_interval: 30
@@ -19,7 +19,7 @@ custom_fields:
     default: 'Barcelona, Spain'
     optional: true
     maxlength: 120
-    description: 'Used when Coordinates is blank. Enter a city name, e.g. Barcelona or Paris.'
+    description: 'Enter a city name, e.g. Barcelona or Paris. With Coordinates filled, this becomes the display label.'
     help_text: 'The first Xiaomi match is used. If it is the wrong place, add its country or region, e.g. Barcelona, Spain or Paris, Texas, United States, or use Coordinates. Use full names rather than airport codes.'
   - keyname: coordinates
     field_type: string
@@ -28,7 +28,7 @@ custom_fields:
     default: ''
     maxlength: 80
     placeholder: '48.8584, 2.2945'
-    description: 'Optional latitude, longitude in decimal degrees. Takes priority over Location; leave blank to use the city name.'
+    description: 'Optional latitude, longitude in decimal degrees. Takes priority for the forecast; Location remains the display label. Leave blank to search by city name.'
     help_text: 'Find your coordinates at <a href="https://www.latlong.net/" class="underline">latlong.net</a>. Enter latitude first, then longitude, separated by a comma.'
   - keyname: temperature_unit
     field_type: select
