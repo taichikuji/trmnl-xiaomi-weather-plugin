@@ -2,7 +2,7 @@
 <div class="layout layout--col gap--small">
   <div class="flex flex--row flex--between w--full">
     <span class="title lg:title--large grow" data-clamp="1">{{ city | escape }}</span>
-    {% if stale %}<span class="label label--outline">Old data</span>{% elsif alert_count > 0 %}<span class="label label--filled">{{ alert_count }} alerts</span>{% endif %}
+    {% if stale %}<span class="label label--outline no-shrink">Old data</span>{% elsif alert_count > 0 %}<span class="label label--filled no-shrink">{{ alert_count }} alerts</span>{% endif %}
   </div>
   <div class="flex flex--row flex--center-y flex--between w--full">
     <span class="value value--xlarge lg:value--xxxlarge" data-fit-value="true">{{ now.temperature }}</span>

@@ -1,19 +1,29 @@
-// Poll Xiaomi city search, then fetch the uniquely matched city's forecast.
+// Poll Xiaomi's coordinate lookup or city search, then fetch its forecast.
 // TRMNL Serverless (Node) awaits run(input); transform keeps formatting separate.
 async function run(input) {
   const fields = input.trmnl?.plugin_settings?.custom_fields_values || {};
   const location = String(fields.location || 'Barcelona, Spain').trim();
+  const coordinates = String(fields.coordinates ?? '').trim();
   const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
   const [name, ...qualifiers] = location.split(',').map(normalize).filter(Boolean);
   const unavailable = message => ({ ...transform({ trmnl: input.trmnl }), error_message: message });
-  if (!Array.isArray(input.data)) return unavailable('Xiaomi city search is unavailable. Try the next refresh.');
-  const exact = input.data.filter(city => city?.status === 0 && normalize(city.name) === name);
+  let point;
+  if (coordinates) {
+    const parts = coordinates.split(',').map(part => part.trim());
+    if (parts.length !== 2 || parts.some(part => !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(part)) || Math.abs(Number(parts[0])) > 90 || Math.abs(Number(parts[1])) > 180) {
+      return unavailable('Invalid coordinates. Use latitude, longitude; e.g. 48.8584, 2.2945.');
+    }
+    point = parts.map(Number);
+  }
+  if (!Array.isArray(input.data)) return unavailable('Xiaomi location lookup is unavailable. Try the next refresh.');
+  const exact = input.data.filter(city => city?.status === 0 && (point || normalize(city.name) === name));
   const matches = exact.filter(city => {
     const affiliation = String(city.affiliation || '').split(',').map(normalize);
-    return qualifiers.every(part => affiliation.includes(part));
+    return point || qualifiers.every(part => affiliation.includes(part));
   });
   const unique = [...new Map(matches.map(city => [city.locationKey, city])).values()];
   if (unique.length !== 1) {
+    if (point) return unavailable('Xiaomi could not resolve these coordinates. Try a nearby location.');
     const example = exact[0] ? `${exact[0].name}, ${exact[0].affiliation}` : 'Barcelona, Spain';
     return unavailable(`${unique.length > 1 ? 'Several cities match' : 'No matching city'}. Try ${example}.`);
   }
@@ -22,7 +32,7 @@ async function run(input) {
   if (!/^(accu|weathercn):[A-Za-z0-9_-]+$/.test(key || '')) return unavailable('Xiaomi returned an unsupported location. Try another nearby city.');
   const url = new URL('https://weatherapi.market.xiaomi.com/wtr-v3/weather/all');
   url.search = new URLSearchParams({
-    latitude: '0', longitude: '0', locationKey: key, days: '7',
+    latitude: String(point?.[0] ?? 0), longitude: String(point?.[1] ?? 0), locationKey: key, days: '7',
     appKey: 'weather20151024', sign: 'zUFJoAR2ZVrDy1vF3D07',
     isGlobal: String(key.startsWith('accu:')), locale: 'en_us'
   }).toString();
@@ -39,7 +49,8 @@ async function run(input) {
 
 function transform(input, locationName) {
   const fields = input.trmnl?.plugin_settings?.custom_fields_values || {};
-  const city = String(locationName || fields.location || 'Barcelona, Spain').split(',')[0].trim().slice(0, 60);
+  const label = String(fields.coordinates ?? '').trim() ? 'Coordinate location' : String(fields.location || 'Barcelona, Spain').split(',')[0];
+  const city = String(locationName || label).trim().slice(0, 60);
   const fahrenheit = fields.temperature_unit === 'fahrenheit';
   const number = value => {
     if (value === null || value === undefined || String(value).trim() === '') return null;

@@ -1,6 +1,6 @@
 # TRMNL Xiaomi Weather Plugin
 
-Atmosphere displays Xiaomi's current conditions and forecasts with native TRMNL typography and [TRMNL's official weather SVGs](https://help.trmnl.com/en/articles/11823386-weather-icons). Enter one **Location**, such as `Barcelona, Spain`; Xiaomi's city search supplies both the forecast key and the display name. No separate server or personal weather API key is required.
+Atmosphere displays Xiaomi's current conditions and forecasts with native TRMNL typography and [TRMNL's official weather SVGs](https://help.trmnl.com/en/articles/11823386-weather-icons). Enter **Location**, such as `Barcelona, Spain`, or optional **Coordinates**, which take priority. Xiaomi's lookup supplies both the forecast key and the display name. No separate server or personal weather API key is required.
 
 ## Icon
 
@@ -40,7 +40,7 @@ Use [TRMNLP](https://github.com/usetrmnl/trmnlp) **0.16.0 or newer**, open this 
 trmnlp serve
 ```
 
-`.trmnlp.yml` contains the local custom-field values. The Node Serverless function runs automatically: polling searches for the city, then `run(input)` fetches its forecast. Once ready to upload, authenticate and push to your own plugin:
+`.trmnlp.yml` contains the local custom-field values. The Node Serverless function runs automatically: polling resolves the coordinates or city name, then `run(input)` fetches its forecast. Once ready to upload, authenticate and push to your own plugin:
 
 ```sh
 trmnlp login
@@ -53,7 +53,7 @@ The GitHub **Publish to TRMNL** workflow runs manually. Configure repository sec
 
 ## Templates
 
-- **transform.js**: Resolves Location, fetches the matched city's forecast, and converts Xiaomi's response into display-ready variables, official weather icon URLs and numeric chart coordinates.
+- **transform.js**: Validates optional coordinates, resolves the weather location, fetches its forecast, and converts Xiaomi's response into display-ready variables, official weather icon URLs and numeric chart coordinates.
 - **shared.liquid**: Attribution, unavailable-data state, provider notices and hourly chart.
 - **full.liquid**: Current conditions, hourly temperatures, five daily forecasts, wind, humidity, sun times and UV.
 - **half_horizontal.liquid**: Current weather beside three daily forecasts and a provider notice.
@@ -64,7 +64,11 @@ All four layouts use Framework 3.4.0 utilities without custom CSS. Their OG area
 
 ## Choose a city
 
-Set **Location** to a full city name followed by its country. Add a region when multiple cities share that name. `temperature_unit` accepts `celsius` or `fahrenheit`.
+**Coordinates take priority over Location.** Enter decimal degrees in **latitude, longitude** order, for example `48.8584,2.2945`. Find a place on [latlong.net](https://www.latlong.net/) and copy its Latitude and Longitude values into this field, separated by a comma. Negative values represent south/west; latitude must be between −90 and 90, and longitude between −180 and 180.
+
+With Coordinates filled, Location is ignored for lookup and display. Xiaomi supplies the nearest supported locality and its name, which may be a district rather than a whole city. Your Barcelona example resolves to **Muette**. The forecast request includes the supplied coordinates and the resolved key. No key needs to be entered manually.
+
+Invalid or unresolved coordinates display an error; they do not silently fall back to a different city's forecast. Leave Coordinates empty to use **Location**, a full city name followed by its country. Add a region when multiple cities share that name. Location defaults to `Barcelona, Spain`; `temperature_unit` accepts `celsius` or `fahrenheit`.
 
 | Location example | Display name |
 |------------------|--------------|
@@ -77,7 +81,7 @@ Use the city spelling returned by Xiaomi. Country and region qualifiers match th
 
 Use full names rather than airport codes or abbreviations such as `BCN` or `NY`; Xiaomi returned no matches for those searches. To inspect spelling or region names, open [Xiaomi city search](https://weatherapi.market.xiaomi.com/wtr-v3/location/city/search?name=Barcelona&locale=en_us) and replace `name` in the URL. Its `name` and `affiliation` values are the human-readable city and region/country names you can enter. You do not need to copy its location key.
 
-The [TRMNL Node Serverless runtime](https://help.trmnl.com/en/articles/14130649-serverless) supports network requests. Polling supplies the city-search results under `data`; the function fetches the forecast using the matched key, including Xiaomi's public client parameters from the [API reference](https://github.com/saving/China-Apps-Api/blob/master/XiaomiWeather.md). The forecast request has a 3.5-second timeout within TRMNL's five-second execution budget. API failures produce an unavailable state and retry on the next refresh.
+The [TRMNL Node Serverless runtime](https://help.trmnl.com/en/articles/14130649-serverless) supports network requests. Polling uses Xiaomi's `/location/city/geo` endpoint when Coordinates is filled and `/location/city/search` otherwise, supplying the results under `data`. The function fetches the forecast using the resolved key, including Xiaomi's public client parameters from the [API reference](https://github.com/saving/China-Apps-Api/blob/master/XiaomiWeather.md). The forecast request has a 3.5-second timeout within TRMNL's five-second execution budget. API failures produce an unavailable state and retry on the next refresh.
 
 ## Data behavior
 
@@ -91,7 +95,7 @@ The [TRMNL Node Serverless runtime](https://help.trmnl.com/en/articles/14130649-
 
 ## Verification and references
 
-The single-Location flow succeeded live for Barcelona, Paris and Amsterdam. Checks covered country/region disambiguation, duplicate results, missing cities, invalid keys, forecast errors and timeouts; uncertain locations made no forecast request. Transform checks also covered missing and zero values, partial forecasts, old observations, local timestamps, night icons and Fahrenheit. All four Liquid templates compiled against real responses and unavailable data. Chromium renders with the pinned official framework fitted all eight OG/X areas; ambiguity and unavailable messages were checked in the compact layouts. The committed WebP previews preserve the verified e-ink palettes losslessly.
+Both name and coordinate lookup succeeded live around Barcelona, Paris and Amsterdam. Checks covered coordinate priority over a conflicting name, blank-coordinate fallback, zero/negative/boundary values, invalid coordinate rejection, country/region disambiguation, duplicate results, missing cities, invalid keys, forecast errors and timeouts; uncertain locations made no forecast request. Transform checks also covered missing and zero weather values, partial forecasts, old observations, local timestamps, night icons and Fahrenheit. All four Liquid templates compiled against real responses and unavailable data. Chromium renders with the pinned official framework fitted all eight OG/X areas; long locality names, coordinate errors and ambiguous names were also checked. The committed WebP previews preserve the verified e-ink palettes losslessly.
 
 The local rendering checks used LiquidJS. Account-side import, scheduled refresh and a physical e-ink panel remain unverified.
 

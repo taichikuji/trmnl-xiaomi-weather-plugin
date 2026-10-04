@@ -9,13 +9,13 @@ Atmosphere is a TRMNL weather plugin with full, half and quadrant layouts for TR
 - Large current temperature and TRMNL's official SVG weather icons
 - Hourly temperature trend and five-day outlook
 - Precipitation chances, wind, humidity, sun times and UV
-- Celsius or Fahrenheit and automatic city lookup from a single Location field
+- Celsius or Fahrenheit, automatic city lookup, and optional coordinates that take priority
 - Provider-reported alerts and clear unavailable or old-data states
 - Dedicated layouts for all four mashup sizes
 
 ## Local development
 
-Open `TRMNL/` with [TRMNLP](https://github.com/usetrmnl/trmnlp), configure Location and the temperature unit in `.trmnlp.yml`, and preview all four layouts. Use TRMNLP 0.16.0 or newer with asynchronous Node transforms.
+Open `TRMNL/` with [TRMNLP](https://github.com/usetrmnl/trmnlp), configure Location or optional Coordinates and the temperature unit in `.trmnlp.yml`, and preview all four layouts. Find coordinates at [latlong.net](https://www.latlong.net/). Use TRMNLP 0.16.0 or newer with asynchronous Node transforms.
 
 See [the plugin README](TRMNL/README.md) for previews, setup, city lookup, data behavior and verification details.
 

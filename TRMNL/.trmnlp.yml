@@ -6,6 +6,7 @@ watch:
 
 custom_fields:
   location: 'Barcelona, Spain'
+  coordinates: ''
   temperature_unit: celsius
 
 time_zone: Europe/Madrid
