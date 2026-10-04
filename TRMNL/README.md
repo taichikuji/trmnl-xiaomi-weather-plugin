@@ -91,6 +91,14 @@ Reviewed against [TRMNL's publishing best practices](https://trmnl.com/blog/plug
 
 Before submitting in TRMNL, save and Force Refresh with a public demo city such as `Barcelona, Spain`, leaving Coordinates blank. Confirm that the install preview shows the city rather than a personal label, and save both location methods and temperature units once to check the account-side form behavior. Run CHEF and address any feedback before acknowledging the practices. Keep the Recipe Master configured for public demo weather and install a separate copy for personal use. These account-side steps and the human review are not confirmed by a successful GitHub upload.
 
+The original design, parsing logic and markup are also available under **CC BY 4.0** in [LICENSE](../LICENSE), matching [TRMNL's public plugin license](https://trmnl.com/plugin-license). Support is available through the About section's GitHub issue link.
+
+CHEF may flag these intentional choices:
+
+- **Title bar include:** every layout outputs `weather_footer`, captured in `shared.liquid`. It contains the [standard native title bar](https://trmnl.com/framework/docs/3.4/title_bar), including our icon, provider attribution, observation time and unit; a separate render include is unnecessary.
+- **Image dithering:** all display images are monochrome SVG icons. [TRMNL documents `image-dither` for raster images](https://trmnl.com/framework/docs/3.4/image); no photos or color raster images need conversion here.
+- **Serverless fetch:** the city-name forecast URL requires the key returned by that refresh's city lookup. [Polling URL markup is rendered before requests start](https://help.trmnl.com/en/articles/12689499-dynamic-polling-urls), so adding a second URL cannot resolve that dependency. Only this forecast request runs in Serverless, with a 3.5-second abort covering the response body and a clear unavailable state on failure. Coordinates avoid the Serverless request entirely. A slow Xiaomi response can still cause a city-name refresh to fail; use Coordinates for native polling.
+
 ## Choose a city
 
 **Coordinates take priority over Location.** Enter decimal degrees in **latitude, longitude** order, for example `48.8584,2.2945`. Find a place on [latlong.net](https://www.latlong.net/) and copy its Latitude and Longitude values into this field, separated by a comma. Negative values represent south/west; latitude must be between −90 and 90, and longitude between −180 and 180.

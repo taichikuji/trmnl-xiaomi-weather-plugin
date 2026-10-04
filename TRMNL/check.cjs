@@ -75,5 +75,27 @@ const venezuela = { status: 0, name: 'Barcelona', affiliation: 'Anzoátegui, Ven
     assert.ok(result.error_message);
     assert.equal(requests.length, 0);
   }
-  console.log('Location check passed: blank settings, provider order, qualifiers, canonical names, direct coordinate forecasts, display labels and invalid inputs.');
+  for (const failure of ['http', 'json', 'network', 'timeout']) {
+    let fetchSignal;
+    context.fetch = async (_, { signal }) => {
+      fetchSignal = signal;
+      if (failure === 'http') return { ok: false };
+      if (failure === 'json') return { ok: true, json: async () => [] };
+      if (failure === 'network') throw new Error('Network unavailable');
+      return { ok: true, json: () => new Promise((_, reject) => {
+        const deadline = setTimeout(() => reject(new Error('Abort did not fire')), 4500);
+        signal.addEventListener('abort', () => { clearTimeout(deadline); reject(signal.reason); }, { once: true });
+      }) };
+    };
+    const start = Date.now();
+    const result = await context.run({ data: [spain], trmnl: { plugin_settings: { custom_fields_values: { location: 'Barcelona' } } } });
+    assert.ok(fetchSignal instanceof AbortSignal);
+    assert.equal(result.available, false);
+    assert.match(result.error_message, /Xiaomi/);
+    if (failure === 'timeout') {
+      assert.equal(fetchSignal.reason.name, 'TimeoutError');
+      assert.ok(Date.now() - start < 4500, 'Abort must leave time within the five-second runtime');
+    }
+  }
+  console.log('Location check passed, including forecast failures and the Serverless timeout budget.');
 })().catch(error => { console.error(error); process.exitCode = 1; });
