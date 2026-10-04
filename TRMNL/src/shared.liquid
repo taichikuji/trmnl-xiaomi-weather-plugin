@@ -6,7 +6,7 @@
 {%- endcapture -%}
 {%- capture weather_footer -%}
 <div class="title_bar">
-  <img class="image" src="data:image/svg+xml;base64,{{ weather_brand_icon | base64_encode }}" alt="">
+  <img class="image image--adaptive" src="data:image/svg+xml;base64,{{ weather_brand_icon | base64_encode }}" alt="">
   <span class="title">{% if source == 'Xiaomi Weather' %}Xiaomi Weather{% else %}Xiaomi · {{ source | default: 'Weather' | escape }}{% endif %}</span>
   <span class="instance">{% if available %}{% if stale %}Old{% else %}As of{% endif %} {{ observed_at | default: '—' }}{% else %}Waiting{% endif %} · {{ unit | default: '°C' }}</span>
 </div>
