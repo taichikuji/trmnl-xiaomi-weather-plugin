@@ -1,8 +1,6 @@
 # Xiaomi Weather for TRMNL
 
-Atmosphere is a TRMNL weather plugin with full, half and quadrant layouts for TRMNL OG and TRMNL X. The default location is Barcelona, Spain.
-
-![Full View](TRMNL/media/preview_full.webp)
+A TRMNL weather plugin built using Xiaomi's AccuWeather endpoint. This is the same endpoint that Xiaomi phones use for their native weather app.
 
 ## Features
 
@@ -15,11 +13,7 @@ Atmosphere is a TRMNL weather plugin with full, half and quadrant layouts for TR
 
 ## Local development
 
-Open `TRMNL/` with [TRMNLP](https://github.com/usetrmnl/trmnlp), configure Location or optional Coordinates and the temperature unit in `.trmnlp.yml`, and preview all four layouts. Find coordinates at [latlong.net](https://www.latlong.net/). Use TRMNLP 0.16.0 or newer with asynchronous Node transforms.
-
-See [the plugin README](TRMNL/README.md) for previews, setup, city lookup, data behavior and verification details.
-
-Changes to the plugin source, media or publishing workflow pushed to `main` publish to TRMNL through GitHub Actions. Configure `TRMNL_API_KEY` with a scoped, Content-only account key and `TRMNL_PLUGIN_SETTING_ID` with your installed plugin setting ID as described in [setup](TRMNL/README.md#setup).
+Open `TRMNL/` with [TRMNLP](https://github.com/usetrmnl/trmnlp) to preview the layouts.
 
 ## References
 
