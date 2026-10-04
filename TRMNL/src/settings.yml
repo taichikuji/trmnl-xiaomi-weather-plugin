@@ -1,0 +1,39 @@
+---
+name: Atmosphere · Xiaomi Weather
+description: A quiet window on the weather
+strategy: polling
+polling_verb: get
+polling_url: 'https://weatherapi.market.xiaomi.com/wtr-v3/weather/all?latitude=0&longitude=0&locationKey={{ location_key | url_encode }}&days=7&appKey=weather20151024&sign=zUFJoAR2ZVrDy1vF3D07&isGlobal={% if location_key contains "accu:" %}true{% else %}false{% endif %}&locale=en_us'
+polling_headers: ''
+polling_body: ''
+refresh_interval: 30
+framework_version: '3.4.0'
+serverless_language: node
+icon: media/icon.svg
+no_screen_padding: 'no'
+dark_mode: 'no'
+custom_fields:
+  - keyname: city_name
+    field_type: string
+    name: Display location
+    default: Barcelona
+    maxlength: 60
+    description: The place name printed on your display.
+  - keyname: location_key
+    field_type: string
+    name: Xiaomi location key
+    default: 'accu:307297'
+    description: 'Barcelona, Spain: accu:307297. Use Xiaomi city search for another location.'
+  - keyname: temperature_unit
+    field_type: select
+    name: Temperature unit
+    default: celsius
+    options:
+      - Celsius: celsius
+      - Fahrenheit: fahrenheit
+  - keyname: author_bio
+    field_type: author_bio
+    name: About This Plugin
+    description: 'Created by Ivan Perez. A quiet weather display using Xiaomi forecasts, with dedicated layouts for TRMNL OG and TRMNL X.'
+    category: environment
+    github_url: https://github.com/taichikuji/trmnl-xiaomi-weather-plugin

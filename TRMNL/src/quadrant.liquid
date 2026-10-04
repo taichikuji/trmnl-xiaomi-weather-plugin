@@ -1,0 +1,14 @@
+{% if available %}
+<div class="layout layout--col gap--small">
+  <div class="flex flex--row flex--between w--full">
+    <span class="title lg:title--large grow" data-clamp="1">{{ city | escape }}</span>
+    {% if stale %}<span class="label label--outline">Old data</span>{% elsif alert_count > 0 %}<span class="label label--filled">{{ alert_count }} alerts</span>{% endif %}
+  </div>
+  <div class="flex flex--row flex--center-y flex--between w--full">
+    <span class="value value--xlarge lg:value--xxxlarge" data-fit-value="true">{{ now.temperature }}</span>
+    <div class="w--16 h--16 lg:w--24 lg:h--24 no-shrink">{{ now.icon_svg }}</div>
+  </div>
+  <span class="label label--large w--full" data-clamp="1">{{ now.condition | escape }} · Feels {{ now.feels_like }}</span>
+</div>
+{% else %}{{ weather_error }}{% endif %}
+{{ weather_footer }}

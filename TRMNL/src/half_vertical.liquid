@@ -1,0 +1,33 @@
+{% if available %}
+<div class="layout layout--col gap--distribute">
+  <div class="flex flex--row flex--between w--full">
+    <span class="title title--large lg:title--xlarge grow" data-clamp="1">{{ city | escape }}</span>
+    <span class="label">{{ unit }}</span>
+  </div>
+  <div class="flex flex--col flex--left gap--small w--full">
+    <div class="flex flex--row flex--center-y flex--between w--full">
+      <span class="value value--xxxlarge lg:value--mega" data-fit-value="true">{{ now.temperature }}</span>
+      <div class="w--24 h--24 lg:w--32 lg:h--32 no-shrink">{{ now.icon_svg }}</div>
+    </div>
+    <span class="title lg:title--large w--full" data-clamp="1">{{ now.condition | escape }}</span>
+    <span class="label">Feels {{ now.feels_like }} · Wind {{ now.wind }} {{ now.wind_unit | escape }}</span>
+  </div>
+  <div class="flex flex--row flex--between w--full border--h-1 py--2">
+    <span class="label">Sunrise {{ sunrise }}</span>
+    <span class="label">Sunset {{ sunset }}</span>
+  </div>
+  <div class="grid grid--cols-3 gap--small">
+    {% for day in days limit:3 %}
+    <div class="flex flex--col flex--center gap--small">
+      <span class="label text--bold">{{ day.label }}</span>
+      <div class="w--11 h--11 lg:w--16 lg:h--16">{{ day.icon_svg }}</div>
+      <span class="value value--xsmall lg:value--small">{{ day.high }} <span class="label">/ {{ day.low }}</span></span>
+      <span class="label">Precip. {{ day.rain }}</span>
+    </div>
+    {% else %}<span class="label col--span-3">Daily forecast unavailable</span>{% endfor %}
+  </div>
+  {% if stale %}<span class="label label--outline w--full">Old observation · {{ observed_date }}</span>
+  {% elsif alert_count > 0 %}<span class="label label--filled w--full" data-clamp="1">{{ alert_count }} provider alerts · {{ alert_title | escape }}</span>{% endif %}
+</div>
+{% else %}{{ weather_error }}{% endif %}
+{{ weather_footer }}

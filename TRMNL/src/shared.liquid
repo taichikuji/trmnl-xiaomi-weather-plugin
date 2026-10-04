@@ -1,0 +1,40 @@
+{%- comment -%}Shared fragments run before each layout. Graphics use only authored SVG and numeric chart coordinates.{%- endcomment -%}
+{%- capture weather_logo -%}
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 1v3m0 16v3M1 12h3m16 0h3M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2"/></svg>
+{%- endcapture -%}
+{%- capture weather_footer -%}
+<div class="title_bar">
+  <img class="image" src="data:image/svg+xml;base64,{{ weather_logo | base64_encode }}" alt="">
+  <span class="title">{% if source == 'Xiaomi Weather' %}Xiaomi Weather{% else %}Xiaomi · {{ source | default: 'Weather' | escape }}{% endif %}</span>
+  <span class="instance">{% if available %}{% if stale %}Old{% else %}Observed{% endif %} {{ observed_at | default: '—' }}{% else %}Waiting{% endif %} · {{ unit | default: '°C' }}</span>
+</div>
+{%- endcapture -%}
+{%- capture weather_error -%}
+<div class="layout layout--col gap--medium">
+  <span class="title" data-clamp="1">{{ city | default: 'Weather' | escape }}</span>
+  <span class="value value--large">—°</span>
+  <span class="description description--small w--full text--center" data-clamp="2">Weather unavailable · {{ error_message | default: 'Waiting for the next Xiaomi update.' | escape }}</span>
+</div>
+{%- endcapture -%}
+{%- capture provider_notice -%}
+{%- if stale -%}
+<div class="flex flex--row flex--between w--full border px--2 py--1">
+  <span class="label text--bold">Old observation · {{ observed_date | escape }} {{ observed_at }}</span>
+  <span class="label">Check next refresh</span>
+</div>
+{%- elsif alert_count > 0 -%}
+<div class="flex flex--row flex--between w--full bg--black text--white px--2 py--1">
+  <span class="label text--white text--bold grow" data-clamp="1">Provider alert · {{ alert_title | escape }}</span>
+  <span class="label text--white no-shrink">{{ alert_count }} reported</span>
+</div>
+{%- endif -%}
+{%- endcapture -%}
+{%- capture hourly_chart -%}
+{% if chart.markers.size > 0 %}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 90" class="w--full h--16 lg:h--40" role="img" aria-label="Hourly temperature trend from {{ chart.from }} to {{ chart.to }}; {{ chart.low }} to {{ chart.high }}">
+  <path d="M16 76H424" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 5"/>
+  <polyline points="{{ chart.points }}" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  {% for point in chart.markers %}<circle cx="{{ point.x }}" cy="{{ point.y }}" r="4" fill="white" stroke="currentColor" stroke-width="2"/>{% endfor %}
+</svg>
+{% else %}<div class="flex flex--center h--24"><span class="label">Hourly forecast unavailable</span></div>{% endif %}
+{%- endcapture -%}

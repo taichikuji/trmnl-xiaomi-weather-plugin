@@ -1,0 +1,29 @@
+name: Publish to TRMNL
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Push plugin to TRMNL
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # TRMNL_PLUGIN_SETTING_ID: integer from /plugin_settings/<ID>/edit.
+      # Run this workflow manually after configuring both repository secrets.
+      - name: Push plugin via trmnlp
+        working-directory: TRMNL
+        env:
+          TRMNL_API_KEY: ${{ secrets.TRMNL_API_KEY }}
+          TRMNL_PLUGIN_SETTING_ID: ${{ secrets.TRMNL_PLUGIN_SETTING_ID }}
+        run: |
+          test -n "$TRMNL_API_KEY" && test -n "$TRMNL_PLUGIN_SETTING_ID" || {
+            echo 'Set TRMNL_API_KEY and TRMNL_PLUGIN_SETTING_ID repository secrets first.'
+            exit 1
+          }
+          docker run --rm \
+            --volume "$(pwd):/plugin" \
+            --env TRMNL_API_KEY \
+            trmnl/trmnlp push --force --id "$TRMNL_PLUGIN_SETTING_ID"

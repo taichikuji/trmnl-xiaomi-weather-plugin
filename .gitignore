@@ -1,0 +1,12 @@
+node_modules/
+dist/
+_build/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+*.local.*
+bin/trmnlp
+.agents/
+.codex/
+.aws/
