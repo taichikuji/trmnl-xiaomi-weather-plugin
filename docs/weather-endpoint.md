@@ -5,7 +5,8 @@ HTTP success does not imply available weather; validate each block and value.
 
 ## Minimal tested requests
 
-Global, with a resolved key:
+Global, with the resolved key for the public Paris demo point (verified on
+5 October 2026):
 
 ```sh
 curl --get 'https://weatherapi.market.xiaomi.com/wtr-v3/weather/all' \
@@ -23,8 +24,9 @@ polling uses real latitude/longitude and omits the key. `days` is optional.
 
 ## Fields observed
 
-Selected raw Barcelona fields from the equivalent direct-coordinate and keyed
-responses (5 October 2026):
+Selected raw global forecast fields from the recorded equivalent direct-coordinate
+and keyed responses (5 October 2026). The original location is omitted; these
+weather values are separate from the Paris request example above:
 
 ```json
 {

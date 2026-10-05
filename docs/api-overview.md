@@ -18,7 +18,8 @@ was needed.
 Weather omission tests used a valid global location key. Each required weather
 parameter omitted in those tests returned HTTP 400 with `errCode: 5`. Coordinates
 are still required with a key; `0,0` works. A coordinate-only request works
-without `locationKey` at the Barcelona demonstration point.
+without `locationKey` at the tested global point. Its coordinates and key are
+omitted from the published record.
 
 | Parameter | Live observation | Consumption rule |
 | --- | --- | --- |
@@ -45,16 +46,21 @@ response archives. Regression inputs are kept inline in `TRMNL/check.cjs`.
 | Cases | Count |
 | --- | ---: |
 | Search: Barcelona, La Sagrada Família, Beijing, nonsensical name, BCN | 5 |
-| Geo: Barcelona, Beijing, out-of-range coordinates | 3 |
+| Geo: a global point, Beijing, out-of-range coordinates | 3 |
 | Search: missing locale, `zh_cn`, `es_es`, empty name | 4 |
 | Geo: omit latitude, longitude or locale individually | 3 |
 | Weather: direct coordinates, key/zero coordinates, key/real coordinates, key/missing coordinates | 4 |
 | Weather: omit appKey, sign, isGlobal, locale or days individually | 5 |
 | Weather: days 1/15, global false, zh/es locales, invalid key/sign, combined legacy parameters | 8 |
 | China: normal request, global true, days 1, omitted days | 4 |
-| Barcelona key with conflicting Beijing coordinates | 1 |
+| Global key with conflicting Beijing coordinates | 1 |
 | Near La Sagrada Família: geo and resolved-key weather | 2 |
 | Weather: invalid coordinates, no location parameters | 2 |
+
+Two additional requests on 5 October 2026 verified the public Eiffel Tower
+demo coordinates in Paris: geographic lookup and weather using its resolved key.
+Shared examples use public cities or landmarks. Keep personal coordinates in
+your installed plugin settings rather than committed configuration or documentation.
 
 To repeat a check, use the [weather request example](weather-endpoint.md) or
 the lookup parameters in [location resolution](location-resolution.md), changing

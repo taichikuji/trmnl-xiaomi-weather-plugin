@@ -17,14 +17,14 @@ custom_fields:
     field_type: string
     name: Location
     default: ''
-    placeholder: 'Barcelona, Spain'
+    placeholder: 'Paris, France'
     optional: true
     conditional_validation:
       - when: ''
         required: ['coordinates']
     maxlength: 120
     description: 'Enter a city name or provide Coordinates below. With Coordinates filled, this becomes an optional display label.'
-    help_text: 'The first Xiaomi match is used. If it is the wrong place, add its country or region, e.g. Barcelona, Spain or Paris, Texas, United States, or use Coordinates. Use full names rather than airport codes.'
+    help_text: 'The first Xiaomi match is used. If it is the wrong place, add its country or region, e.g. Paris, France or Paris, Texas, United States, or use Coordinates. Use full names rather than airport codes.'
   - keyname: coordinates
     field_type: string
     name: Coordinates

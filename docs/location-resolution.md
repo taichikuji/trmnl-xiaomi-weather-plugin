@@ -4,7 +4,8 @@ See [the live verification record](api-overview.md#live-verification-record). Se
 a **top-level array**, not an object containing `data`. TRMNL's polling wrapper
 supplies that array as `input.data` to Serverless.
 
-Observed successful item:
+Observed successful item for the public Eiffel Tower demo coordinates in Paris
+(`48.8584,2.2945`, checked on 5 October 2026):
 
 ```json
 {
@@ -46,9 +47,9 @@ localization or stable ordering.
 ## Geo and forecast comparison
 
 `GET location/city/geo?latitude=48.8584&longitude=2.2945&locale=en_us`
-returned the successful item above. This is the repository's public Barcelona
-example, **not La Sagrada Família's coordinates**. Different neighborhoods
-can have different keys even within one city.
+returned the successful item above. These are public landmark coordinates;
+the returned name and coordinates describe the provider's locality, not the
+exact landmark. Different neighborhoods can have different keys within one city.
 
 Beijing coordinates `39.9042,116.4074` resolved to the Dongcheng district,
 `weathercn:101011600`, rather than the search result's city key.
@@ -56,12 +57,12 @@ Out-of-range `91,181` returned HTTP 200 with one empty item and `status: -2`.
 Missing latitude, longitude or locale returned HTTP 400. Validate coordinates
 locally; never mistake an empty item for a location.
 
-These three Barcelona forecast requests returned equal **current, daily and
-hourly blocks**, including current `"301"`, daily daytime `"301"` and the
-hourly condition array:
+In the recorded global forecast comparison, these three requests returned equal
+**current, daily and hourly blocks**, including current `"301"`, daily daytime
+`"301"` and the hourly condition array. The original point and key are omitted:
 
 1. Real coordinates without a location key.
-2. Geo-resolved `accu:2608421` with `latitude=0&longitude=0`.
+2. The geo-resolved key with `latitude=0&longitude=0`.
 3. The same key with real coordinates.
 
 `updateTime` differed; exact equality of the entire response is not expected.
@@ -70,7 +71,7 @@ request in this case. Keep direct native polling unless another captured
 failure proves a lookup is necessary. Resolving a key remains useful when a
 canonical locality name is needed. Equivalence outside the tested cases is
 unverified; do not generalize it to every provider. The additional conflicting
-Beijing-coordinate request with the Barcelona key also retained equal Barcelona
+Beijing-coordinate request with the resolved global key also retained equal
 weather blocks: the key prevailed in this capture. Near La Sagrada Família,
 geo at `41.405,2.177` returned `accu:304345` (el Camp de l'Arpa del Clot), whereas
 name search returned `accu:304344`. A geographic lookup is provider locality

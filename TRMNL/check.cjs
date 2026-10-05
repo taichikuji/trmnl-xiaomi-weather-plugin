@@ -116,9 +116,9 @@ const venezuela = { status: 0, name: 'Barcelona', affiliation: 'Anzoátegui, Ven
   // Coordinates arrive as a forecast from native polling; no lookup or fetch.
   for (const coordinates of ['48.8584,2.2945', ' 48.8584, 2.2945 ', '0,0', '-90,-180', '90,180']) {
     requests = [];
-    const result = await context.run({ current: { temperature: { value: '0' } }, trmnl: { plugin_settings: { custom_fields_values: { location: 'My Barcelona, Spain', coordinates, temperature_unit: 'fahrenheit' } } } });
+    const result = await context.run({ current: { temperature: { value: '0' } }, trmnl: { plugin_settings: { custom_fields_values: { location: 'My Paris, France', coordinates, temperature_unit: 'fahrenheit' } } } });
     assert.equal(result.available, true);
-    assert.equal(result.city, 'My Barcelona');
+    assert.equal(result.city, 'My Paris');
     assert.equal(result.now.temperature, '32°');
     assert.equal(requests.length, 0);
   }

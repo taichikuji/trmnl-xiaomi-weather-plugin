@@ -1,6 +1,6 @@
 # TRMNL Xiaomi Weather Plugin
 
-Xiaomi Weather displays current conditions and forecasts with native TRMNL typography and [TRMNL's official weather SVGs](https://help.trmnl.com/en/articles/11823386-weather-icons). Enter **Location**, such as `Barcelona, Spain`, or optional **Coordinates**, which take priority. Coordinates fetch a forecast directly in one request, using Location as the display label. Without Coordinates, Xiaomi's city search supplies the forecast key and canonical display name. No separate server or personal weather API key is required.
+Xiaomi Weather displays current conditions and forecasts with native TRMNL typography and [TRMNL's official weather SVGs](https://help.trmnl.com/en/articles/11823386-weather-icons). Enter **Location**, such as `Paris, France`, or optional **Coordinates**, which take priority. Coordinates fetch a forecast directly in one request, using Location as the display label. Without Coordinates, Xiaomi's city search supplies the forecast key and canonical display name. No separate server or personal weather API key is required.
 
 ## Icon
 
@@ -89,7 +89,7 @@ Reviewed against [TRMNL's publishing best practices](https://trmnl.com/blog/plug
 - Polling handles coordinate forecasts directly; city-name lookup uses a bounded Serverless request. Markup uses native Framework classes and Liquid, a shared embedded title-bar icon, and an SVG chart without chart libraries or client-side API calls.
 - Chromium checks covered all four views on OG landscape, X landscape and X portrait, including Fahrenheit, long names, stale observations and unavailable forecasts. Narrow title bars retain attribution, observation time and unit.
 
-Before submitting in TRMNL, save and Force Refresh with a public demo city such as `Barcelona, Spain`, leaving Coordinates blank. Confirm that the install preview shows the city rather than a personal label, and save both location methods and temperature units once to check the account-side form behavior. Run CHEF and address any feedback before acknowledging the practices. Keep the Recipe Master configured for public demo weather and install a separate copy for personal use. These account-side steps and the human review are not confirmed by a successful GitHub upload.
+Before submitting in TRMNL, save and Force Refresh with a public demo city such as `Paris, France`, leaving Coordinates blank. Confirm that the install preview shows the city rather than a personal label, and save both location methods and temperature units once to check the account-side form behavior. Run CHEF and address any feedback before acknowledging the practices. Keep the Recipe Master configured for public demo weather and install a separate copy for personal use. These account-side steps and the human review are not confirmed by a successful GitHub upload.
 
 The original design, parsing logic and markup are also available under **CC BY 4.0** in [LICENSE](../LICENSE), matching [TRMNL's public plugin license](https://trmnl.com/plugin-license). Support is available through the About section's GitHub issue link.
 
@@ -101,11 +101,11 @@ CHEF may flag these intentional choices:
 
 ## Choose a city
 
-**Coordinates take priority over Location.** Enter decimal degrees in **latitude, longitude** order, for example `48.8584,2.2945`. Find a place on [latlong.net](https://www.latlong.net/) and copy its Latitude and Longitude values into this field, separated by a comma. Negative values represent south/west; latitude must be between −90 and 90, and longitude between −180 and 180.
+**Coordinates take priority over Location.** Enter decimal degrees in **latitude, longitude** order, for example `48.8584,2.2945` (the Eiffel Tower in Paris). Find a place on [latlong.net](https://www.latlong.net/) and copy its Latitude and Longitude values into this field, separated by a comma. Negative values represent south/west; latitude must be between −90 and 90, and longitude between −180 and 180. Use public landmarks for shared examples; keep personal coordinates in your installed plugin settings.
 
-With Coordinates filled, TRMNL polls Xiaomi's forecast endpoint directly with those coordinates, without a location key or a separate lookup request. Location supplies the display label (the part before the first comma), so use `Barcelona` for your example. A blank Location displays the neutral title **Weather**. This label does not affect the forecast location: the returned provider URL identifies **Muette**. The forecast response has no separate city-name field.
+With Coordinates filled, TRMNL polls Xiaomi's forecast endpoint directly with those coordinates, without a location key or a separate lookup request. Location supplies the display label (the part before the first comma), so use `Paris` for this example. A blank Location displays the neutral title **Weather**. This label does not affect the forecast location. The forecast response has no separate city-name field.
 
-Invalid coordinates or a missing forecast display an error; they do not silently fall back to a city-name forecast. Leave Coordinates empty to use **Location**, a city name with an optional country or region. Location starts empty and stays empty when cleared; Barcelona is only a placeholder example. The settings form requires **Location or Coordinates**: TRMNL's [conditional field validation](https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder) makes Coordinates required when Location is blank. The Serverless guard also rejects both fields being empty. Temperature unit is required, defaults to Celsius, and accepts `celsius` or `fahrenheit`.
+Invalid coordinates or a missing forecast display an error; they do not silently fall back to a city-name forecast. Leave Coordinates empty to use **Location**, a city name with an optional country or region. Location starts empty and stays empty when cleared; Paris is only a placeholder example. The settings form requires **Location or Coordinates**: TRMNL's [conditional field validation](https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder) makes Coordinates required when Location is blank. The Serverless guard also rejects both fields being empty. Temperature unit is required, defaults to Celsius, and accepts `celsius` or `fahrenheit`.
 
 | Location example | Display name |
 |------------------|--------------|
