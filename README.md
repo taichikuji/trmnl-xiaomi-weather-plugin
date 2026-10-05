@@ -17,6 +17,7 @@ Open `TRMNL/` with [TRMNLP](https://github.com/usetrmnl/trmnlp) to preview the l
 
 ## References
 
+- [Verified API mapping and request examples](docs/api-overview.md)
 - [Xiaomi weather API reference](https://github.com/saving/China-Apps-Api/blob/master/XiaomiWeather.md)
 - [TRMNL Private Plugins](https://help.trmnl.com/en/articles/9510536-private-plugins)
 - [TRMNL weather recipes](https://trmnl.com/recipes?search=weather&sort-by=popularity)

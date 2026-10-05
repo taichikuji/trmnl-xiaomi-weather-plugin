@@ -74,11 +74,20 @@ function transform(input, locationName) {
     'snow', 'snow', 'snow', 'snow', 'snow-wind', 'fog', 'sleet', 'sandstorm',
     'rain', 'rain', 'rain', 'rain', 'rain', 'snow', 'snow', 'snow-wind',
     'dust', 'sandstorm', 'sandstorm', 'strong-wind', 'tornado', 'snow-wind', 'fog'];
+  // Xiaomi network codes; sources and live 301 evidence: docs/condition-codes.md.
+  const extensions = {
+    49: ['Strong fog', 'fog'], 53: ['Haze', 'smog'],
+    54: ['Moderate haze', 'smog'], 55: ['Heavy haze', 'smog'], 56: ['Severe haze', 'smog'],
+    57: ['Heavy fog', 'fog'], 58: ['Extra heavy fog', 'fog'],
+    301: ['Rain', 'rain'], 302: ['Snow', 'snow']
+  };
   function condition(value, night = false) {
-    const code = number(value);
-    const icon = code === 0 && night ? 'night-clear' : code === 1 && night ? 'night-alt-cloudy' : code === 53 ? 'smog' : icons[code] || 'na';
+    const code = (typeof value === 'number' && Number.isInteger(value)) ||
+      (typeof value === 'string' && /^\d+$/.test(value.trim())) ? number(value) : null;
+    const extension = extensions[code];
+    const icon = code === 0 && night ? 'night-clear' : code === 1 && night ? 'night-alt-cloudy' : extension?.[1] || icons[code] || 'na';
     return {
-      text: code === 0 && night ? 'Clear night' : code === 53 ? 'Haze' : names[code] || 'Conditions unavailable',
+      text: code === 0 && night ? 'Clear night' : extension?.[0] || names[code] || 'Conditions unavailable',
       icon_url: `https://trmnl.com/images/plugins/weather/wi-${icon}.svg`
     };
   }
