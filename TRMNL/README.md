@@ -12,7 +12,7 @@ The plugin listing icon uses the supplied sun-and-cloud artwork, simplified to o
 
 ## Previews
 
-Previews use a recorded Barcelona response from **4 October 2026**, not a current forecast. OG images use a 1-bit palette; X images use 16 grayscale levels.
+Previews use a recorded Barcelona response from **4 October 2026**, not a current forecast. These four OG layout previews use a 1-bit palette.
 
 | Full View | Half Horizontal View |
 |------------|----------------------|
@@ -21,22 +21,6 @@ Previews use a recorded Barcelona response from **4 October 2026**, not a curren
 | Half Vertical View | Quadrant View |
 |-------------------|----------------|
 | ![Half Vertical View](media/preview_half_vertical.webp) | ![Quadrant View](media/preview_quadrant.webp) |
-
-| TRMNL X Full View | TRMNL X Half Horizontal |
-|------------------|------------------------|
-| ![TRMNL X Full View](media/preview_trmnl_x.webp) | ![TRMNL X Half Horizontal](media/preview_trmnl_x_half_horizontal.webp) |
-
-| TRMNL X Half Vertical | TRMNL X Quadrant |
-|----------------------|-----------------|
-| ![TRMNL X Half Vertical](media/preview_trmnl_x_half_vertical.webp) | ![TRMNL X Quadrant](media/preview_trmnl_x_quadrant.webp) |
-
-| TRMNL X Portrait Full | TRMNL X Portrait Half Horizontal |
-|----------------------|---------------------------------|
-| ![TRMNL X Portrait Full](media/preview_trmnl_x_portrait.webp) | ![TRMNL X Portrait Half Horizontal](media/preview_trmnl_x_portrait_half_horizontal.webp) |
-
-| TRMNL X Portrait Half Vertical | TRMNL X Portrait Quadrant |
-|--------------------------------|--------------------------|
-| ![TRMNL X Portrait Half Vertical](media/preview_trmnl_x_portrait_half_vertical.webp) | ![TRMNL X Portrait Quadrant](media/preview_trmnl_x_portrait_quadrant.webp) |
 
 ## Setup
 
