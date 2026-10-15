@@ -1,6 +1,6 @@
 # TRMNL Xiaomi Weather Plugin
 
-Xiaomi Weather displays current conditions and forecasts with native TRMNL typography and [TRMNL's official weather SVGs](https://help.trmnl.com/en/articles/11823386-weather-icons). Enter **Location**, such as `Paris, France`, or optional **Coordinates**, which take priority. Coordinates fetch a forecast directly in one request, using Location as the display label. Without Coordinates, Xiaomi's city search supplies the forecast key and canonical display name. No separate server or personal weather API key is required.
+Xiaomi Weather displays current conditions and forecasts with native TRMNL typography and [TRMNL's official weather SVGs](https://help.trmnl.com/en/articles/11823386-weather-icons). Choose **Location** with TRMNL’s searchable `lat_lon` picker: search for a city, address or postal code, or enter decimal coordinates. Xiaomi’s geographic lookup supplies the forecast key and the displayed locality name. No separate server or personal weather API key is required.
 
 ## Icon
 
@@ -32,7 +32,7 @@ Use [TRMNLP](https://github.com/usetrmnl/trmnlp) **0.16.0 or newer**, open this 
 trmnlp serve
 ```
 
-`.trmnlp.yml` contains the local custom-field values. The Node Serverless function runs automatically: native polling fetches the forecast directly when Coordinates is filled. Otherwise polling searches by city name, then `run(input)` fetches its forecast. Once ready to upload, authenticate and push to your own plugin:
+Set `custom_fields.lat_lon` in `.trmnlp.yml` to a public demo point such as `48.8584,2.2945` before local previewing. The committed value is intentionally blank. The Node Serverless function runs automatically: native polling resolves the selected coordinates with Xiaomi’s geographic lookup, then `run(input)` fetches the forecast for that locality. Once ready to upload, authenticate and push to your own plugin:
 
 ```sh
 trmnlp login
@@ -41,7 +41,7 @@ trmnlp push --id YOUR_PLUGIN_SETTING_ID
 
 With a scoped `trmnl_...` account key, interactive `trmnlp login` needs **Profile** access and uploading needs **Content** access. **Read** is needed only for commands such as `list` and `pull`. CI supplies the key through `TRMNL_API_KEY` instead of logging in, so it can use a Content-only key restricted to this plugin.
 
-Alternatively, copy `src/settings.yml` into the matching dashboard settings, paste `shared.liquid` into Shared and each layout into its matching markup tab, then paste the complete `transform.js` into **Serverless** and select **Node**. The entry point is the asynchronous `run(input)` function, which calls the formatting helper `transform`. Force Refresh, check the preview and add the plugin to your playlist. Existing installs should set the new Location field after updating; the separate display name and key fields have been removed.
+Alternatively, copy `src/settings.yml` into the matching dashboard settings, paste `shared.liquid` into Shared and each layout into its matching markup tab, then paste the complete `transform.js` into **Serverless** and select **Node**. The entry point is the asynchronous `run(input)` function, which calls the formatting helper `transform`. Force Refresh, check the preview and add the plugin to your playlist. After updating an existing installation, select Location again in the new picker; the old city and Coordinates fields are no longer used.
 
 The GitHub **Publish to TRMNL** workflow runs when changes to `TRMNL/src/`, `TRMNL/media/` or the workflow file are pushed to `main`. You can also run it manually from Actions. To configure it:
 
@@ -55,12 +55,12 @@ The workflow uses the official `trmnl/trmnlp:v0.16.0` image and passes the key t
 
 ## Templates
 
-- **transform.js**: Validates optional coordinates, fetches a forecast only for city-name searches, and converts Xiaomi's response into display-ready variables, official weather icon URLs and numeric chart coordinates.
+- **transform.js**: Validates the picker’s coordinates, fetches a forecast for the geographically resolved locality, and converts Xiaomi's response into display-ready variables, official weather icon URLs and numeric chart coordinates.
 - **shared.liquid**: Attribution, unavailable-data state, provider notices and hourly chart.
 - **full.liquid**: Current conditions, hourly temperatures, five daily forecasts, wind, humidity, sun times and UV.
 - **half_horizontal.liquid**: Current weather beside three daily forecasts and a provider notice.
 - **half_vertical.liquid**: Large current temperature, sun times, three daily forecasts and a provider notice.
-- **quadrant.liquid**: Current temperature, condition, feels-like temperature and alert count.
+- **quadrant.liquid**: Current temperature, condition, feels-like temperature and alert count; X also shows wind, humidity, daily high/low, precipitation and sun times.
 
 All four layouts use Framework 3.4.0 utilities without custom CSS. Their OG areas are 800 × 480, 800 × 240, 400 × 480 and 400 × 240; X uses the corresponding portions of 1040 × 780, or 780 × 1040 in portrait. The full portrait view stacks current conditions and hourly weather, with three columns for the daily forecasts. Platform margins and title bars reduce the usable content area.
 
@@ -70,10 +70,10 @@ Reviewed against [TRMNL's publishing best practices](https://trmnl.com/blog/plug
 
 - Xiaomi provides a distinct data source; all four layouts ship in one recipe.
 - The About section links to setup instructions and the GitHub repository for support, with the environment category. Settings contain no personal defaults or weather credentials.
-- Polling handles coordinate forecasts directly; city-name lookup uses a bounded Serverless request. Markup uses native Framework classes and Liquid, a shared embedded title-bar icon, and an SVG chart without chart libraries or client-side API calls.
-- Chromium checks covered all four views on OG landscape, X landscape and X portrait, including Fahrenheit, long names, stale observations and unavailable forecasts. Narrow title bars retain attribution, observation time and unit.
+- Polling resolves the picker’s coordinates; a bounded Serverless request fetches the locality’s forecast. Markup uses native Framework classes and Liquid, a shared embedded title-bar icon, and an SVG chart without chart libraries or client-side API calls.
+- Chromium checks covered all four views on OG landscape, X landscape and X portrait, including Fahrenheit, long names, stale observations and unavailable forecasts. Narrow title bars clamp their title while reserving room for observation time and unit.
 
-Before submitting in TRMNL, save and Force Refresh with a public demo city such as `Paris, France`, leaving Coordinates blank. Confirm that the install preview shows the city rather than a personal label, and save both location methods and temperature units once to check the account-side form behavior. Run CHEF and address any feedback before acknowledging the practices. Keep the Recipe Master configured for public demo weather and install a separate copy for personal use. These account-side steps and the human review are not confirmed by a successful GitHub upload.
+Before submitting in TRMNL, choose a public demo location such as Paris with the picker, save and Force Refresh. Confirm that the install preview shows the resolved locality, and save both a search selection and direct coordinates plus each temperature unit to check the account-side form behavior. Run CHEF and address any feedback before acknowledging the practices. Keep the Recipe Master configured for public demo weather and install a separate copy for personal use. These account-side steps and the human review are not confirmed by a successful GitHub upload.
 
 The original design, parsing logic and markup are also available under **CC BY 4.0** in [LICENSE](../LICENSE), matching [TRMNL's public plugin license](https://trmnl.com/plugin-license). Support is available through the About section's GitHub issue link.
 
@@ -81,29 +81,15 @@ CHEF may flag these intentional choices:
 
 - **Title bar include:** every layout outputs `weather_footer`, captured in `shared.liquid`. It contains the [standard native title bar](https://trmnl.com/framework/docs/3.4/title_bar), including our icon, provider attribution, observation time and unit; a separate render include is unnecessary.
 - **Image dithering:** all display images are monochrome SVG icons. [TRMNL documents `image-dither` for raster images](https://trmnl.com/framework/docs/3.4/image); no photos or color raster images need conversion here.
-- **Serverless fetch:** the city-name forecast URL requires the key returned by that refresh's city lookup. [Polling URL markup is rendered before requests start](https://help.trmnl.com/en/articles/12689499-dynamic-polling-urls), so adding a second URL cannot resolve that dependency. Only this forecast request runs in Serverless, with a 3.5-second abort covering the response body and a clear unavailable state on failure. Coordinates avoid the Serverless request entirely. A slow Xiaomi response can still cause a city-name refresh to fail; use Coordinates for native polling.
+- **Serverless fetch:** the forecast URL requires the key returned by that refresh’s geographic lookup. [Polling URL markup is rendered before requests start](https://help.trmnl.com/en/articles/12689499-dynamic-polling-urls), so adding a second URL cannot resolve that dependency. Only this forecast request runs in Serverless, with a 3.5-second abort covering the response body and a clear unavailable state on failure. A slow Xiaomi response can still cause a refresh to fail; the next refresh retries.
 
-## Choose a city
+## Choose a location
 
-**Coordinates take priority over Location.** Enter decimal degrees in **latitude, longitude** order, for example `48.8584,2.2945` (the Eiffel Tower in Paris). Find a place on [latlong.net](https://www.latlong.net/) and copy its Latitude and Longitude values into this field, separated by a comma. Negative values represent south/west; latitude must be between −90 and 90, and longitude between −180 and 180. Use public landmarks for shared examples; keep personal coordinates in your installed plugin settings.
+The required **Location** field uses TRMNL’s [native `lat_lon` picker](https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder#h_07a70ff721). Search for a city, address or postal code and select a match, or enter decimal degrees in **latitude, longitude** order, for example `48.8584,2.2945` (a public landmark in Paris). Latitude must be between −90 and 90 and longitude between −180 and 180. There is no personal default.
 
-With Coordinates filled, TRMNL polls Xiaomi's forecast endpoint directly with those coordinates, without a location key or a separate lookup request. Location supplies the display label (the part before the first comma), so use `Paris` for this example. A blank Location displays the neutral title **Weather**. This label does not affect the forecast location. The forecast response has no separate city-name field.
+TRMNL stores the selection as comma-separated coordinates. Native polling calls Xiaomi’s `/location/city/geo` endpoint; Serverless validates the coordinates and the returned location, then fetches `/weather/all` using its `locationKey`. The displayed name is Xiaomi’s locality, which can be a neighborhood rather than the searched city or landmark. There is no separate display-label field or ambiguous city-name fallback.
 
-Invalid coordinates or a missing forecast display an error; they do not silently fall back to a city-name forecast. Leave Coordinates empty to use **Location**, a city name with an optional country or region. Location starts empty and stays empty when cleared; Paris is only a placeholder example. The settings form requires **Location or Coordinates**: TRMNL's [conditional field validation](https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder) makes Coordinates required when Location is blank. The Serverless guard also rejects both fields being empty. Temperature unit is required, defaults to Celsius, and accepts `celsius` or `fahrenheit`.
-
-| Location example | Display name |
-|------------------|--------------|
-| `Barcelona` | Barcelona |
-| `Barcelona, Spain` | Barcelona |
-| `Paris, France` | Paris |
-| `Amsterdam, Netherlands` | Amsterdam |
-| `New York, New York, United States` | New York |
-
-The plugin uses Xiaomi's first successful result, preserving its search order and displaying the returned name. For `Barcelona`, the supplied search results put Spain first. This order does not guarantee your intended country: if the forecast is for the wrong place, add a country or region, such as `Barcelona, Venezuela`, or use Coordinates. Country and region qualifiers match the returned affiliation names, ignoring case and accent differences; the first result satisfying them is used. Missing matches display instructions to refine Location without fetching a forecast.
-
-Use full names rather than airport codes or abbreviations such as `BCN` or `NY`; Xiaomi returned no matches for those searches. To inspect spelling or region names, open [Xiaomi city search](https://weatherapi.market.xiaomi.com/wtr-v3/location/city/search?name=Barcelona&locale=en_us) and replace `name` in the URL. Its `name` and `affiliation` values are the human-readable city and region/country names you can enter. You do not need to copy its location key.
-
-The [TRMNL Node Serverless runtime](https://help.trmnl.com/en/articles/14130649-serverless) supports network requests. [Native dynamic polling](https://help.trmnl.com/en/articles/12689499-dynamic-polling-urls) uses Xiaomi's `/weather/all` endpoint when Coordinates is filled: one request, with no Serverless fetch. Otherwise it polls `/location/city/search`, supplying the results under `data`, and the function fetches the forecast using the resolved key. Both forecast paths include Xiaomi's public client parameters from the [API reference](https://github.com/saving/China-Apps-Api/blob/master/XiaomiWeather.md). Only the city-name path makes a Serverless network request, with a 3.5-second timeout within TRMNL's five-second execution budget. API failures produce an unavailable state and retry on the next refresh.
+After upgrading, choose Location again: values from the removed city and Coordinates fields are not migrated automatically. Invalid coordinates, missing locations and failed forecasts show an unavailable state. The forecast request has a 3.5-second timeout within TRMNL’s five-second execution budget. Temperature unit defaults to Celsius and accepts `celsius` or `fahrenheit`.
 
 ## Data behavior
 
@@ -124,11 +110,11 @@ Run the dependency-free location check from this directory:
 node check.cjs
 ```
 
-It checks provider ordering, optional country/region qualifiers, canonical city-search names, direct coordinate forecasts without an additional fetch, Location display labels, Fahrenheit conversion and rejection of invalid or unmatched inputs.
+It checks the `lat_lon` flow, coordinate boundaries, resolved locality names, both provider key types, Fahrenheit conversion, missing and invalid input, forecast failures and the timeout budget. Existing condition-code checks cover current, daily and hourly values, day/night icons and partial forecasts.
 
-City searches and direct coordinate forecasts succeeded live around Barcelona, Paris and Amsterdam. The coordinate-only Barcelona response identified the same provider locality and returned the same current, daily and hourly weather as the request with its resolved key. Checks covered coordinate priority over a conflicting name, blank-coordinate fallback, zero/negative/boundary values, invalid coordinate rejection, country/region disambiguation, duplicate results, missing cities, invalid keys, forecast errors and timeouts; invalid or unmatched city searches made no forecast request. Invalid coordinates are rejected before displaying the polling response. Transform checks also covered missing and zero weather values, partial forecasts, old observations, local timestamps, night icons and Fahrenheit. All four Liquid templates compiled against real responses and unavailable data. Fresh Chromium verification covered 72 renders: all four views on OG landscape, X landscape and X portrait, each with Celsius, Fahrenheit, a long location name, stale data, missing forecasts and unavailable data. Content and title-bar text fit their areas. The committed WebP previews preserve the verified e-ink palettes losslessly.
+Local review verification used the plugin’s configured Framework **3.4.0** CSS and JavaScript, official fonts/icons and LiquidJS. See [review verification](../docs/review-verification.md) for the class audit, live checks and browser coverage. The bundled WebP images above are historical previews; fresh review screenshots accompany the local review deliverable.
 
-The local rendering checks used LiquidJS. Account-side form validation, scheduled refresh and a physical e-ink panel remain unverified.
+Account-side autocomplete, form validation, scheduled refresh, CHEF and physical e-ink output still require verification in TRMNL.
 
 Design research included [Weather Glance](https://trmnl.com/recipes/181200), the [Extended Weather Dashboard](https://github.com/Baszert/trmnl-extended-weather-dashboard), TRMNL's [native weather fixture](https://github.com/usetrmnl/trmnl-framework/blob/main/public/framework/example_fixtures/weather/full.html), and the [official TRMNL agent skill](https://github.com/usetrmnl/trmnl-agent-skills). Reference application source was not copied.
 

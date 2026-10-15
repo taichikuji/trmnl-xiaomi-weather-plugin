@@ -5,8 +5,7 @@ watch:
   - .trmnlp.yml
 
 custom_fields:
-  location: ''
-  coordinates: ''
+  lat_lon: ''
   temperature_unit: celsius
 
 time_zone: Europe/Madrid

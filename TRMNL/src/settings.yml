@@ -3,7 +3,7 @@ name: Xiaomi Weather
 description: Weather forecasts from Xiaomi
 strategy: polling
 polling_verb: get
-polling_url: '{% assign point = coordinates | default: "" | strip %}{% if point != "" %}https://weatherapi.market.xiaomi.com/wtr-v3/weather/all?latitude={{ point | split: "," | first | strip | url_encode }}&longitude={{ point | split: "," | last | strip | url_encode }}&days=7&appKey=weather20151024&sign=zUFJoAR2ZVrDy1vF3D07&isGlobal=true&locale=en_us{% else %}https://weatherapi.market.xiaomi.com/wtr-v3/location/city/search?name={{ location | split: "," | first | strip | url_encode }}&locale=en_us{% endif %}'
+polling_url: 'https://weatherapi.market.xiaomi.com/wtr-v3/location/city/geo?latitude={{ lat_lon | split: "," | first | strip | url_encode }}&longitude={{ lat_lon | split: "," | last | strip | url_encode }}&locale=en_us'
 polling_headers: ''
 polling_body: ''
 refresh_interval: 30
@@ -13,27 +13,10 @@ icon: media/icon.svg
 no_screen_padding: 'no'
 dark_mode: 'no'
 custom_fields:
-  - keyname: location
-    field_type: string
+  - keyname: lat_lon
+    field_type: lat_lon
     name: Location
-    default: ''
-    placeholder: 'Paris, France'
-    optional: true
-    conditional_validation:
-      - when: ''
-        required: ['coordinates']
-    maxlength: 120
-    description: 'Enter a city name or provide Coordinates below. With Coordinates filled, this becomes an optional display label.'
-    help_text: 'The first Xiaomi match is used. If it is the wrong place, add its country or region, e.g. Paris, France or Paris, Texas, United States, or use Coordinates. Use full names rather than airport codes.'
-  - keyname: coordinates
-    field_type: string
-    name: Coordinates
-    optional: true
-    default: ''
-    maxlength: 80
-    placeholder: '48.8584, 2.2945'
-    description: 'Required when Location is blank. Latitude, longitude in decimal degrees takes priority for the forecast; Location remains the display label. Leave blank to search by city name.'
-    help_text: 'Find your coordinates at <a href="https://www.latlong.net/" class="underline">latlong.net</a>. Enter decimal latitude (-90 to 90), then longitude (-180 to 180), separated by a comma.'
+    description: 'Search for a city, address or postal code, or enter latitude, longitude.'
   - keyname: temperature_unit
     field_type: select
     name: Temperature unit

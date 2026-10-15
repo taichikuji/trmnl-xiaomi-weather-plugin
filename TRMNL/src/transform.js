@@ -1,28 +1,18 @@
-// TRMNL polls forecasts directly for coordinates, or searches by city name.
+// TRMNL's lat_lon picker supplies coordinates for native geographic lookup.
 // TRMNL Serverless (Node) awaits run(input); transform keeps formatting separate.
 async function run(input) {
   const fields = input.trmnl?.plugin_settings?.custom_fields_values || {};
-  const location = String(fields.location ?? '').trim();
-  const coordinates = String(fields.coordinates ?? '').trim();
+  const coordinates = String(fields.lat_lon ?? '').trim();
   const unavailable = message => ({ ...transform({ trmnl: input.trmnl }), error_message: message });
-  if (coordinates) {
-    const parts = coordinates.split(',').map(part => part.trim());
-    if (parts.length !== 2 || parts.some(part => !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(part)) || Math.abs(Number(parts[0])) > 90 || Math.abs(Number(parts[1])) > 180) {
-      return unavailable('Invalid coordinates. Use latitude, longitude; e.g. 48.8584, 2.2945.');
-    }
-    return transform(input);
+  if (!coordinates) return unavailable('Choose a Location in the plugin settings.');
+  const parts = coordinates.split(',').map(part => part.trim());
+  if (parts.length !== 2 || parts.some(part => !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(part)) || Math.abs(Number(parts[0])) > 90 || Math.abs(Number(parts[1])) > 180) {
+    return unavailable('Invalid coordinates. Choose a Location or enter latitude, longitude; e.g. 48.8584, 2.2945.');
   }
-  if (!location.split(',')[0].trim()) return unavailable('Enter Location or Coordinates in the plugin settings.');
-  const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
-  const qualifiers = location.split(',').slice(1).map(normalize).filter(Boolean);
   if (!Array.isArray(input.data)) return unavailable('Xiaomi location lookup is unavailable. Try the next refresh.');
-  // ponytail: the first result can be a namesake; refine Location or use Coordinates.
-  const city = input.data.find(city => {
-    const affiliation = String(city?.affiliation || '').split(',').map(normalize);
-    return city?.status === 0 && qualifiers.every(part => affiliation.includes(part));
-  });
+  const city = input.data.find(city => city?.status === 0 && typeof city.name === 'string' && city.name.trim());
   if (!city) {
-    return unavailable('No matching city. Try a full city name with an optional country or region.');
+    return unavailable('No weather location found. Choose another nearby Location.');
   }
   const key = city.locationKey;
   if (!/^(accu|weathercn):[A-Za-z0-9_-]+$/.test(key || '')) return unavailable('Xiaomi returned an unsupported location. Try another nearby city.');
@@ -45,8 +35,7 @@ async function run(input) {
 
 function transform(input, locationName) {
   const fields = input.trmnl?.plugin_settings?.custom_fields_values || {};
-  const label = String(fields.location ?? '').split(',')[0].trim();
-  const city = String(locationName || label || 'Weather').trim().slice(0, 60);
+  const city = String(locationName || 'Weather').trim().slice(0, 60);
   const fahrenheit = fields.temperature_unit === 'fahrenheit';
   const number = value => {
     if (value === null || value === undefined || String(value).trim() === '') return null;
@@ -156,7 +145,7 @@ function transform(input, locationName) {
       humidity: metric(current.humidity?.value, '%'), wind: metric(current.wind?.speed?.value), wind_unit: current.wind?.speed?.unit || 'km/h', wind_direction: windDirection,
       uv: metric(current.uvIndex) },
     days, hours: hours.filter((_, i) => i % 2 === 0).slice(0, 6),
-    chart: { points: chart.map(p => `${p.x},${p.y}`).join(' '), markers: chart.filter((_, i) => i % 2 === 0), low: `${Math.round(minimum + 1)}°`, high: `${Math.round(maximum - 1)}°`, from: hours[0]?.time || '—', to: hours[hours.length - 1]?.time || '—' },
+    chart: { points: chart.map(p => `${p.x},${p.y}`).join(' '), markers: chart.filter((_, i) => i % 2 === 0), low: hours.length ? `${Math.round(minimum + 1)}°` : '—', high: hours.length ? `${Math.round(maximum - 1)}°` : '—', from: hours[0]?.time || '—', to: hours[hours.length - 1]?.time || '—' },
     sunrise: time(sunTimes[0]?.from), sunset: time(sunTimes[0]?.to),
     alert_count: alerts.length, alert_title: String(alerts[0]?.title || ''), source,
     error_message: available ? '' : 'Xiaomi returned no current temperature. Try the next refresh.'

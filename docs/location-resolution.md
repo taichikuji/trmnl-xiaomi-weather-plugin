@@ -29,9 +29,8 @@ to depend on the alias. Offsets describe these observations, not future DST rule
 
 `GET location/city/search?name=Barcelona&locale=en_us` returned 20 candidates,
 including Spain, Venezuela and other countries. Provider order is not a
-guarantee of user intent. The plugin searches the text before the first comma
-and matches remaining country/region qualifiers against `affiliation`, ignoring
-case and accents. Matching names can include provider aliases.
+guarantee of user intent. This is historical API evidence: the plugin now uses
+TRMNL’s `lat_lon` picker and geographic lookup instead of city-name search.
 
 `La Sagrada Família` returned `accu:304344`; `Beijing` returned
 `weathercn:101010100`. `BCN` returned `[]`. A deliberately nonsensical search
@@ -67,9 +66,8 @@ In the recorded global forecast comparison, these three requests returned equal
 
 `updateTime` differed; exact equality of the entire response is not expected.
 The missing-condition failure is therefore not repaired by adding a geo
-request in this case. Keep direct native polling unless another captured
-failure proves a lookup is necessary. Resolving a key remains useful when a
-canonical locality name is needed. Equivalence outside the tested cases is
+request in this case. The current `lat_lon` flow resolves a key and canonical locality name with
+geographic lookup, then requests the keyed forecast. Equivalence outside the tested cases is
 unverified; do not generalize it to every provider. The additional conflicting
 Beijing-coordinate request with the resolved global key also retained equal
 weather blocks: the key prevailed in this capture. Near La Sagrada Família,

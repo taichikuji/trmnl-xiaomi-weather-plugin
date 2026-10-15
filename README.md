@@ -7,7 +7,7 @@ A TRMNL weather plugin built using Xiaomi's AccuWeather endpoint. This is the sa
 - Large current temperature and TRMNL's official SVG weather icons
 - Hourly temperature trend and five-day outlook
 - Precipitation chances, wind, humidity, sun times and UV
-- Celsius or Fahrenheit, automatic city lookup, and optional coordinates that take priority
+- Celsius or Fahrenheit and a single searchable location picker
 - Provider-reported alerts and clear unavailable or old-data states
 - Dedicated layouts for all four mashup sizes
 

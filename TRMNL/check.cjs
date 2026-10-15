@@ -14,7 +14,6 @@ const context = vm.createContext({
 });
 vm.runInContext(fs.readFileSync(path.join(__dirname, 'src/transform.js'), 'utf8'), context);
 const spain = { status: 0, name: 'Barcelona', affiliation: 'Catalonia, Spain', locationKey: 'accu:307297' };
-const venezuela = { status: 0, name: 'Barcelona', affiliation: 'Anzoátegui, Venezuela', locationKey: 'accu:351847' };
 
 (async () => {
   // Captured 301 current/daytime codes; only fields needed by these checks.
@@ -34,8 +33,8 @@ const venezuela = { status: 0, name: 'Barcelona', affiliation: 'Anzoátegui, Ven
     brandInfo: { brands: [{ brandId: 'accu', names: { en_US: 'Accu Weather' } }] },
     alerts: [{ title: 'Orange Warning for Rain' }]
   };
-  const trmnl = { system: { timestamp_utc: fixture.current.pubTime }, plugin_settings: { custom_fields_values: { coordinates: '48.8584,2.2945' } } };
-  const recorded = await context.run({ ...fixture, trmnl });
+  const trmnl = { system: { timestamp_utc: fixture.current.pubTime }, plugin_settings: { custom_fields_values: { lat_lon: '41.3851,2.1734' } } };
+  const recorded = context.transform({ ...fixture, trmnl }, spain.name);
   assert.equal(recorded.now.condition, 'Rain');
   assert.equal(recorded.days[0].condition, 'Rain');
   assert.equal(recorded.available, true);
@@ -84,60 +83,41 @@ const venezuela = { status: 0, name: 'Barcelona', affiliation: 'Anzoátegui, Ven
   assert.equal(partial.available, true);
   assert.equal(partial.days.length, 0);
   assert.equal(partial.hours.length, 0);
-  for (const [location, coordinates, data, expected] of [
-    ['Barcelona', '', [spain, venezuela], spain],
-    ['Barcelona', '', [venezuela, spain], venezuela],
-    ['Barcelona, Spain', '', [venezuela, spain], spain],
-    ['Barcelona, anzoategui, VENEZUELA', '', [spain, venezuela], venezuela],
-    ['Barcelona', '', [null, { ...venezuela, status: 1 }, spain], spain],
-    ['Barcelo', '', [spain, venezuela], spain]
-  ]) {
+  assert.equal(partial.chart.low, '—');
+  assert.equal(partial.chart.high, '—');
+  const zero = context.transform({ current: { temperature: { value: '0' } }, trmnl: { plugin_settings: { custom_fields_values: { temperature_unit: 'fahrenheit' } } } });
+  assert.equal(zero.available, true);
+  assert.equal(zero.now.temperature, '32°');
+  // The lat_lon picker resolves to coordinates; native polling returns geo data.
+  for (const lat_lon of ['41.3851,2.1734', ' 41.3851, 2.1734 ', '0,0', '-90,-180', '90,180']) {
     requests = [];
-    const result = await context.run({ data, trmnl: { plugin_settings: { custom_fields_values: { location, coordinates } } } });
+    const result = await context.run({ data: [null, { ...spain, status: -2 }, spain], trmnl: { plugin_settings: { custom_fields_values: { lat_lon, location: 'Ignored legacy label', temperature_unit: 'fahrenheit' } } } });
     assert.equal(result.available, true);
-    assert.equal(result.city, expected.name);
+    assert.equal(result.city, spain.name);
+    assert.equal(result.now.temperature, '70°');
     assert.equal(requests.length, 1);
-    assert.equal(requests[0].searchParams.get('locationKey'), expected.locationKey);
+    assert.equal(requests[0].searchParams.get('locationKey'), spain.locationKey);
     assert.equal(requests[0].searchParams.get('latitude'), '0');
     assert.equal(requests[0].searchParams.get('longitude'), '0');
+    assert.equal(requests[0].searchParams.get('isGlobal'), 'true');
   }
-  for (const location of ['', '   ', null, undefined]) {
+  const china = await context.run({ data: [{ ...spain, name: 'Dongcheng', locationKey: 'weathercn:101011600' }], trmnl });
+  assert.equal(china.city, 'Dongcheng');
+  assert.equal(requests.at(-1).searchParams.get('isGlobal'), 'false');
+  for (const lat_lon of ['', '   ', null, undefined, '91,2', '41,181', '41,', '41,2,3', 'NaN,2', 'Infinity,2', '1e1,2', 'Paris, France']) {
     requests = [];
-    const result = await context.run({ data: [spain], trmnl: { plugin_settings: { custom_fields_values: { location } } } });
+    const result = await context.run({ data: [spain], trmnl: { plugin_settings: { custom_fields_values: { lat_lon } } } });
     assert.equal(result.available, false);
     assert.equal(result.city, 'Weather');
-    assert.match(result.error_message, /Enter Location or Coordinates/);
-    assert.equal(requests.length, 0);
-    const forecast = await context.run({ current: { temperature: { value: '21' } }, trmnl: { plugin_settings: { custom_fields_values: { location, coordinates: '48.8584,2.2945' } } } });
-    assert.equal(forecast.available, true);
-    assert.equal(forecast.city, 'Weather');
+    assert.match(result.error_message, /[Ll]ocation|coordinates/);
     assert.equal(requests.length, 0);
   }
-  // Coordinates arrive as a forecast from native polling; no lookup or fetch.
-  for (const coordinates of ['48.8584,2.2945', ' 48.8584, 2.2945 ', '0,0', '-90,-180', '90,180']) {
-    requests = [];
-    const result = await context.run({ current: { temperature: { value: '0' } }, trmnl: { plugin_settings: { custom_fields_values: { location: 'My Paris, France', coordinates, temperature_unit: 'fahrenheit' } } } });
-    assert.equal(result.available, true);
-    assert.equal(result.city, 'My Paris');
-    assert.equal(result.now.temperature, '32°');
-    assert.equal(requests.length, 0);
-  }
-  const missing = await context.run({ trmnl: { plugin_settings: { custom_fields_values: { coordinates: '48.8584,2.2945' } } } });
+  const missing = await context.run({ trmnl });
   assert.equal(missing.available, false);
   assert.ok(missing.error_message);
-  for (const [location, coordinates, data] of [
-    ['Barcelona', '', []],
-    [', Spain', '', [spain]],
-    ['Barcelona, France', '', [spain, venezuela]],
-    ['Barcelona', '91,2', [spain]],
-    ['Barcelona', '41,181', [spain]],
-    ['Barcelona', '41,', [spain]],
-    ['Barcelona', '41,2,3', [spain]],
-    ['Barcelona', 'NaN,2', [spain]],
-    ['Barcelona', '', [{ ...spain, locationKey: 'https://other.example' }]]
-  ]) {
+  for (const data of [[], null, {}, [{ ...spain, status: -2 }], [{ ...spain, name: '' }], [{ ...spain, locationKey: 'https://other.example' }]]) {
     requests = [];
-    const result = await context.run({ data, trmnl: { plugin_settings: { custom_fields_values: { location, coordinates } } } });
+    const result = await context.run({ data, trmnl });
     assert.equal(result.available, false);
     assert.ok(result.error_message);
     assert.equal(requests.length, 0);
@@ -155,7 +135,7 @@ const venezuela = { status: 0, name: 'Barcelona', affiliation: 'Anzoátegui, Ven
       }) };
     };
     const start = Date.now();
-    const result = await context.run({ data: [spain], trmnl: { plugin_settings: { custom_fields_values: { location: 'Barcelona' } } } });
+    const result = await context.run({ data: [spain], trmnl });
     assert.ok(fetchSignal instanceof AbortSignal);
     assert.equal(result.available, false);
     assert.match(result.error_message, /Xiaomi/);
@@ -164,5 +144,5 @@ const venezuela = { status: 0, name: 'Barcelona', affiliation: 'Anzoátegui, Ven
       assert.ok(Date.now() - start < 4500, 'Abort must leave time within the five-second runtime');
     }
   }
-  console.log('Condition and location checks passed, including the live 301 regression, partial forecasts and timeout budget.');
+  console.log('Condition and location checks passed, including the captured 301 regression, partial forecasts and timeout budget.');
 })().catch(error => { console.error(error); process.exitCode = 1; });
