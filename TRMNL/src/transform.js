@@ -1,6 +1,6 @@
-// TRMNL's lat_lon picker supplies coordinates for native geographic lookup.
-// TRMNL Serverless (Node) awaits run(input); transform keeps formatting separate.
-async function run(input) {
+// TRMNL polls weather directly using its native lat_lon picker.
+// Serverless validates the coordinates and formats the polling response.
+function run(input) {
   const fields = input.trmnl?.plugin_settings?.custom_fields_values || {};
   const coordinates = String(fields.lat_lon ?? '').trim();
   const unavailable = message => ({ ...transform({ trmnl: input.trmnl }), error_message: message });
@@ -9,33 +9,11 @@ async function run(input) {
   if (parts.length !== 2 || parts.some(part => !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(part)) || Math.abs(Number(parts[0])) > 90 || Math.abs(Number(parts[1])) > 180) {
     return unavailable('Invalid coordinates. Choose a Location or enter latitude, longitude; e.g. 48.8584, 2.2945.');
   }
-  if (!Array.isArray(input.data)) return unavailable('Xiaomi location lookup is unavailable. Try the next refresh.');
-  const city = input.data.find(city => city?.status === 0 && typeof city.name === 'string' && city.name.trim());
-  if (!city) {
-    return unavailable('No weather location found. Choose another nearby Location.');
-  }
-  const key = city.locationKey;
-  if (!/^(accu|weathercn):[A-Za-z0-9_-]+$/.test(key || '')) return unavailable('Xiaomi returned an unsupported location. Try another nearby city.');
-  const url = new URL('https://weatherapi.market.xiaomi.com/wtr-v3/weather/all');
-  url.search = new URLSearchParams({
-    latitude: '0', longitude: '0', locationKey: key, days: '7',
-    appKey: 'weather20151024', sign: 'zUFJoAR2ZVrDy1vF3D07',
-    isGlobal: String(key.startsWith('accu:')), locale: 'en_us'
-  }).toString();
-  try {
-    const response = await fetch(url, { signal: AbortSignal.timeout(3500) });
-    if (!response.ok) return unavailable('Xiaomi weather is unavailable. Try the next refresh.');
-    const weather = await response.json();
-    if (!weather || typeof weather !== 'object' || Array.isArray(weather)) return unavailable('Xiaomi returned an invalid forecast. Try the next refresh.');
-    return transform({ ...weather, trmnl: input.trmnl }, city.name);
-  } catch {
-    return unavailable('Xiaomi weather could not be reached. Try the next refresh.');
-  }
+  return transform(input);
 }
 
-function transform(input, locationName) {
+function transform(input) {
   const fields = input.trmnl?.plugin_settings?.custom_fields_values || {};
-  const city = String(locationName || 'Weather').trim().slice(0, 60);
   const fahrenheit = fields.temperature_unit === 'fahrenheit';
   const number = value => {
     if (value === null || value === undefined || String(value).trim() === '') return null;
@@ -138,7 +116,7 @@ function transform(input, locationName) {
   const available = number(current.temperature?.value) !== null;
   const stale = Number.isFinite(observed) && Number.isFinite(reference) && reference - observed > 3 * 3600000;
   return {
-    city, unit: fahrenheit ? '°F' : '°C', available, stale,
+    city: 'Weather', unit: fahrenheit ? '°F' : '°C', available, stale,
     observed_at: time(current.pubTime), observed_date: (current.pubTime || '').slice(0, 10),
     date_label: Number.isFinite(observed) ? `${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][new Date(`${current.pubTime.slice(0, 10)}T12:00:00Z`).getUTCDay()]} · ${Number(current.pubTime.slice(8, 10))} ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][Number(current.pubTime.slice(5, 7)) - 1]}` : 'Waiting for weather',
     now: { temperature: degrees(current.temperature?.value), feels_like: degrees(current.feelsLike?.value), condition: weather.text, icon_url: weather.icon_url,

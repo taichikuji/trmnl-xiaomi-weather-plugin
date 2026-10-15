@@ -4,16 +4,11 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-let requests = [];
+let requests = 0;
 const context = vm.createContext({
-  URL, URLSearchParams, AbortSignal,
-  fetch: async url => {
-    requests.push(url);
-    return { ok: true, json: async () => ({ current: { temperature: { value: '21' } } }) };
-  }
+  fetch: () => { requests++; throw new Error('Serverless must not make network requests'); }
 });
 vm.runInContext(fs.readFileSync(path.join(__dirname, 'src/transform.js'), 'utf8'), context);
-const spain = { status: 0, name: 'Barcelona', affiliation: 'Catalonia, Spain', locationKey: 'accu:307297' };
 
 (async () => {
   // Captured 301 current/daytime codes; only fields needed by these checks.
@@ -34,10 +29,12 @@ const spain = { status: 0, name: 'Barcelona', affiliation: 'Catalonia, Spain', l
     alerts: [{ title: 'Orange Warning for Rain' }]
   };
   const trmnl = { system: { timestamp_utc: fixture.current.pubTime }, plugin_settings: { custom_fields_values: { lat_lon: '41.3851,2.1734' } } };
-  const recorded = context.transform({ ...fixture, trmnl }, spain.name);
+  const recorded = await context.run({ ...fixture, trmnl });
   assert.equal(recorded.now.condition, 'Rain');
   assert.equal(recorded.days[0].condition, 'Rain');
   assert.equal(recorded.available, true);
+  assert.equal(recorded.city, 'Weather');
+  assert.equal(requests, 0);
   assert.equal(recorded.source, 'Accu Weather');
   assert.equal(recorded.alert_count, fixture.alerts.length);
   const icon = name => `https://trmnl.com/images/plugins/weather/wi-${name}.svg`;
@@ -88,61 +85,28 @@ const spain = { status: 0, name: 'Barcelona', affiliation: 'Catalonia, Spain', l
   const zero = context.transform({ current: { temperature: { value: '0' } }, trmnl: { plugin_settings: { custom_fields_values: { temperature_unit: 'fahrenheit' } } } });
   assert.equal(zero.available, true);
   assert.equal(zero.now.temperature, '32°');
-  // The lat_lon picker resolves to coordinates; native polling returns geo data.
+  // Native polling supplies the forecast directly; Serverless only formats it.
   for (const lat_lon of ['41.3851,2.1734', ' 41.3851, 2.1734 ', '0,0', '-90,-180', '90,180']) {
-    requests = [];
-    const result = await context.run({ data: [null, { ...spain, status: -2 }, spain], trmnl: { plugin_settings: { custom_fields_values: { lat_lon, location: 'Ignored legacy label', temperature_unit: 'fahrenheit' } } } });
+    const result = await context.run({ ...fixture, trmnl: { ...trmnl, plugin_settings: { custom_fields_values: { lat_lon, location: 'Ignored legacy label', temperature_unit: 'fahrenheit' } } } });
     assert.equal(result.available, true);
-    assert.equal(result.city, spain.name);
-    assert.equal(result.now.temperature, '70°');
-    assert.equal(requests.length, 1);
-    assert.equal(requests[0].searchParams.get('locationKey'), spain.locationKey);
-    assert.equal(requests[0].searchParams.get('latitude'), '0');
-    assert.equal(requests[0].searchParams.get('longitude'), '0');
-    assert.equal(requests[0].searchParams.get('isGlobal'), 'true');
+    assert.equal(result.city, 'Weather');
+    assert.equal(result.now.temperature, '68°');
+    assert.equal(result.days[0].high, '77°');
+    assert.equal(result.days[0].low, '64°');
+    assert.equal(requests, 0);
   }
-  const china = await context.run({ data: [{ ...spain, name: 'Dongcheng', locationKey: 'weathercn:101011600' }], trmnl });
-  assert.equal(china.city, 'Dongcheng');
-  assert.equal(requests.at(-1).searchParams.get('isGlobal'), 'false');
   for (const lat_lon of ['', '   ', null, undefined, '91,2', '41,181', '41,', '41,2,3', 'NaN,2', 'Infinity,2', '1e1,2', 'Paris, France']) {
-    requests = [];
-    const result = await context.run({ data: [spain], trmnl: { plugin_settings: { custom_fields_values: { lat_lon } } } });
+    const result = await context.run({ ...fixture, trmnl: { plugin_settings: { custom_fields_values: { lat_lon } } } });
     assert.equal(result.available, false);
     assert.equal(result.city, 'Weather');
     assert.match(result.error_message, /[Ll]ocation|coordinates/);
-    assert.equal(requests.length, 0);
+    assert.equal(requests, 0);
   }
-  const missing = await context.run({ trmnl });
-  assert.equal(missing.available, false);
-  assert.ok(missing.error_message);
-  for (const data of [[], null, {}, [{ ...spain, status: -2 }], [{ ...spain, name: '' }], [{ ...spain, locationKey: 'https://other.example' }]]) {
-    requests = [];
-    const result = await context.run({ data, trmnl });
+  for (const input of [{}, { data: [] }, { data: [{ status: 0, name: 'Old geo response', locationKey: 'accu:307297' }] }, { current: null }, { current: { temperature: { value: '' } } }]) {
+    const result = await context.run({ ...input, trmnl });
     assert.equal(result.available, false);
-    assert.ok(result.error_message);
-    assert.equal(requests.length, 0);
+    assert.match(result.error_message, /no current temperature/);
+    assert.equal(requests, 0);
   }
-  for (const failure of ['http', 'json', 'network', 'timeout']) {
-    let fetchSignal;
-    context.fetch = async (_, { signal }) => {
-      fetchSignal = signal;
-      if (failure === 'http') return { ok: false };
-      if (failure === 'json') return { ok: true, json: async () => [] };
-      if (failure === 'network') throw new Error('Network unavailable');
-      return { ok: true, json: () => new Promise((_, reject) => {
-        const deadline = setTimeout(() => reject(new Error('Abort did not fire')), 4500);
-        signal.addEventListener('abort', () => { clearTimeout(deadline); reject(signal.reason); }, { once: true });
-      }) };
-    };
-    const start = Date.now();
-    const result = await context.run({ data: [spain], trmnl });
-    assert.ok(fetchSignal instanceof AbortSignal);
-    assert.equal(result.available, false);
-    assert.match(result.error_message, /Xiaomi/);
-    if (failure === 'timeout') {
-      assert.equal(fetchSignal.reason.name, 'TimeoutError');
-      assert.ok(Date.now() - start < 4500, 'Abort must leave time within the five-second runtime');
-    }
-  }
-  console.log('Condition and location checks passed, including the captured 301 regression, partial forecasts and timeout budget.');
+  console.log('Condition and direct-coordinate weather checks passed.');
 })().catch(error => { console.error(error); process.exitCode = 1; });
