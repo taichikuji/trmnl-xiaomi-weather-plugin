@@ -14,7 +14,7 @@
         <div class="w--24 h--24 lg:w--36 lg:h--36 no-shrink"><img class="w--full h--full" src="{{ now.icon_url }}" alt="{{ now.condition | escape }}"></div>
       </div>
       <span class="title lg:title--large w--full" data-clamp="1">{{ now.condition | escape }}</span>
-      <span class="label lg:label--large">Feels {{ now.feels_like }}{% if days.size > 0 %} · High {{ days[0].high }} / Low {{ days[0].low }}{% endif %}</span>
+      <span class="label lg:label--large">Feels {{ now.feels_like }}{% if days.size > 0 %} · Low {{ days[0].low }} — High {{ days[0].high }}{% endif %}</span>
       <div class="flex flex--row gap--medium">
         <span class="label lg:label--large">Wind {{ now.wind }} {{ now.wind_unit | escape }} {{ now.wind_direction }}</span>
         <span class="label lg:label--large">Humidity {{ now.humidity }}</span>
@@ -22,8 +22,8 @@
     </div>
     <div class="col--span-7 portrait:col--span-1 flex flex--col gap--small flex--between border--v-10 pl--3">
       <div class="flex flex--row flex--between w--full">
-        <span class="label lg:label--large text--bold">THE NEXT HOURS</span>
-        <span class="label lg:label--large">{{ chart.low }} — {{ chart.high }}</span>
+        <span class="label lg:label--large text--bold">TODAY</span>
+        <span class="label lg:label--large">L<span class="hidden lg:visible">ow</span>&nbsp;{{ chart.low }} — H<span class="hidden lg:visible">igh</span>&nbsp;{{ chart.high }}</span>
       </div>
       {{ hourly_chart }}
       {% if hours.size > 0 %}
@@ -46,8 +46,20 @@
   <div class="flex flex--col gap--small w--full pt--1">
     <div class="divider"></div>
     <div class="flex flex--row flex--between w--full">
-      <span class="label lg:label--large text--bold">THE COMING DAYS</span>
-      <span class="label label--small lg:label--large">High / low · Precipitation chance</span>
+      <span class="label lg:label--large text--bold">THIS WEEK</span>
+      <span class="label lg:label--large">
+        {%- if days.size > 0 -%}
+          {%- assign week_low = days[0].low | remove: '°' | plus: 0 -%}
+          {%- assign week_high = days[0].high | remove: '°' | plus: 0 -%}
+          {%- for day in days -%}
+            {%- assign day_low = day.low | remove: '°' | plus: 0 -%}
+            {%- assign day_high = day.high | remove: '°' | plus: 0 -%}
+            {%- if day_low < week_low -%}{%- assign week_low = day_low -%}{%- endif -%}
+            {%- if day_high > week_high -%}{%- assign week_high = day_high -%}{%- endif -%}
+          {%- endfor -%}
+          L<span class="hidden lg:visible">ow</span>&nbsp;{{ week_low }}° — H<span class="hidden lg:visible">igh</span>&nbsp;{{ week_high }}°
+        {%- else -%}L<span class="hidden lg:visible">ow</span>&nbsp;— — H<span class="hidden lg:visible">igh</span>&nbsp;—{%- endif -%}
+      </span>
     </div>
     {% if days.size > 0 %}
     <div class="grid grid--cols-5 portrait:grid--cols-3 gap--small">
