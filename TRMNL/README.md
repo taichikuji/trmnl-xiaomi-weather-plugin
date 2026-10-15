@@ -112,8 +112,6 @@ node check.cjs
 
 It checks the `lat_lon` flow, coordinate boundaries, resolved locality names, both provider key types, Fahrenheit conversion, missing and invalid input, forecast failures and the timeout budget. Existing condition-code checks cover current, daily and hourly values, day/night icons and partial forecasts.
 
-Local review verification used the plugin’s configured Framework **3.4.0** CSS and JavaScript, official fonts/icons and LiquidJS. See [review verification](../docs/review-verification.md) for the class audit, live checks and browser coverage. The bundled WebP images above are historical previews; fresh review screenshots accompany the local review deliverable.
-
 Account-side autocomplete, form validation, scheduled refresh, CHEF and physical e-ink output still require verification in TRMNL.
 
 Design research included [Weather Glance](https://trmnl.com/recipes/181200), the [Extended Weather Dashboard](https://github.com/Baszert/trmnl-extended-weather-dashboard), TRMNL's [native weather fixture](https://github.com/usetrmnl/trmnl-framework/blob/main/public/framework/example_fixtures/weather/full.html), and the [official TRMNL agent skill](https://github.com/usetrmnl/trmnl-agent-skills). Reference application source was not copied.
