@@ -10,17 +10,17 @@
     </div>
     <div class="w--16 h--16 lg:w--24 lg:h--24 no-shrink"><img class="w--full h--full" src="{{ now.icon_url }}" alt="{{ now.condition | escape }}"></div>
   </div>
-  <span class="label label--large w--full" data-clamp="1">{{ now.condition | escape }} · Feels {{ now.feels_like }}</span>
+  <span class="label label--large lg:label--xlarge w--full" data-clamp="1" data-clamp-lg="2">{{ now.condition | escape }} · Feels {{ now.feels_like }}</span>
   <div class="hidden lg:visible w--full">
     <div class="grid grid--cols-2 gap--small">
-      <span class="label">Wind {{ now.wind }} {{ now.wind_unit | escape }} {{ now.wind_direction }}</span>
-      <span class="label">Humidity {{ now.humidity }}</span>
+      <span class="label lg:label--large">Wind {{ now.wind }} {{ now.wind_unit | escape }} {{ now.wind_direction }}</span>
+      <span class="label lg:label--large">Humidity {{ now.humidity }}</span>
       {% if days.size > 0 %}
-      <span class="label">High {{ days[0].high }} / Low {{ days[0].low }}</span>
-      <span class="label">Precip. {{ days[0].rain }}</span>
+      <span class="label lg:label--large">High {{ days[0].high }} / Low {{ days[0].low }}</span>
+      <span class="label lg:label--large">Precip. {{ days[0].rain }}</span>
       {% endif %}
-      <span class="label">Sunrise {{ sunrise }}</span>
-      <span class="label">Sunset {{ sunset }}</span>
+      <span class="label lg:label--large">Sunrise {{ sunrise }}</span>
+      <span class="label lg:label--large">Sunset {{ sunset }}</span>
     </div>
   </div>
 </div>
