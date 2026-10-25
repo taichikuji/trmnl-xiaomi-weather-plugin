@@ -8,7 +8,7 @@ Current conditions and forecasts on your TRMNL, using the same weather endpoint 
 
 ![Current weather, hourly temperatures and daily forecasts on TRMNL](TRMNL/media/preview_full.webp)
 
-Recorded Barcelona weather from 4 October 2026, not a current forecast. [All layout previews](TRMNL/README.md#previews).
+Recorded weather for the public Paris demo point (`48.8584,2.2945`) from 25 October 2026, not a current forecast. [All layout previews](TRMNL/README.md#previews).
 
 ## Settings
 
