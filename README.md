@@ -10,10 +10,12 @@ A TRMNL weather plugin built using Xiaomi's AccuWeather endpoint. This is the sa
 - Celsius or Fahrenheit and a single searchable location picker
 - Provider-reported alerts and clear unavailable or old-data states
 - Dedicated layouts for all four mashup sizes
+- Native polling and Liquid formatting, with no Serverless runtime
 
 ## Local development
 
 Open `TRMNL/` with [TRMNLP](https://github.com/usetrmnl/trmnlp) to preview the layouts.
+See the [setup and offline regression checks](TRMNL/README.md#verification-and-references) for the pinned Docker commands.
 
 ## References
 

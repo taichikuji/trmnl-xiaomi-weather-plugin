@@ -9,7 +9,7 @@ custom_fields:
   temperature_unit: celsius
 
 time_zone: Europe/Madrid
-transform_runtime: enabled
+transform_runtime: disabled
 
 variables:
   trmnl: {}

@@ -2,59 +2,68 @@
 
 ## Refresh flow
 
-| Input | Native polling | Serverless fetch | Total Xiaomi requests |
-| --- | --- | --- | --- |
-| Coordinates | Direct `weather/all` | None | 1 |
-| City name | `location/city/search` | Keyed `weather/all` | 2 |
+TRMNL's native `lat_lon` picker stores comma-separated coordinates. Native polling
+renders the latitude/longitude into one direct `weather/all` request per refresh.
+No location lookup, Serverless function, external middleware or client-side API
+request is required. The refresh interval remains 30 minutes.
 
-The [Barcelona comparison](location-resolution.md) supports the existing
-coordinate path. Adding geo would add a request without fixing code 301.
-City search needs a dependent weather request; TRMNL renders dynamic polling
-URLs before issuing requests, so a second static polling URL cannot consume
-the first response's key. See [Dynamic Polling URLs](https://help.trmnl.com/en/articles/12689499-dynamic-polling-urls).
-No extra backend or dependencies are required.
+The [recorded coordinate/key comparison](location-resolution.md) supports this
+direct path. Search and geo remain API research references, rather than plugin
+dependencies. The forecast has no city name, so the heading remains **Weather**.
 
-[TRMNL Serverless](https://help.trmnl.com/en/articles/14130649-serverless)
-provides Node 20, `fetch`, a five-second runtime and 128 MB. The existing async
-`run(input)` makes the city-name weather request with a 3.5-second abort signal,
-covering fetch and response reading. Native polling's platform timeout is not
-verified here. There are no retries inside a refresh; clear errors wait for
-the next configured 30-minute refresh.
+## Shared Liquid responsibilities
 
-## Responsibilities and unavailable data
+[Shared markup runs before each layout](https://help.trmnl.com/en/articles/13216853-reusing-markup-with-shared).
+It validates coordinates and prepares the existing display variables from the raw
+response: current conditions, daily/hourly rows, units, local times, observation
+age, attribution, provider alerts and numeric SVG chart coordinates. The four
+layout templates consume the same variables and retain their existing markup.
 
-`run` validates custom coordinates, search-array shape, successful candidate
-status, supported location keys, HTTP results and the fetched object's shape.
-`transform` normalizes conditions, numbers, missing values, observation age,
-forecast rows, temperature units, local times, chart coordinates and attribution.
-It preserves valid optional data rather than demanding AQI or complete arrays.
-The current temperature determines the existing whole-view availability state.
-Missing current temperature shows a readable error; missing condition alone
-keeps temperature/forecast data and an honest unavailable condition icon.
+Reusable helpers use TRMNL's documented `template`/`render` tags, with all context
+passed explicitly. Use plain `{% endtemplate %}` tags; the pinned parser does not
+recognize whitespace-trimmed closing tags. JSON captures use `json` for string
+escaping and `parse_json` to preserve structured arrays, nulls and numeric zero.
+These are [native TRMNL filters](https://help.trmnl.com/en/articles/10347358-custom-plugin-filters),
+not custom Ruby filters that would need a separate hosted runtime.
 
-Liquid renders already prepared values. All four layouts call the shared
-condition outputs; provider/user text uses `escape`. Shared markup supplies
-the footer, unavailable state, notices and chart. Attribution comes from
-returned brands and remains visible. Hosted official icons use
-[TRMNL's documented assets](https://help.trmnl.com/en/articles/11823386-weather-icons).
+Validate numeric input before Liquid arithmetic, which otherwise coerces bad
+strings to zero. Round with `plus: 0.5 | floor` to preserve the former JavaScript
+behavior for negative half values. Keep unrounded temperatures for chart scaling,
+and use floating-point divisions. Convert numeric epochs to integers before the
+Liquid `date` filter. Observation age and future-hour filtering use the native
+`trmnl.system.timestamp_utc` render clock, with `now` as a local fallback.
 
-The live API map does not prove every possible external shape is safe. Future
-shape failures should be fixed at the parser boundary using captured evidence;
-do not use this investigation as a reason for a general parser rewrite.
+Nonzero child statuses disable only that child. Missing optional values remain
+em dashes, including missing precipitation. A missing current temperature shows
+the unavailable view. Unknown conditions retain the unavailable icon without
+hiding valid temperature or forecast data. Provider titles/counts are reported
+without inferring warning expiration. Provider text is escaped when rendered.
+
+Hourly timestamps retain the response's offset, preferring hourly wind datetime
+labels when present. The existing fixed-offset fallback has the same DST limit:
+without those datetime values, a later refresh may be needed to correct labels.
+The SVG chart still uses up to twelve eligible future entries, with every other
+entry shown in the six hourly labels. Daily views use up to five returned rows.
+
+## Migrating an existing installation
+
+Upload settings and all markup together. `serverless_language: none` explicitly
+removes the hosted transform, including with the existing forced CI upload;
+omitting the local file alone would leave the hosted copy running. Local preview
+sets `transform_runtime: disabled`. For manual dashboard updates, disable
+Serverless and clear its script, then Force Refresh. Existing picker and unit
+settings require no migration. See [setup](../TRMNL/README.md#setup).
 
 ## Checks and limits
 
-Use the [documented request examples](weather-endpoint.md) and
-[verification cases](api-overview.md#live-verification-record) to repeat live
-checks. Success status alone is not an assertion of correct weather. Live
-values vary: compare publication times and the three weather blocks, not just
-entire payload equality.
+The [offline native Liquid checks](../TRMNL/README.md#verification-and-references)
+compare display values and all four rendered layouts against fixed pre-removal
+baselines. The [fixture notes](../TRMNL/tests/README.md) explain their provenance.
+Use the [documented API examples](weather-endpoint.md) to repeat live checks;
+publication times and weather blocks matter more than full payload equality.
 
-Run `node TRMNL/check.cjs` for dependency-free offline regressions. Keep the
-minimal inline 301 current/daytime inputs, synthetic hourly coverage, extension codes,
-unknown values, day/night variants, partial data, location selection and bounded
-fetch failures. Synthetic condition variants are parser tests, not live API evidence.
-
-Account-side polling, a scheduled refresh, physical e-ink output, API caching,
-rare condition occurrence, redistribution terms and DST transitions remain
-unverified. Changing a shared mapping does not require a new layout or service.
+Raw polling data now reaches Liquid directly and must fit TRMNL's 100 KiB merge
+data limit. The public Paris response checked during this refactor was about
+7.5 KB. That observation does not establish a maximum size for future responses.
+Account-side polling, scheduled refreshes, CHEF and physical e-ink output still
+require verification on TRMNL after publishing.

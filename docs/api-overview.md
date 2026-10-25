@@ -41,7 +41,8 @@ authentication policy.
 The mapping used **41 read-only requests on 5 October 2026, 10:47–10:48 CEST**.
 The table records the tested cases; their findings appear here and in the
 linked endpoint pages. Documentation retains selected raw values, not full
-response archives. Regression inputs are kept inline in `TRMNL/check.cjs`.
+response archives. Synthetic API-shaped regression inputs and their pre-refactor
+expected output are kept in `TRMNL/tests/baseline.json`.
 
 | Cases | Count |
 | --- | ---: |

@@ -32,7 +32,7 @@ Use [TRMNLP](https://github.com/usetrmnl/trmnlp) **0.16.0 or newer**, open this 
 trmnlp serve
 ```
 
-Set `custom_fields.lat_lon` in `.trmnlp.yml` to a public demo point such as `48.8584,2.2945` before local previewing. The committed value is intentionally blank. Native polling fetches weather directly using the selected coordinates. The Node Serverless function only validates the coordinates and formats the response. Once ready to upload, authenticate and push to your own plugin:
+Set `custom_fields.lat_lon` in `.trmnlp.yml` to a public demo point such as `48.8584,2.2945` before local previewing. The committed value is intentionally blank. Native polling fetches weather directly using the selected coordinates; Shared Liquid validates the coordinates and formats the response. No Serverless runtime is required. Once ready to upload, authenticate and push to your own plugin:
 
 ```sh
 trmnlp login
@@ -41,7 +41,9 @@ trmnlp push --id YOUR_PLUGIN_SETTING_ID
 
 With a scoped `trmnl_...` account key, interactive `trmnlp login` needs **Profile** access and uploading needs **Content** access. **Read** is needed only for commands such as `list` and `pull`. CI supplies the key through `TRMNL_API_KEY` instead of logging in, so it can use a Content-only key restricted to this plugin.
 
-Alternatively, copy `src/settings.yml` into the matching dashboard settings, paste `shared.liquid` into Shared and each layout into its matching markup tab, then paste the complete `transform.js` into **Serverless** and select **Node**. The entry point is the `run(input)` function, which calls the formatting helper `transform`. Force Refresh, check the preview and add the plugin to your playlist. After updating an existing installation, select Location again in the new picker; the old city and Coordinates fields are no longer used.
+Alternatively, copy `src/settings.yml` into the matching dashboard settings, paste `shared.liquid` into Shared and each layout into its matching markup tab. Leave **Serverless** disabled. Force Refresh, check the preview and add the plugin to your playlist.
+
+When upgrading a Serverless installation, upload the settings and markup together. Keep `serverless_language: none` in `settings.yml`: it explicitly removes the hosted script, including with CI's `push --force`. Deleting a local script alone does not remove its hosted copy. For a manual dashboard upgrade, disable Serverless and clear its old script before refreshing. Existing Location and Temperature unit selections remain valid. Installations from the older city/Coordinates fields must select Location again.
 
 The GitHub **Publish to TRMNL** workflow runs when changes to `TRMNL/src/`, `TRMNL/media/` or the workflow file are pushed to `main`. You can also run it manually from Actions. To configure it:
 
@@ -55,8 +57,7 @@ The workflow uses the official `trmnl/trmnlp:v0.16.0` image and passes the key t
 
 ## Templates
 
-- **transform.js**: Validates the picker’s coordinates and converts the polled Xiaomi forecast into display-ready variables, official weather icon URLs and numeric chart coordinates.
-- **shared.liquid**: Attribution, unavailable-data state, provider notices and hourly chart.
+- **shared.liquid**: Validates coordinates and prepares display values, condition icons and SVG chart coordinates from the raw polling response, then captures attribution, unavailable-data state, provider notices and the hourly chart.
 - **full.liquid**: Current conditions, hourly temperatures, five daily forecasts, wind, humidity, sun times and UV.
 - **half_horizontal.liquid**: Current weather beside three daily forecasts and a provider notice.
 - **half_vertical.liquid**: Large current temperature, sun times, three daily forecasts and a provider notice.
@@ -86,9 +87,9 @@ CHEF may flag these intentional choices:
 
 The required **Location** field uses TRMNL’s [native `lat_lon` picker](https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder#h_07a70ff721). Search for a city, address or postal code and select a match, or enter decimal degrees in **latitude, longitude** order, for example `48.8584,2.2945` (a public landmark in Paris). Latitude must be between −90 and 90 and longitude between −180 and 180. There is no personal default.
 
-TRMNL stores the selection as comma-separated coordinates. Native polling calls Xiaomi’s `/weather/all` endpoint directly, without a location key or lookup request. Serverless validates the coordinates and formats the forecast. The forecast response has no city name, so the heading reads **Weather**.
+TRMNL stores the selection as comma-separated coordinates. Native polling calls Xiaomi’s `/weather/all` endpoint directly, without a location key or lookup request. Shared Liquid validates the coordinates and formats the forecast. The forecast response has no city name, so the heading reads **Weather**.
 
-After upgrading, choose Location again: values from the removed city and Coordinates fields are not migrated automatically. Invalid coordinates and unavailable forecasts show an unavailable state. Temperature unit defaults to Celsius and accepts `celsius` or `fahrenheit`.
+When upgrading from the removed city and Coordinates fields, choose Location again; those older values are not migrated automatically. Invalid coordinates and unavailable forecasts show an unavailable state. Temperature unit defaults to Celsius and accepts `celsius` or `fahrenheit`.
 
 ## Data behavior
 
@@ -103,13 +104,17 @@ After upgrading, choose Location again: values from the removed city and Coordin
 
 ## Verification and references
 
-Run the dependency-free location check from this directory:
+Run the offline regression checks from this directory using the same official image as publishing:
 
 ```sh
-node check.cjs
+docker run --rm --network none \
+  --volume "$PWD:/plugin:ro" --entrypoint ruby \
+  trmnl/trmnlp:v0.16.0 /plugin/tests/check.rb
 ```
 
-It checks direct forecasts from `lat_lon`, coordinate boundaries, Fahrenheit conversion, missing and invalid input, and that Serverless makes no network requests. Existing condition-code checks cover current, daily and hourly values, day/night icons and partial forecasts.
+The native Ruby Liquid checks compare 46 fixed-clock fixtures and all four rendered layouts with the pre-removal baseline, plus 60 condition inputs in day and night modes. Coverage includes coordinate boundaries, both units, negative rounding, missing/invalid data, partial forecasts, alerts and escaping, observation-age boundaries, hourly sampling, chart coordinates, timezone offsets and a DST transition. They also verify that Serverless is disabled and no transform is included in upload inputs. See [test fixture provenance](tests/README.md).
+
+The refactor follows TRMNL's [Shared preprocessing guidance](https://help.trmnl.com/en/articles/13216853-reusing-markup-with-shared) and [documented filters](https://help.trmnl.com/en/articles/10347358-custom-plugin-filters). Helpers use explicit render arguments, serialize strings with `json`, preserve null/zero distinctions with `parse_json`, and escape provider text at the HTML boundary. The four layout templates and Framework version remain unchanged. Local development checks use Ruby; the installed plugin needs only native polling and Liquid.
 
 Account-side autocomplete, form validation, scheduled refresh, CHEF and physical e-ink output still require verification in TRMNL.
 
