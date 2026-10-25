@@ -1,26 +1,34 @@
-# Xiaomi Weather for TRMNL
+# Xiaomi Weather
 
-A TRMNL weather plugin built using Xiaomi's AccuWeather endpoint. This is the same endpoint that Xiaomi phones use for their native weather app.
+Current conditions and forecasts on your TRMNL, using the same weather endpoint as Xiaomi phones. See the temperature, hourly trend, five-day outlook and provider-reported alerts with TRMNL's official weather icons.
 
-## Features
+<a href="https://github.com/taichikuji/trmnl-xiaomi-weather-plugin/tree/main/TRMNL#setup"><img width="150" alt="Works with TRMNL" src="https://trmnl.com/images/brand/badges/light/works-with-trmnl/trmnl-badge-works-with-light.svg" /></a>
 
-- Large current temperature and TRMNL's official SVG weather icons
-- Hourly temperature trend and five-day outlook
-- Precipitation chances, wind, humidity, sun times and UV
-- Celsius or Fahrenheit and a single searchable location picker
-- Provider-reported alerts and clear unavailable or old-data states
-- Dedicated layouts for all four mashup sizes
+[Set up a Private Plugin](TRMNL#setup)
 
-## Local development
+![Current weather, hourly temperatures and daily forecasts on TRMNL](TRMNL/media/preview_full.webp)
 
-Open `TRMNL/` with [TRMNLP](https://github.com/usetrmnl/trmnlp) to preview the layouts.
+Recorded Barcelona weather from 4 October 2026, not a current forecast. [All layout previews](TRMNL#previews).
 
-## References
+## Settings
 
-- [Verified API mapping and request examples](docs/api-overview.md)
-- [Xiaomi weather API reference](https://github.com/saving/China-Apps-Api/blob/master/XiaomiWeather.md)
-- [TRMNL Private Plugins](https://help.trmnl.com/en/articles/9510536-private-plugins)
-- [TRMNL weather recipes](https://trmnl.com/recipes?search=weather&sort-by=popularity)
-- [TRMNL Framework](https://trmnl.com/framework)
-- [TRMNL weather icons](https://help.trmnl.com/en/articles/11823386-weather-icons)
-- [Official TRMNL agent skill](https://github.com/usetrmnl/trmnl-agent-skills)
+- **Location:** search for a city, address or postal code, or enter latitude, longitude.
+- **Temperature unit:** Celsius or Fahrenheit (defaults to Celsius).
+- No personal weather API key or separate server needed. Private plugins require TRMNL Developer or BYOD access.
+
+Full shows current conditions, the hourly trend, five daily forecasts, wind, humidity, sun times and UV. Half layouts keep current weather and three daily forecasts; quadrant keeps the essentials. All four layouts adapt to TRMNL OG and TRMNL X, including portrait. Data refreshes every 30 minutes.
+
+## Develop locally
+
+Install [trmnlp](https://github.com/usetrmnl/trmnlp) 0.16.0 or newer with Node Serverless support. Set `custom_fields.lat_lon` in [TRMNL/.trmnlp.yml](TRMNL/.trmnlp.yml) to a public demo location such as `48.8584,2.2945`, then run from the repository root:
+
+```sh
+cd TRMNL
+trmnlp serve
+```
+
+Templates and settings live in [TRMNL/src/](TRMNL/src/). See the [plugin guide](TRMNL) for installation and verification, and the [API notes](docs/api-overview.md) for request examples and data limits.
+
+Weather data is provided by AccuWeather via Xiaomi in the tested locations; displayed attribution follows the returned provider.
+
+[Questions or ideas?](https://github.com/taichikuji/trmnl-xiaomi-weather-plugin/issues) · [License](LICENSE)
