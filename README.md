@@ -4,11 +4,11 @@ Current conditions and forecasts on your TRMNL, using the same weather endpoint 
 
 <a href="https://github.com/taichikuji/trmnl-xiaomi-weather-plugin/tree/main/TRMNL#setup"><img width="150" alt="Works with TRMNL" src="https://trmnl.com/images/brand/badges/light/works-with-trmnl/trmnl-badge-works-with-light.svg" /></a>
 
-[Set up a Private Plugin](TRMNL#setup)
+[Set up a Private Plugin](TRMNL/README.md#setup)
 
 ![Current weather, hourly temperatures and daily forecasts on TRMNL](TRMNL/media/preview_full.webp)
 
-Recorded Barcelona weather from 4 October 2026, not a current forecast. [All layout previews](TRMNL#previews).
+Recorded Barcelona weather from 4 October 2026, not a current forecast. [All layout previews](TRMNL/README.md#previews).
 
 ## Settings
 
@@ -27,7 +27,7 @@ cd TRMNL
 trmnlp serve
 ```
 
-Templates and settings live in [TRMNL/src/](TRMNL/src/). See the [plugin guide](TRMNL) for installation and verification, and the [API notes](docs/api-overview.md) for request examples and data limits.
+Templates and settings live in [TRMNL/src/](TRMNL/src/). See the [plugin guide](TRMNL/README.md) for installation and verification, and the [API notes](docs/api-overview.md) for request examples and data limits.
 
 Weather data is provided by AccuWeather via Xiaomi in the tested locations; displayed attribution follows the returned provider.
 
