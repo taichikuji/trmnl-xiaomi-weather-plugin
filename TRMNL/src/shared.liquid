@@ -394,7 +394,7 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
 <div class="title_bar">
   <img class="image image--adaptive" src="data:image/svg+xml;base64,{{ weather_brand_icon | base64_encode }}" alt="">
   <div class="grow w--min-0">
-    <div class="title" data-clamp="1">{% if source == 'Xiaomi Weather' %}Xiaomi Weather{% else %}Xiaomi · {{ source | default: 'Weather' | escape }}{% endif %}</div>
+    <div class="title" data-clamp="1">{{ trmnl.plugin_settings.instance_name | default: 'Atmosphere' | escape }} · {% if source == 'Xiaomi Weather' %}Xiaomi{% else %}{{ source | default: 'Xiaomi' | escape }}{% endif %}</div>
   </div>
   <div class="no-shrink">
     <span class="instance">{% if available %}{% if stale %}Old{% else %}As of{% endif %} {{ observed_at | default: '—' }}{% else %}Waiting{% endif %} · {{ unit | default: '°C' }}</span>

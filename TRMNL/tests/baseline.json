@@ -1015,10 +1015,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "08f8f83cb59c4698eecb3ecdc00c79652650be6448afd5ddfb3d8637846c4d7d",
-        "half_horizontal": "4d169a8aa2290aa09bf4ae9c0cc0a87c0b0bf0c5de7e07213faa6e329bba4e22",
-        "half_vertical": "640e5d85f39ed9e8878f80831c7f65075911c6b1be5d5bceb410baa8cf630c1c",
-        "quadrant": "6b008983f06eec340880eec101e970ad6c117b770e45685d45a7ccee84b6042a"
+        "full": "7151b9b14a2e9af7afe809e60061202235b22dce567e4079f0b81cf4650aa1be",
+        "half_horizontal": "19cd2d961909c33f9665422d9b7b55b1973e541faf8ce8843c766e4c8f8c4e7f",
+        "half_vertical": "e78f572b9db4663ff868b28062a8d88d90b7de5d30c7029e1b730f547bae83bc",
+        "quadrant": "713b9da880188f80d42d845f8ccf5b4799279f054843002b51ddf3a2b9d07dae"
       },
       "input_changes": []
     },
@@ -1181,10 +1181,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "f80069b7509b5f0cdeea7cb37fb48c458d2fd7a9cd9499c580e4260d3fc7a0d1",
-        "half_horizontal": "b3dcf136b1bf18e6d8c1c642347880e4ff5e3ed3d545f8b19eec26c8f189fd5a",
-        "half_vertical": "982796c3a9651f483f3ede5875b77e173f749f1557b44164185f7f9b322b3a7c",
-        "quadrant": "a46cbaa96bdef2af527d6d876ed15ea9a859a030b01b49336619e9c5d7ae09fc"
+        "full": "c987a3b53bb435a799e5c8c89d929d930c36c15fcd25557f5ebb3bfafad8d797",
+        "half_horizontal": "8222976e27624bf36c1a7591c205564e79629281346125b2a0cfb5e637fdab1f",
+        "half_vertical": "00c5051c273cb5066093d1843759a7c4814f8cf3d53e098f9600f2e921c98bea",
+        "quadrant": "6080b4074e9b22a40bc184acbf63e2ee2901ef06ccb336928fca3cf4715971d7"
       },
       "input_changes": [
         {
@@ -1345,10 +1345,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "fb94347425070c51f8e8cb707e2cdea759ec08d938f5d013512b2fd66deab2e3",
-        "half_horizontal": "2271cacba44a6b15f05e59150a8b0871cc81bdda2f4b0b571c3d6c6eaede7ff3",
-        "half_vertical": "aab8cbbc427f00d76fa2ba688c8c66c9afb51f27c5929ee2df705fe6eacfda2a",
-        "quadrant": "e7325654c46f4f25cfd581aa496f756f65adff61d6dd3db448ac86443ebe50ed"
+        "full": "187664874f8f37494eafaa7200d7c7bb657096ecd0cbef77dffc1bf55cc17b90",
+        "half_horizontal": "1f663bf2c32a1c1c49f0a2c109dc4f9ee6278f51952e963f5ee193471fc2169f",
+        "half_vertical": "3f2bd6cb9d3106fa9a06be6acb85c078b9acd923a93e050e08b90f17cfa9a2e7",
+        "quadrant": "8731e3db6e89fbab3733eae1e6a38768044a7312a684a6ad1fea74e65b3551c6"
       },
       "input_changes": [
         {
@@ -1596,10 +1596,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "d436604e2a0e1cd6247afd8e5b1af8586096405db0b020163cef3cf36a12b47f",
-        "half_horizontal": "722318c9553b612f71dd7cdc873d7abe384df4312e9b844d1cd86e8e4730d01d",
-        "half_vertical": "a42b4426cc4afa96df4664a670a5db1f093651f2a89d56a1d8ca72ffb87d1460",
-        "quadrant": "ccab40378e74cc2cd04cd3fea545bf98fc41ffa1afa02da8f2e7b2d5dd724d9e"
+        "full": "5fe42fe94296478c0a1f09f9448576fed8f88cb4ec1ff1526df4ff121646a1d7",
+        "half_horizontal": "2502e9e3854158495c2728ecbfac9e6061ba958c72b47667dfc3281a0df9baae",
+        "half_vertical": "75b261a01090ec7b7435b980c5664f2d1ecfcb7bdcf44860a941c5be663de0ec",
+        "quadrant": "ae23103786b15bc45a0fc64938080c5597140a1f8ca4ea9799de3458c483628b"
       },
       "input_changes": [
         {
@@ -1692,10 +1692,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "a62ba17cecdce545a02231ef2a0f652789b38abae82fb58e5bb18efa40505fc2",
-        "half_horizontal": "f359096af12c8f8f47dd27f2b3f96035c82181297900af2bec1de7b329c64716",
-        "half_vertical": "eea17483fe6da34a3c86c548569045b6ac946733a50e8823025c23609fcb8486",
-        "quadrant": "27b40a7ad94468e85501240aed787e60f512bfddcfe22828c6b088a5aab0eaba"
+        "full": "2ae5f95f81d48d141ef66560198f24ea04a1335bebc836ae6d1bd28631317608",
+        "half_horizontal": "3d1eb1c15ab7aa32fa50cc7912a37487c3e45f62842c1fecdb151744a28cd76f",
+        "half_vertical": "fba64850040857a4c58c3d6a27191dea0c9405b6b044d54a1d2fe0a318c7f30f",
+        "quadrant": "e2a49c487933670d3b44a5784187301f6fe80994286654fb3f32bae1b6593f9d"
       },
       "input_changes": [
         {
@@ -1787,10 +1787,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "a62ba17cecdce545a02231ef2a0f652789b38abae82fb58e5bb18efa40505fc2",
-        "half_horizontal": "f359096af12c8f8f47dd27f2b3f96035c82181297900af2bec1de7b329c64716",
-        "half_vertical": "eea17483fe6da34a3c86c548569045b6ac946733a50e8823025c23609fcb8486",
-        "quadrant": "27b40a7ad94468e85501240aed787e60f512bfddcfe22828c6b088a5aab0eaba"
+        "full": "2ae5f95f81d48d141ef66560198f24ea04a1335bebc836ae6d1bd28631317608",
+        "half_horizontal": "3d1eb1c15ab7aa32fa50cc7912a37487c3e45f62842c1fecdb151744a28cd76f",
+        "half_vertical": "fba64850040857a4c58c3d6a27191dea0c9405b6b044d54a1d2fe0a318c7f30f",
+        "quadrant": "e2a49c487933670d3b44a5784187301f6fe80994286654fb3f32bae1b6593f9d"
       },
       "input_changes": [
         {
@@ -1978,10 +1978,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "08f8f83cb59c4698eecb3ecdc00c79652650be6448afd5ddfb3d8637846c4d7d",
-        "half_horizontal": "4d169a8aa2290aa09bf4ae9c0cc0a87c0b0bf0c5de7e07213faa6e329bba4e22",
-        "half_vertical": "640e5d85f39ed9e8878f80831c7f65075911c6b1be5d5bceb410baa8cf630c1c",
-        "quadrant": "6b008983f06eec340880eec101e970ad6c117b770e45685d45a7ccee84b6042a"
+        "full": "7151b9b14a2e9af7afe809e60061202235b22dce567e4079f0b81cf4650aa1be",
+        "half_horizontal": "19cd2d961909c33f9665422d9b7b55b1973e541faf8ce8843c766e4c8f8c4e7f",
+        "half_vertical": "e78f572b9db4663ff868b28062a8d88d90b7de5d30c7029e1b730f547bae83bc",
+        "quadrant": "713b9da880188f80d42d845f8ccf5b4799279f054843002b51ddf3a2b9d07dae"
       },
       "input_changes": [
         {
@@ -2086,10 +2086,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "9da7fa85068629ba15c39e85925d83706cfc3cdd460d450c6f0f54a9038b9f38",
-        "half_horizontal": "ba524721a85d398ff5a4e3108d15c4f3db4f0dbd107c738f5c052a2d2e6c680f",
-        "half_vertical": "9b7af67e94507af569f8444ee3c433fb2f507569a7bbc9cdc6202d2ea2a65c38",
-        "quadrant": "6b008983f06eec340880eec101e970ad6c117b770e45685d45a7ccee84b6042a"
+        "full": "6709ab4da5e3600bff9387f388f6b16b29b8009f1cd95535e80a4625487fd3dd",
+        "half_horizontal": "dc9c7ca87c377006225d1c38472f927ba18ecc26d03f07806ff265b7c6168ccc",
+        "half_vertical": "2eb1be1761bb00a64fb7affebf0ca4f9df37d23c4e5250016d6deba76c290887",
+        "quadrant": "713b9da880188f80d42d845f8ccf5b4799279f054843002b51ddf3a2b9d07dae"
       },
       "input_changes": [
         {
@@ -2343,10 +2343,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "3cbf6bb104236622a1cffc7da3a7a2417d752d58b956e6866b21a3da23135251",
-        "half_horizontal": "4d169a8aa2290aa09bf4ae9c0cc0a87c0b0bf0c5de7e07213faa6e329bba4e22",
-        "half_vertical": "640e5d85f39ed9e8878f80831c7f65075911c6b1be5d5bceb410baa8cf630c1c",
-        "quadrant": "6b008983f06eec340880eec101e970ad6c117b770e45685d45a7ccee84b6042a"
+        "full": "63dfb47779b4693f7edc21924e6a0886edce4b3292031f79ded7267344481430",
+        "half_horizontal": "19cd2d961909c33f9665422d9b7b55b1973e541faf8ce8843c766e4c8f8c4e7f",
+        "half_vertical": "e78f572b9db4663ff868b28062a8d88d90b7de5d30c7029e1b730f547bae83bc",
+        "quadrant": "713b9da880188f80d42d845f8ccf5b4799279f054843002b51ddf3a2b9d07dae"
       },
       "input_changes": [
         {
@@ -2518,10 +2518,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "d7a5186f6c4403e53779507a240d91877ee3fd115b849f537333565f0c2b32d6",
-        "half_horizontal": "d8199713b919d33c56882c7d3d17c94dd970018bb06f3c9f50a74733158e5871",
-        "half_vertical": "6dd52983de01a27db095fe73d46efd34a9d373dd365d739d0d2ad101cdbd1963",
-        "quadrant": "bf3af837182521c84936a8376efd6f2b1c6a43fe620aa4f7bed1b3026e1b4a5c"
+        "full": "d3abaf155c092fd49abc425bd6a2e3e659fc5c8995a266543b6b29ecea2375ca",
+        "half_horizontal": "c6db16b9af9c3e485d3b3a5750368537c1bfed1ea73b5176f941e6a080a14820",
+        "half_vertical": "53a2aeb56b16fb253d0689f3e8bd632831b01da0ec36d72623ec2bd805037eac",
+        "quadrant": "1b61065a00d829e276a540730d073f7f243c913aec033fde9a29d3cc282561d6"
       },
       "input_changes": [
         {
@@ -2619,10 +2619,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "3546f1e0b7ca353dc9d4b5b8e8c1d37ff4f6173c5fb9f19902a3cf1f4e4c9c7e",
-        "half_horizontal": "d8199713b919d33c56882c7d3d17c94dd970018bb06f3c9f50a74733158e5871",
-        "half_vertical": "6dd52983de01a27db095fe73d46efd34a9d373dd365d739d0d2ad101cdbd1963",
-        "quadrant": "bf3af837182521c84936a8376efd6f2b1c6a43fe620aa4f7bed1b3026e1b4a5c"
+        "full": "92d8692d68f4842356a0feb272936fa6836b689360e0717f0834b3cb51a9e865",
+        "half_horizontal": "c6db16b9af9c3e485d3b3a5750368537c1bfed1ea73b5176f941e6a080a14820",
+        "half_vertical": "53a2aeb56b16fb253d0689f3e8bd632831b01da0ec36d72623ec2bd805037eac",
+        "quadrant": "1b61065a00d829e276a540730d073f7f243c913aec033fde9a29d3cc282561d6"
       },
       "input_changes": [
         {
@@ -2734,10 +2734,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "065822f46554bd211b19c5e1bac21f9f08871d7627479b2ea18b1ccfc990ee40",
-        "half_horizontal": "4d169a8aa2290aa09bf4ae9c0cc0a87c0b0bf0c5de7e07213faa6e329bba4e22",
-        "half_vertical": "640e5d85f39ed9e8878f80831c7f65075911c6b1be5d5bceb410baa8cf630c1c",
-        "quadrant": "6b008983f06eec340880eec101e970ad6c117b770e45685d45a7ccee84b6042a"
+        "full": "548a71aaeff8fb49b3ca3fbd70a62351b11f89e6fae3a686459c58c6a7f0eac2",
+        "half_horizontal": "19cd2d961909c33f9665422d9b7b55b1973e541faf8ce8843c766e4c8f8c4e7f",
+        "half_vertical": "e78f572b9db4663ff868b28062a8d88d90b7de5d30c7029e1b730f547bae83bc",
+        "quadrant": "713b9da880188f80d42d845f8ccf5b4799279f054843002b51ddf3a2b9d07dae"
       },
       "input_changes": [
         {
@@ -2929,10 +2929,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "ec03b7ff1d82ca4f25aa6369e39b4d0fc6aded453d6eedaaf36b51aa0902bc33",
-        "half_horizontal": "4d169a8aa2290aa09bf4ae9c0cc0a87c0b0bf0c5de7e07213faa6e329bba4e22",
-        "half_vertical": "640e5d85f39ed9e8878f80831c7f65075911c6b1be5d5bceb410baa8cf630c1c",
-        "quadrant": "6b008983f06eec340880eec101e970ad6c117b770e45685d45a7ccee84b6042a"
+        "full": "54bc6c57289a1c9d86a5501d69e3a80eba896a5002348c8acdf827f020944267",
+        "half_horizontal": "19cd2d961909c33f9665422d9b7b55b1973e541faf8ce8843c766e4c8f8c4e7f",
+        "half_vertical": "e78f572b9db4663ff868b28062a8d88d90b7de5d30c7029e1b730f547bae83bc",
+        "quadrant": "713b9da880188f80d42d845f8ccf5b4799279f054843002b51ddf3a2b9d07dae"
       },
       "input_changes": [
         {
@@ -3085,10 +3085,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "b41bf1151c2a274d8411686186f2b906302be83f083a388a198d4ba632ba4068",
-        "half_horizontal": "a70d47956060be622eaa7b880d9e8dc34fe3e0bc0a3ff62770e3d558c9e718f2",
-        "half_vertical": "898b36de19ab0ce5c29fedcefd67d79935dd8029aa5b874eefcd44aa915484be",
-        "quadrant": "7208eca5766a93634a687a4d998af956ba721d4938379656f46cef0d4bbafbdf"
+        "full": "430ac8bb3fccb4ff43642f2dfe6921d5788fe479cb8f72f8c2e71fadd82114f3",
+        "half_horizontal": "5a010275580b140f4dac9b6409b9ee2dfbbb023acccfcd002e3dfa1e1719721b",
+        "half_vertical": "d904139a2b3c78c3efb772c2cb095699b93a769fe142f80c68ed8e8c0d72936c",
+        "quadrant": "49d4fa6b11c5adca9675fb4311d4b5cd52b73de532f91b90b7dcfe4c2120465e"
       },
       "input_changes": [
         {
@@ -3274,10 +3274,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "1bc9e6c76e60ad30fed919415feaf4483c667a974b5cea50081b8a75370131f6",
-        "half_horizontal": "aa171dbc46477d40f94a5755750f1a17cf89867d13e9a0f2d32c29831440ef16",
-        "half_vertical": "b65446179ab1dec2390ff03eee41ab158db5e85abac1bb324b5dd032e4c92355",
-        "quadrant": "7330a1dc1657e1a19c0bd18048495271b29e61a3d910ebc1a6a5ea56bf789bc5"
+        "full": "f787efa94b96d3dd591a340a0dc92c9c40471cf6ca09cfec6255efe2ed034a71",
+        "half_horizontal": "aee993b6434731b36e3d82536fd12c6179caa06ebf6133d10fb0877e3b813aab",
+        "half_vertical": "ede880fc909058318f37f92363b80fe9127238d4bf293083fd2f3e409ac1689d",
+        "quadrant": "0e87c70e153a82511c1b870197b0c6e4c8e96e543ba9b5a463573b88c1eedd77"
       },
       "input_changes": [
         {
@@ -3378,10 +3378,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "df90c781faaad1753bfb55e4c1b0032741564789778fb8945da836f2c7c11282",
-        "half_horizontal": "be7b4e11c4b939e6f021af81dff28981f8bf32f33b34508263abf065b2b204de",
-        "half_vertical": "369e1fd727fd0749eb7f688b9fa4e5bd2cd6caa8f9cc9b6aab4d1fc963099fbf",
-        "quadrant": "ff6c33c753cb51662c0dd3a314c1f383752cc8a05ad26df7b65177abe36b4807"
+        "full": "a2d0f2dfe9d080b14eab52ac2fd2f0a890c8060466fae98e5d595ebbe658f2af",
+        "half_horizontal": "d2da55bc1f06096e4ea35056bbf24aac1b40e83b0ce111dceaf928e372d873c4",
+        "half_vertical": "e01915f812024817434084594a661a0a4e75aaddad0c6825a2da11ce00b63126",
+        "quadrant": "936752f078e446e978657b5562fc01443e8b111cbe2ce5b43a14a44723f42c3f"
       },
       "input_changes": [
         {
@@ -3498,10 +3498,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "df90c781faaad1753bfb55e4c1b0032741564789778fb8945da836f2c7c11282",
-        "half_horizontal": "be7b4e11c4b939e6f021af81dff28981f8bf32f33b34508263abf065b2b204de",
-        "half_vertical": "369e1fd727fd0749eb7f688b9fa4e5bd2cd6caa8f9cc9b6aab4d1fc963099fbf",
-        "quadrant": "ff6c33c753cb51662c0dd3a314c1f383752cc8a05ad26df7b65177abe36b4807"
+        "full": "a2d0f2dfe9d080b14eab52ac2fd2f0a890c8060466fae98e5d595ebbe658f2af",
+        "half_horizontal": "d2da55bc1f06096e4ea35056bbf24aac1b40e83b0ce111dceaf928e372d873c4",
+        "half_vertical": "e01915f812024817434084594a661a0a4e75aaddad0c6825a2da11ce00b63126",
+        "quadrant": "936752f078e446e978657b5562fc01443e8b111cbe2ce5b43a14a44723f42c3f"
       },
       "input_changes": [
         {
@@ -3687,10 +3687,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "17364ed6876ecfc14e9c00b592d2bddf8312867317afcd4f7aae3275364abde8",
-        "half_horizontal": "8aaa84912fcfaa7d8d7f162d7f242621ea745653521924add58cab5cf9a707ca",
-        "half_vertical": "9d0eb28008f1af92d03a23c20867ad853cfa1ff86a6a5bf64aa8d33cd7aec513",
-        "quadrant": "f128adaa6a4def447bf88eca56c77264932153916bd8b4da69f0b89c5c6557fa"
+        "full": "bcfca05b39e7fa96ea56472f2f4be85a147e51811e40d52b86cb0e8891843972",
+        "half_horizontal": "eebc683b817b610de4d3d182562c544b65a8a443a438c3c045d78c08c16b100f",
+        "half_vertical": "3a5b524ded0e323095372a4164c947f5275b99173995b3988be7b104ee341d73",
+        "quadrant": "99a9fc373365d86a563e9fa79481da36e103d7e55e8b2a5bc6d7bed91e12e711"
       },
       "input_changes": [
         {
@@ -3884,10 +3884,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "db8130c3a33eb02af273c6b830c078d878f91d7a6b57b55a29f76d1e5f4b4ad7",
-        "half_horizontal": "68c41092f8140a888fe04cd88decaced9fe054209efafb2df3befc07c246d7aa",
-        "half_vertical": "081ef3fcd772aba7002d75c0608d6c70ed4c6980f16462696a7bc0c3ed5e3eb0",
-        "quadrant": "54710ce44a68b534a2536254b74fc6754fdf59518ee68cf74b103dff6e8f811d"
+        "full": "40f6459f4ffef94092cfa641e08890115e7204050d4cea039c673d2b3adbe715",
+        "half_horizontal": "0eed23d45b92e208a175a4b9923552844c13d99baa87081bec08a2fe9019acf8",
+        "half_vertical": "513b3c7885fae95dbed9602429be379024770a55d9ac256522fec82c4b0d5551",
+        "quadrant": "e178301d4fc9d40bfef630542bca1e5100a4f7fe5a07b3d22e089ba97eea3111"
       },
       "input_changes": [
         {
@@ -4112,10 +4112,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "07e9c3cab943f98076345dee6babea6011174aa8aac09c67ff167bcedfc72630",
-        "half_horizontal": "2978d4b0506476a58c14310891910ea969360f0a372e0b62ad51d493dc865e82",
-        "half_vertical": "1cd9e89fa964cb197c6a4d9ab3411352e35296baa48ffb2f41c79a85aeb5dc8a",
-        "quadrant": "6191800b79275fd3b045b19dcf7901a20a6b0e596551f5d866c4ab8a6f93c4bb"
+        "full": "f3e3be8f93500140b1eb9e13ff117f14517471422042462812a8dabcf844d4e6",
+        "half_horizontal": "220c84e36754a4680efee4b9c4549ac7fdb2f1e6f1dfdaf6ef672ec8ea7c759c",
+        "half_vertical": "64adc34c0877038cc913212b0ad20a9d759cc037e8a3c78df87e783db256f409",
+        "quadrant": "3ab0d1270fb72f8b0b5807645c44f01de06d71e6906b0a72e5f0a149256cc615"
       },
       "input_changes": [
         {
@@ -4296,10 +4296,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "08f8f83cb59c4698eecb3ecdc00c79652650be6448afd5ddfb3d8637846c4d7d",
-        "half_horizontal": "4d169a8aa2290aa09bf4ae9c0cc0a87c0b0bf0c5de7e07213faa6e329bba4e22",
-        "half_vertical": "640e5d85f39ed9e8878f80831c7f65075911c6b1be5d5bceb410baa8cf630c1c",
-        "quadrant": "6b008983f06eec340880eec101e970ad6c117b770e45685d45a7ccee84b6042a"
+        "full": "7151b9b14a2e9af7afe809e60061202235b22dce567e4079f0b81cf4650aa1be",
+        "half_horizontal": "19cd2d961909c33f9665422d9b7b55b1973e541faf8ce8843c766e4c8f8c4e7f",
+        "half_vertical": "e78f572b9db4663ff868b28062a8d88d90b7de5d30c7029e1b730f547bae83bc",
+        "quadrant": "713b9da880188f80d42d845f8ccf5b4799279f054843002b51ddf3a2b9d07dae"
       },
       "input_changes": [
         {
@@ -4472,10 +4472,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "08f8f83cb59c4698eecb3ecdc00c79652650be6448afd5ddfb3d8637846c4d7d",
-        "half_horizontal": "4d169a8aa2290aa09bf4ae9c0cc0a87c0b0bf0c5de7e07213faa6e329bba4e22",
-        "half_vertical": "640e5d85f39ed9e8878f80831c7f65075911c6b1be5d5bceb410baa8cf630c1c",
-        "quadrant": "6b008983f06eec340880eec101e970ad6c117b770e45685d45a7ccee84b6042a"
+        "full": "7151b9b14a2e9af7afe809e60061202235b22dce567e4079f0b81cf4650aa1be",
+        "half_horizontal": "19cd2d961909c33f9665422d9b7b55b1973e541faf8ce8843c766e4c8f8c4e7f",
+        "half_vertical": "e78f572b9db4663ff868b28062a8d88d90b7de5d30c7029e1b730f547bae83bc",
+        "quadrant": "713b9da880188f80d42d845f8ccf5b4799279f054843002b51ddf3a2b9d07dae"
       },
       "input_changes": [
         {
@@ -4528,10 +4528,10 @@
         "error_message": "Choose a Location in the plugin settings."
       },
       "html_sha256": {
-        "full": "e2029c201309d3b9b9645b0cf704523039bfbd9cca0e2cbcd774a7f5eb8cfdfe",
-        "half_horizontal": "e2029c201309d3b9b9645b0cf704523039bfbd9cca0e2cbcd774a7f5eb8cfdfe",
-        "half_vertical": "e2029c201309d3b9b9645b0cf704523039bfbd9cca0e2cbcd774a7f5eb8cfdfe",
-        "quadrant": "e2029c201309d3b9b9645b0cf704523039bfbd9cca0e2cbcd774a7f5eb8cfdfe"
+        "full": "6f59dfd98bfd212bb0f3bc0f70d422184ade27579abeceef25b2ed7ba0abdc76",
+        "half_horizontal": "6f59dfd98bfd212bb0f3bc0f70d422184ade27579abeceef25b2ed7ba0abdc76",
+        "half_vertical": "6f59dfd98bfd212bb0f3bc0f70d422184ade27579abeceef25b2ed7ba0abdc76",
+        "quadrant": "6f59dfd98bfd212bb0f3bc0f70d422184ade27579abeceef25b2ed7ba0abdc76"
       },
       "input_changes": [
         {
@@ -4584,10 +4584,10 @@
         "error_message": "Invalid coordinates. Choose a Location or enter latitude, longitude; e.g. 48.8584, 2.2945."
       },
       "html_sha256": {
-        "full": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_horizontal": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_vertical": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "quadrant": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da"
+        "full": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_horizontal": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_vertical": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "quadrant": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc"
       },
       "input_changes": [
         {
@@ -4640,10 +4640,10 @@
         "error_message": "Invalid coordinates. Choose a Location or enter latitude, longitude; e.g. 48.8584, 2.2945."
       },
       "html_sha256": {
-        "full": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_horizontal": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_vertical": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "quadrant": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da"
+        "full": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_horizontal": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_vertical": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "quadrant": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc"
       },
       "input_changes": [
         {
@@ -4696,10 +4696,10 @@
         "error_message": "Invalid coordinates. Choose a Location or enter latitude, longitude; e.g. 48.8584, 2.2945."
       },
       "html_sha256": {
-        "full": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_horizontal": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_vertical": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "quadrant": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da"
+        "full": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_horizontal": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_vertical": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "quadrant": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc"
       },
       "input_changes": [
         {
@@ -4752,10 +4752,10 @@
         "error_message": "Invalid coordinates. Choose a Location or enter latitude, longitude; e.g. 48.8584, 2.2945."
       },
       "html_sha256": {
-        "full": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_horizontal": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_vertical": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "quadrant": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da"
+        "full": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_horizontal": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_vertical": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "quadrant": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc"
       },
       "input_changes": [
         {
@@ -4928,10 +4928,10 @@
         "error_message": "Xiaomi returned no current temperature. Try the next refresh."
       },
       "html_sha256": {
-        "full": "e707733fb8243eabfba2fd8176baae9d4d19af58cad80a083ddfa6112de0657d",
-        "half_horizontal": "e707733fb8243eabfba2fd8176baae9d4d19af58cad80a083ddfa6112de0657d",
-        "half_vertical": "e707733fb8243eabfba2fd8176baae9d4d19af58cad80a083ddfa6112de0657d",
-        "quadrant": "e707733fb8243eabfba2fd8176baae9d4d19af58cad80a083ddfa6112de0657d"
+        "full": "73cc832f40f289d9b2faead2b167b1a42f50ceaa8bc4adda3e8e73088d01d243",
+        "half_horizontal": "73cc832f40f289d9b2faead2b167b1a42f50ceaa8bc4adda3e8e73088d01d243",
+        "half_vertical": "73cc832f40f289d9b2faead2b167b1a42f50ceaa8bc4adda3e8e73088d01d243",
+        "quadrant": "73cc832f40f289d9b2faead2b167b1a42f50ceaa8bc4adda3e8e73088d01d243"
       },
       "input_changes": [
         {
@@ -5102,10 +5102,10 @@
         "error_message": "Xiaomi returned no current temperature. Try the next refresh."
       },
       "html_sha256": {
-        "full": "e707733fb8243eabfba2fd8176baae9d4d19af58cad80a083ddfa6112de0657d",
-        "half_horizontal": "e707733fb8243eabfba2fd8176baae9d4d19af58cad80a083ddfa6112de0657d",
-        "half_vertical": "e707733fb8243eabfba2fd8176baae9d4d19af58cad80a083ddfa6112de0657d",
-        "quadrant": "e707733fb8243eabfba2fd8176baae9d4d19af58cad80a083ddfa6112de0657d"
+        "full": "73cc832f40f289d9b2faead2b167b1a42f50ceaa8bc4adda3e8e73088d01d243",
+        "half_horizontal": "73cc832f40f289d9b2faead2b167b1a42f50ceaa8bc4adda3e8e73088d01d243",
+        "half_vertical": "73cc832f40f289d9b2faead2b167b1a42f50ceaa8bc4adda3e8e73088d01d243",
+        "quadrant": "73cc832f40f289d9b2faead2b167b1a42f50ceaa8bc4adda3e8e73088d01d243"
       },
       "input_changes": [
         {
@@ -5277,10 +5277,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "08f8f83cb59c4698eecb3ecdc00c79652650be6448afd5ddfb3d8637846c4d7d",
-        "half_horizontal": "4d169a8aa2290aa09bf4ae9c0cc0a87c0b0bf0c5de7e07213faa6e329bba4e22",
-        "half_vertical": "640e5d85f39ed9e8878f80831c7f65075911c6b1be5d5bceb410baa8cf630c1c",
-        "quadrant": "6b008983f06eec340880eec101e970ad6c117b770e45685d45a7ccee84b6042a"
+        "full": "7151b9b14a2e9af7afe809e60061202235b22dce567e4079f0b81cf4650aa1be",
+        "half_horizontal": "19cd2d961909c33f9665422d9b7b55b1973e541faf8ce8843c766e4c8f8c4e7f",
+        "half_vertical": "e78f572b9db4663ff868b28062a8d88d90b7de5d30c7029e1b730f547bae83bc",
+        "quadrant": "713b9da880188f80d42d845f8ccf5b4799279f054843002b51ddf3a2b9d07dae"
       },
       "input_changes": [
         {
@@ -5515,10 +5515,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "3f7970b5bdfea578be4655fa4c7b8aec8b20f04a2c25ec6f7fb8c968a9e8b5d6",
-        "half_horizontal": "f612d54268bf0815623e3c6b62ca716f2e2710ceac761ce362631fd29c699e6c",
-        "half_vertical": "004c5584fd9a99711d3aa91f14c3df56668c2ae0b189b74729ffb24e8ea227f6",
-        "quadrant": "09f16a7a03c8da275a3d56098d02f3b1575dac6ee87f9a33d8b42d37294a8ccf"
+        "full": "ef5ae9ee56a0be5af8ffa3973c39117de56fe300d8a426e838b2a79bac09d763",
+        "half_horizontal": "6e8bb161f430db8bea7dab9a8ebb81d1fb9e7065485c1a3520e159ef4974f813",
+        "half_vertical": "7294edfbfcabb8f2dff6560d1966233f06e5e154df5587abd6eb68a06526eafa",
+        "quadrant": "d93a870e24314eefb7bacc2f56bc7a02aa64677309e583cbcf77a5d01846e646"
       },
       "input_changes": [
         {
@@ -5771,10 +5771,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "08f8f83cb59c4698eecb3ecdc00c79652650be6448afd5ddfb3d8637846c4d7d",
-        "half_horizontal": "4d169a8aa2290aa09bf4ae9c0cc0a87c0b0bf0c5de7e07213faa6e329bba4e22",
-        "half_vertical": "640e5d85f39ed9e8878f80831c7f65075911c6b1be5d5bceb410baa8cf630c1c",
-        "quadrant": "6b008983f06eec340880eec101e970ad6c117b770e45685d45a7ccee84b6042a"
+        "full": "7151b9b14a2e9af7afe809e60061202235b22dce567e4079f0b81cf4650aa1be",
+        "half_horizontal": "19cd2d961909c33f9665422d9b7b55b1973e541faf8ce8843c766e4c8f8c4e7f",
+        "half_vertical": "e78f572b9db4663ff868b28062a8d88d90b7de5d30c7029e1b730f547bae83bc",
+        "quadrant": "713b9da880188f80d42d845f8ccf5b4799279f054843002b51ddf3a2b9d07dae"
       },
       "input_changes": [
         {
@@ -5946,10 +5946,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "08f8f83cb59c4698eecb3ecdc00c79652650be6448afd5ddfb3d8637846c4d7d",
-        "half_horizontal": "4d169a8aa2290aa09bf4ae9c0cc0a87c0b0bf0c5de7e07213faa6e329bba4e22",
-        "half_vertical": "640e5d85f39ed9e8878f80831c7f65075911c6b1be5d5bceb410baa8cf630c1c",
-        "quadrant": "6b008983f06eec340880eec101e970ad6c117b770e45685d45a7ccee84b6042a"
+        "full": "7151b9b14a2e9af7afe809e60061202235b22dce567e4079f0b81cf4650aa1be",
+        "half_horizontal": "19cd2d961909c33f9665422d9b7b55b1973e541faf8ce8843c766e4c8f8c4e7f",
+        "half_vertical": "e78f572b9db4663ff868b28062a8d88d90b7de5d30c7029e1b730f547bae83bc",
+        "quadrant": "713b9da880188f80d42d845f8ccf5b4799279f054843002b51ddf3a2b9d07dae"
       },
       "input_changes": [
         {
@@ -6121,10 +6121,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "79e1b66ce108b5d14d56ab657b8c54d32d91f009a164cfbb004e73778deae743",
-        "half_horizontal": "a24e920294b13434e54e01e7e9d4d0c1fd8ea998ed884a092d6c01288ac98ff0",
-        "half_vertical": "e0f230f76605d4e1fc41cbc148a67d164ba13c30d6f47f2634adf656b9ddf228",
-        "quadrant": "0b51ad9b577b1976aaa8711629565399219890dce0c747eddbbf852c5795c010"
+        "full": "56fc72924c92896beefed1934b63f939ce20e385f03fe3b809b49e209c205533",
+        "half_horizontal": "5e184f821493c07ee90ff3257bb38696b6054d6c1278d78c1fcb5ec17258a322",
+        "half_vertical": "6dd6689c1ca08a34c2df2bc81cdc5944dd622e7d3edd4e12264c664671c5d120",
+        "quadrant": "3b4548b3f8e4f2671ac214e444afeab66a99c98390ebf696813fb63744303d86"
       },
       "input_changes": [
         {
@@ -6311,10 +6311,10 @@
         "error_message": "Xiaomi returned no current temperature. Try the next refresh."
       },
       "html_sha256": {
-        "full": "e707733fb8243eabfba2fd8176baae9d4d19af58cad80a083ddfa6112de0657d",
-        "half_horizontal": "e707733fb8243eabfba2fd8176baae9d4d19af58cad80a083ddfa6112de0657d",
-        "half_vertical": "e707733fb8243eabfba2fd8176baae9d4d19af58cad80a083ddfa6112de0657d",
-        "quadrant": "e707733fb8243eabfba2fd8176baae9d4d19af58cad80a083ddfa6112de0657d"
+        "full": "73cc832f40f289d9b2faead2b167b1a42f50ceaa8bc4adda3e8e73088d01d243",
+        "half_horizontal": "73cc832f40f289d9b2faead2b167b1a42f50ceaa8bc4adda3e8e73088d01d243",
+        "half_vertical": "73cc832f40f289d9b2faead2b167b1a42f50ceaa8bc4adda3e8e73088d01d243",
+        "quadrant": "73cc832f40f289d9b2faead2b167b1a42f50ceaa8bc4adda3e8e73088d01d243"
       },
       "input_changes": [
         {
@@ -6381,10 +6381,10 @@
         "error_message": "Xiaomi returned no current temperature. Try the next refresh."
       },
       "html_sha256": {
-        "full": "806373872de746a87bf236e6ee68ed4e1cd149a0fb7f7502276e3700dd621fce",
-        "half_horizontal": "806373872de746a87bf236e6ee68ed4e1cd149a0fb7f7502276e3700dd621fce",
-        "half_vertical": "806373872de746a87bf236e6ee68ed4e1cd149a0fb7f7502276e3700dd621fce",
-        "quadrant": "806373872de746a87bf236e6ee68ed4e1cd149a0fb7f7502276e3700dd621fce"
+        "full": "50c5fe0cbf1af8c7687b4b4781d295fcedb3c05f21087d6132ee050eb189228d",
+        "half_horizontal": "50c5fe0cbf1af8c7687b4b4781d295fcedb3c05f21087d6132ee050eb189228d",
+        "half_vertical": "50c5fe0cbf1af8c7687b4b4781d295fcedb3c05f21087d6132ee050eb189228d",
+        "quadrant": "50c5fe0cbf1af8c7687b4b4781d295fcedb3c05f21087d6132ee050eb189228d"
       },
       "input_changes": [
         {
@@ -6458,10 +6458,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "42ba0cf9860ec81d55026dd452e0d0304202105d0ff467f567ca165cefbdb00e",
-        "half_horizontal": "66c8191f7fbe3180aeb17a45fdb5b3ca11b7fb05af8250b37d8c9fa8138f1fe1",
-        "half_vertical": "7da76a1bc4ae9049e14922d9c10f7f387ca25405a6ec18d91134ef660e650535",
-        "quadrant": "0b3aebc2da8d7bbb06e065619307176f03310bd62dedd251c371ae8c8df299b2"
+        "full": "db7f503ff57ef7bcd672a3b3671f5939ffda265ed6256415fa47ec16781c79c2",
+        "half_horizontal": "eb0d8af4aaf55fd73b4146e030d0d20a46aed468805c422c5e35c830c17b56d2",
+        "half_vertical": "cb0fdd3c895ef6e32de6182d28ebba4c1e79be872caad7d4fb40caa9a3354a2f",
+        "quadrant": "131a75e59362998aa36392770153ed818628de18366ace14ea0b58f80b793e5a"
       },
       "input_changes": [
         {
@@ -6652,10 +6652,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "1b690e22cc55fd4052a913540971ac4aa395a1c6ce716a1a3fcb8c0735e6d677",
-        "half_horizontal": "9f77f7f21bbd8285159860196fb8d4a1ca1618aaae1d6c4cda2f26bb618ef312",
-        "half_vertical": "4912c24d2d07de7775113a6583e266fb008be054ba4966001ce325ff5f5a5c35",
-        "quadrant": "8489132b18813e8c98a3fd52c33467b9af797a9dfc223e271e138bfc805fefc1"
+        "full": "87171cc505e1c21f7a231d92fffd6c4d95f45731fdd1f1a0405349ed8ab7d681",
+        "half_horizontal": "33a12202430942be06cb6f21cd5b75c81ea87e5e5ff22f034017115edd435212",
+        "half_vertical": "9eb0f9693289f8e7d0a257720fefde86ec6b08a8ff7c19e453ec9657e9ba25b4",
+        "quadrant": "42b856dc8a9ecdfd633b452d784ea596b4da5bcb0dc3ee1f1533c03228d55484"
       },
       "input_changes": [
         {
@@ -6801,10 +6801,10 @@
         "error_message": "Invalid coordinates. Choose a Location or enter latitude, longitude; e.g. 48.8584, 2.2945."
       },
       "html_sha256": {
-        "full": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_horizontal": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_vertical": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "quadrant": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da"
+        "full": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_horizontal": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_vertical": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "quadrant": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc"
       },
       "input_changes": [
         {
@@ -6857,10 +6857,10 @@
         "error_message": "Invalid coordinates. Choose a Location or enter latitude, longitude; e.g. 48.8584, 2.2945."
       },
       "html_sha256": {
-        "full": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_horizontal": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_vertical": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "quadrant": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da"
+        "full": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_horizontal": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_vertical": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "quadrant": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc"
       },
       "input_changes": [
         {
@@ -6913,10 +6913,10 @@
         "error_message": "Invalid coordinates. Choose a Location or enter latitude, longitude; e.g. 48.8584, 2.2945."
       },
       "html_sha256": {
-        "full": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_horizontal": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_vertical": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "quadrant": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da"
+        "full": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_horizontal": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_vertical": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "quadrant": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc"
       },
       "input_changes": [
         {
@@ -6969,10 +6969,10 @@
         "error_message": "Invalid coordinates. Choose a Location or enter latitude, longitude; e.g. 48.8584, 2.2945."
       },
       "html_sha256": {
-        "full": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_horizontal": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_vertical": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "quadrant": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da"
+        "full": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_horizontal": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_vertical": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "quadrant": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc"
       },
       "input_changes": [
         {
@@ -7025,10 +7025,10 @@
         "error_message": "Invalid coordinates. Choose a Location or enter latitude, longitude; e.g. 48.8584, 2.2945."
       },
       "html_sha256": {
-        "full": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_horizontal": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_vertical": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "quadrant": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da"
+        "full": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_horizontal": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_vertical": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "quadrant": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc"
       },
       "input_changes": [
         {
@@ -7081,10 +7081,10 @@
         "error_message": "Invalid coordinates. Choose a Location or enter latitude, longitude; e.g. 48.8584, 2.2945."
       },
       "html_sha256": {
-        "full": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_horizontal": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "half_vertical": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da",
-        "quadrant": "58dd0e7aae462cd72c572206dc16f7541a55e982794a17c6bce01d285addd8da"
+        "full": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_horizontal": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "half_vertical": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc",
+        "quadrant": "47d3332534a6abbb2e2bf17783a02607eebb5f51d1c590fb24a9c7e07a7ec5dc"
       },
       "input_changes": [
         {
@@ -7137,10 +7137,10 @@
         "error_message": "Choose a Location in the plugin settings."
       },
       "html_sha256": {
-        "full": "e2029c201309d3b9b9645b0cf704523039bfbd9cca0e2cbcd774a7f5eb8cfdfe",
-        "half_horizontal": "e2029c201309d3b9b9645b0cf704523039bfbd9cca0e2cbcd774a7f5eb8cfdfe",
-        "half_vertical": "e2029c201309d3b9b9645b0cf704523039bfbd9cca0e2cbcd774a7f5eb8cfdfe",
-        "quadrant": "e2029c201309d3b9b9645b0cf704523039bfbd9cca0e2cbcd774a7f5eb8cfdfe"
+        "full": "6f59dfd98bfd212bb0f3bc0f70d422184ade27579abeceef25b2ed7ba0abdc76",
+        "half_horizontal": "6f59dfd98bfd212bb0f3bc0f70d422184ade27579abeceef25b2ed7ba0abdc76",
+        "half_vertical": "6f59dfd98bfd212bb0f3bc0f70d422184ade27579abeceef25b2ed7ba0abdc76",
+        "quadrant": "6f59dfd98bfd212bb0f3bc0f70d422184ade27579abeceef25b2ed7ba0abdc76"
       },
       "input_changes": [
         {
@@ -7322,10 +7322,10 @@
         "error_message": ""
       },
       "html_sha256": {
-        "full": "d3df1457f68bced8030983384a18140e18d725c25c8baead5ba1a5fa77c831d3",
-        "half_horizontal": "5dcc644fbaaf3d2caad3c5f9994c9c6257e8fcf5644a6cd88b6a592f95953503",
-        "half_vertical": "7a87c324e6990a80ca2ca8d375dac2544ce643535d8d7af85eb7adaa2e1a52fc",
-        "quadrant": "ff6c33c753cb51662c0dd3a314c1f383752cc8a05ad26df7b65177abe36b4807"
+        "full": "740007178b1e5d342458c0abb512a950aed39a9627294f47a714da1c08fdbb42",
+        "half_horizontal": "15a5dd45bbe865b8b835b414192c03e67dbcec2617cac7e13b735e6506cf04da",
+        "half_vertical": "d88d656d78e70617eb2093a159468725a1d045f117c9f1f68cb474bd317e8711",
+        "quadrant": "936752f078e446e978657b5562fc01443e8b111cbe2ce5b43a14a44723f42c3f"
       }
     }
   ]

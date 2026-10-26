@@ -1,6 +1,12 @@
-# TRMNL Xiaomi Weather Plugin
+# Atmosphere for TRMNL
 
-Xiaomi Weather displays current conditions and forecasts with native TRMNL typography and [TRMNL's official weather SVGs](https://help.trmnl.com/en/articles/11823386-weather-icons). Choose **Location** with TRMNL’s searchable `lat_lon` picker: search for a city, address or postal code, or enter decimal coordinates. Weather is fetched directly using the selected coordinates. The heading reads **Weather** because the forecast response does not include a city name. No separate server or personal weather API key is required.
+Atmosphere (formerly Xiaomi Weather) displays current conditions and forecasts with native TRMNL typography and [TRMNL's official weather SVGs](https://help.trmnl.com/en/articles/11823386-weather-icons). Choose **Location** with TRMNL’s searchable `lat_lon` picker: search for a city, address or postal code, or enter decimal coordinates. Weather is fetched directly using the selected coordinates. The heading reads **Weather** because the forecast response does not include a city name. No separate server or personal weather API key is required.
+
+## Listing metadata
+
+The plugin name in `src/settings.yml` is **Atmosphere**, and the supported short description is **Xiaomi Weather forecasts**, within TRMNLP's [35-character limit](https://github.com/usetrmnl/trmnlp#srcsettingsyml-reference-plugin-config). The About text retains the former name and weather terminology, with the `environment` category for discovery. The on-screen title bar reads `trmnl.plugin_settings.instance_name`, falls back to Atmosphere when no instance name is supplied, and retains the returned provider attribution. Custom instance names are HTML-escaped.
+
+TRMNL's [Recipes API](https://docs.trmnl.com/go/public-api/recipes-api) documents search as a partial name match. Its [recipe guidelines](https://help.trmnl.com/en/articles/11395668-recipe-best-practices) say the About text does not change TRMNL's own search. No documented keyword or alias setting was found, so description-based matches for “weather” and “xiaomi weather” are not guaranteed.
 
 ## Icon
 
@@ -13,6 +19,8 @@ The plugin listing icon uses the supplied sun-and-cloud artwork, simplified to o
 ## Previews
 
 Previews were rendered before the native Liquid migration with a recorded response for the public Paris demo point (`48.8584,2.2945`), observed **25 October 2026 at 21:16 CET**. Regression checks preserve the displayed weather and layout markup. These are not a current forecast. All four use Framework **3.4.0** and the OG 1-bit palette; partial layouts are cropped to their native view.
+
+These recorded previews predate the Atmosphere rename; the current title bar uses Atmosphere with provider attribution.
 
 | Full View | Half Horizontal View |
 |------------|----------------------|
@@ -47,7 +55,7 @@ When upgrading a Serverless installation, upload the settings and markup togethe
 
 The GitHub **Publish to TRMNL** workflow runs when changes to `TRMNL/src/`, `TRMNL/media/` or the workflow file are pushed to `main`. You can also run it manually from Actions. To configure it:
 
-1. Open [Account > Developer](https://trmnl.com/account/developer/edit) and create an **Account API key**, such as `Xiaomi Weather GitHub Actions`.
+1. Open [Account > Developer](https://trmnl.com/account/developer/edit) and create an **Account API key**, such as `Atmosphere GitHub Actions`.
 2. Enable **Content** only. Under Access control, choose **Only specific devices and plugin settings** and grant access to this weather plugin setting. The workflow updates an existing plugin; it does not need Profile, Read, Devices, Delete or Apps permissions.
 3. Copy the new `trmnl_...` key into the repository's [Actions secrets](https://github.com/taichikuji/trmnl-xiaomi-weather-plugin/settings/secrets/actions) as `TRMNL_API_KEY`. Replace the old secret if it exists; do not include `Bearer` in the secret value.
 4. Set `TRMNL_PLUGIN_SETTING_ID` to the number in your plugin's `/plugin_settings/<ID>/edit` URL. This is the installed plugin setting ID, not a recipe or device ID.
@@ -112,7 +120,7 @@ docker run --rm --network none \
   trmnl/trmnlp:v0.16.0 /plugin/tests/check.rb
 ```
 
-The native Ruby Liquid checks compare 46 fixed-clock fixtures and all four rendered layouts with the pre-removal baseline, plus 60 condition inputs in day and night modes. Coverage includes coordinate boundaries, both units, negative rounding, missing/invalid data, partial forecasts, alerts and escaping, observation-age boundaries, hourly sampling, chart coordinates, timezone offsets and a DST transition. They also verify that Serverless is disabled and no transform is included in upload inputs. See [test fixture provenance](tests/README.md).
+The native Ruby Liquid checks compare 46 fixed-clock weather fixtures with the pre-removal baseline and verify all four rendered layouts, including the intentional Atmosphere title-bar rename. They also check 60 condition inputs in day and night modes and 10 valid or malformed timestamps. Coverage includes coordinate boundaries, both units, negative rounding, missing/invalid data, partial forecasts, alerts and escaping, observation-age boundaries, hourly sampling, chart coordinates, timezone offsets and a DST transition. They verify that Serverless is disabled and no transform is included in upload inputs. See [test fixture provenance](tests/README.md).
 
 The refactor follows TRMNL's [Shared preprocessing guidance](https://help.trmnl.com/en/articles/13216853-reusing-markup-with-shared) and [documented filters](https://help.trmnl.com/en/articles/10347358-custom-plugin-filters). Helpers use explicit render arguments, serialize strings with `json`, preserve null/zero distinctions with `parse_json`, and escape provider text at the HTML boundary. The four layout templates and Framework version remain unchanged. Local development checks use Ruby; the installed plugin needs only native polling and Liquid.
 
