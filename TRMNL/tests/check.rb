@@ -50,7 +50,11 @@ baseline = JSON.parse(File.read(File.join(ROOT, 'tests/baseline.json')))
 failures = []
 renders = 0
 valid_times = %w[2026-10-05T10:17:00+02:00 2026-10-05T10:17:00Z 2026-10-05T10:17:00-04:00 2026-10-05T10:17:00.123+02:00 2028-02-29T10:17:00+02:00]
+valid_times += %w[1970-01-01T00:00:00Z 1969-12-31T23:59:59Z 2026-10-05T10:17:00+05:45]
 invalid_times = %w[2026-10-05T25:17:00+02:00 2026-10-05T10:99:00+02:00 2026-02-30T10:17:00+02:00 2026-04-31T10:17:00+02:00 2026-10-05T10:17:00+99:00]
+# Failed date filters return the input unchanged; a malformed 16-character prefix must still fail.
+invalid_times += %w[2026-10-05Txx:17 2026-aa-05T10:17 2026-10-05T24:00:00Z]
+invalid_times += [nil, false, true, 0, [], {}, '', 'now', 'today', '2026-10-05 10:17:00Z']
 time_probe = %q({"epoch":{% render 'weather_epoch', value: probe_value %},"time":{% capture text %}{% render 'weather_time', value: probe_value %}{% endcapture %}{{ text | json }}})
 (valid_times + invalid_times).each do |value|
   actual = JSON.parse(render(SHARED + time_probe, { 'probe_value' => value }))
@@ -60,8 +64,44 @@ time_probe = %q({"epoch":{% render 'weather_epoch', value: probe_value %},"time"
     { 'epoch' => nil, 'time' => '—' }
   end
   diff = difference(expected, actual)
-  failures << "timestamp #{value}: #{diff}" if diff
+  failures << "timestamp #{value.inspect}: #{diff}" if diff
 end
+
+value_cases = [
+  [nil, false, '°', '—'], ['20oops', false, '°', '—'],
+  [0, false, '°', '0°'], [-1.5, false, '°', '-1°'],
+  [false, false, nil, '0'], [10.25, true, '°', '50°'],
+  [2, false, "\"<&\n", "2\"<&\n"]
+]
+value_probe = %q({% render 'weather_value', value: probe_value, fahrenheit: probe_fahrenheit, suffix: probe_suffix %})
+value_cases.each do |value, fahrenheit, suffix, expected|
+  actual = JSON.parse(render(SHARED + value_probe, {
+    'probe_value' => value, 'probe_fahrenheit' => fahrenheit, 'probe_suffix' => suffix
+  }))
+  diff = difference(expected, actual)
+  failures << "formatted JSON value #{value.inspect}: #{diff}" if diff
+end
+
+ignored_alerts = [{}, { 'title' => nil }, { 'title' => false }, { 'title' => '' }, { 'title' => [] }, { 'title' => {} }]
+alert_cases = [
+  ['empty titles', ignored_alerts, true, 0, ''],
+  ['zero first', ignored_alerts + [{ 'title' => 0 }, { 'title' => true }, { 'title' => 'Rain' }], true, 3, '0'],
+  ['true first', [{ 'title' => true }], true, 1, 'true'],
+  ['whitespace title', [{ 'title' => ' ' }], true, 1, ' '],
+  ['provider text', ignored_alerts + [{ 'title' => 'Rain "warning" <strong> & snow' }], true, 1, 'Rain "warning" <strong> & snow'],
+  ['non-array', { 'title' => 'Ignored' }, true, 0, ''],
+  ['invalid location', [{ 'title' => 'Ignored' }], false, 0, '']
+]
+alert_probe = %q({"count":{{ alert_count | json }},"title":{{ alert_title | json }}})
+alert_cases.each do |name, alerts, location_valid, count, title|
+  input = JSON.parse(JSON.generate(baseline.fetch('base_input')))
+  input['alerts'] = alerts
+  input.fetch('trmnl').fetch('plugin_settings').fetch('custom_fields_values')['lat_lon'] = '' unless location_valid
+  actual = JSON.parse(render(SHARED + alert_probe, input))
+  diff = difference({ 'count' => count, 'title' => title }, actual)
+  failures << "alerts #{name}: #{diff}" if diff
+end
+
 baseline.fetch('condition_cases').each do |fixture|
   probe = %q({"day":{% render 'weather_condition', value: probe_value %},"night":{% render 'weather_condition', value: probe_value, night: true %}})
   actual = JSON.parse(render(SHARED + probe, { 'probe_value' => fixture.fetch('value') }))
@@ -113,5 +153,6 @@ end
 puts "#{baseline['cases'].length} display fixtures and #{renders} native layout renders match the recorded baseline."
 puts "#{baseline['condition_cases'].length} condition inputs match in day and night modes."
 puts "#{valid_times.length + invalid_times.length} timestamp validation cases passed."
+puts "#{value_cases.length} formatted JSON values and #{alert_cases.length} alert edge cases passed."
 puts 'Custom instance names and HTML escaping passed in all four layouts.'
 puts 'Serverless removal and upload configuration checks passed.'

@@ -1,6 +1,6 @@
 {%- comment -%}
 Native polling supplies the raw Xiaomi response. Shared prepares the same display
-variables for every layout. Helpers return JSON so null, zero and false stay distinct.
+variables for every layout. JSON helpers keep null, zero and false distinct.
 TRMNL template/endtemplate tags use the plain documented syntax, without hyphens.
 {%- endcomment -%}
 {% template weather_decimal %}
@@ -65,35 +65,23 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
 {% template weather_value %}
   {%- capture numeric_json -%}{% render 'weather_number', value: value, kind: 'number' %}{%- endcapture -%}
   {%- assign numeric = numeric_json | parse_json -%}
-  {%- if numeric == nil -%}—{%- else -%}
+  {%- if numeric == nil -%}"—"{%- else -%}
     {%- if fahrenheit -%}{%- assign numeric = numeric | times: 9.0 | divided_by: 5.0 | plus: 32 -%}{%- endif -%}
     {%- comment -%}Math.round ties go toward positive infinity, including negative temperatures.{%- endcomment -%}
-    {{- numeric | plus: 0.5 | floor -}}{{- suffix -}}
+    {{- numeric | plus: 0.5 | floor | append: suffix | json -}}
   {%- endif -%}
 {% endtemplate %}
 {% template weather_epoch %}
-  {%- assign date_part = value | slice: 0, 10 -%}
-  {%- assign date_digits = date_part | remove: '-' -%}
-  {%- assign date_residue = date_digits | remove: '0' | remove: '1' | remove: '2' | remove: '3' | remove: '4' | remove: '5' | remove: '6' | remove: '7' | remove: '8' | remove: '9' -%}
-  {%- assign separator = value | slice: 10, 1 -%}
   {%- assign prefix = value | slice: 0, 16 -%}
   {%- assign normalized = value | date: '%Y-%m-%dT%H:%M' -%}
-  {%- comment -%}Ruby normalizes impossible dates and hours; reject those instead of inventing an observation.{%- endcomment -%}
-  {%- if date_digits.size != 8 or date_residue != empty or separator != 'T' or normalized != prefix -%}null{%- else -%}
-    {%- assign seconds = value | date: '%s' -%}
-    {%- capture numeric_json -%}{% render 'weather_decimal', value: seconds, kind: 'integer' %}{%- endcapture -%}
-    {%- assign numeric = numeric_json | parse_json -%}
-    {%- if numeric == nil -%}null{%- else -%}{{- numeric | times: 1000 | json -}}{%- endif -%}
-  {%- endif -%}
+  {%- assign seconds = value | date: '%s' -%}
+  {%- comment -%}Reject normalized impossible dates and failed parses, which date returns unchanged.{%- endcomment -%}
+  {%- if normalized != prefix or seconds == value -%}null{%- else -%}{{- seconds | times: 1000 | json -}}{%- endif -%}
 {% endtemplate %}
 {% template weather_time %}
-  {%- assign prefix = value | slice: 0, 16 -%}
-  {%- assign digits = prefix | remove: '-' | remove: 'T' | remove: ':' -%}
-  {%- assign residue = digits | remove: '0' | remove: '1' | remove: '2' | remove: '3' | remove: '4' | remove: '5' | remove: '6' | remove: '7' | remove: '8' | remove: '9' -%}
-  {%- assign year_separator = prefix | slice: 4, 1 -%}{%- assign month_separator = prefix | slice: 7, 1 -%}
-  {%- assign day_separator = prefix | slice: 10, 1 -%}{%- assign hour_separator = prefix | slice: 13, 1 -%}
-  {%- assign normalized = value | date: '%Y-%m-%dT%H:%M' -%}
-  {%- if digits.size == 12 and residue == empty and year_separator == '-' and month_separator == '-' and day_separator == 'T' and hour_separator == ':' and normalized == prefix -%}{{- prefix | slice: 11, 5 -}}{%- else -%}—{%- endif -%}
+  {%- capture epoch_json -%}{% render 'weather_epoch', value: value %}{%- endcapture -%}
+  {%- assign epoch = epoch_json | parse_json -%}
+  {%- if epoch == nil -%}—{%- else -%}{{- value | slice: 11, 5 -}}{%- endif -%}
 {% endtemplate %}
 {% template weather_values %}
   {%- assign wire = block.value | json -%}
@@ -224,13 +212,13 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
   {%- assign wind_direction = directions[direction_index] -%}
 {%- endif -%}
 {%- capture now_json -%}
-  {"temperature":{% capture text %}{% render 'weather_value', value: temperature, fahrenheit: fahrenheit, suffix: '°' %}{% endcapture %}{{ text | json }},
-   "feels_like":{% capture text %}{% render 'weather_value', value: current_weather.feelsLike.value, fahrenheit: fahrenheit, suffix: '°' %}{% endcapture %}{{ text | json }},
+  {"temperature":{% render 'weather_value', value: temperature, fahrenheit: fahrenheit, suffix: '°' %},
+   "feels_like":{% render 'weather_value', value: current_weather.feelsLike.value, fahrenheit: fahrenheit, suffix: '°' %},
    "condition":{{ condition.text | json }},"icon_url":{{ condition.icon_url | json }},
-   "humidity":{% capture text %}{% render 'weather_value', value: current_weather.humidity.value, suffix: '%' %}{% endcapture %}{{ text | json }},
-   "wind":{% capture text %}{% render 'weather_value', value: current_weather.wind.speed.value %}{% endcapture %}{{ text | json }},
+   "humidity":{% render 'weather_value', value: current_weather.humidity.value, suffix: '%' %},
+   "wind":{% render 'weather_value', value: current_weather.wind.speed.value %},
    "wind_unit":{{ current_weather.wind.speed.unit | default: 'km/h' | json }},"wind_direction":{{ wind_direction | json }},
-   "uv":{% capture text %}{% render 'weather_value', value: current_weather.uvIndex %}{% endcapture %}{{ text | json }}}
+   "uv":{% render 'weather_value', value: current_weather.uvIndex %}}
 {%- endcapture -%}
 {%- assign now = now_json | parse_json -%}
 {%- comment -%}Daily rows keep the provider's array indexes, even when a range is missing.{%- endcomment -%}
@@ -268,8 +256,8 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
     {%- if probability != nil and probability >= 0 and probability <= 100 -%}{%- assign rain_text = probability | plus: 0.5 | floor | append: '%' -%}{%- endif -%}
     {%- if emitted > 0 -%},{%- endif -%}{%- assign emitted = emitted | plus: 1 -%}
     { {% if day_label != nil %}"label":{{ day_label | json }},{% endif %}"date":{{ day_date | json }},
-      "high":{% capture text %}{% render 'weather_value', value: high, fahrenheit: fahrenheit, suffix: '°' %}{% endcapture %}{{ text | json }},
-      "low":{% capture text %}{% render 'weather_value', value: low, fahrenheit: fahrenheit, suffix: '°' %}{% endcapture %}{{ text | json }},
+      "high":{% render 'weather_value', value: high, fahrenheit: fahrenheit, suffix: '°' %},
+      "low":{% render 'weather_value', value: low, fahrenheit: fahrenheit, suffix: '°' %},
       "condition":{{ state.text | json }},"icon_url":{{ state.icon_url | json }},"rain":{{ rain_text | json }}}
   {%- endfor -%}]
 {%- endcapture -%}
@@ -319,49 +307,38 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
     {%- if fahrenheit -%}{%- assign chart_value = numeric | times: 9.0 | divided_by: 5.0 | plus: 32 -%}{%- endif -%}
     {%- if emitted > 0 -%},{%- endif -%}{%- assign emitted = emitted | plus: 1 -%}
     {"time":{{ hour_time | json }},"timestamp":{{ stamp | json }},
-     "temperature":{% capture text %}{% render 'weather_value', value: numeric, fahrenheit: fahrenheit, suffix: '°' %}{% endcapture %}{{ text | json }},
+     "temperature":{% render 'weather_value', value: numeric, fahrenheit: fahrenheit, suffix: '°' %},
      "value":{{ chart_value | json }},"icon_url":{{ state.icon_url | json }},"condition":{{ state.text | json }}}
   {%- endfor -%}]
 {%- endcapture -%}
 {%- assign all_hours = all_hours_json | parse_json -%}
 {%- assign minimum = 0 -%}{%- assign maximum = 1 -%}{%- assign span = 1 -%}
 {%- if all_hours.size > 0 -%}
-  {%- assign minimum = all_hours[0].value -%}{%- assign maximum = minimum -%}
-  {%- for hour in all_hours -%}
-    {%- assign minimum = minimum | at_most: hour.value -%}{%- assign maximum = maximum | at_least: hour.value -%}
-  {%- endfor -%}
-  {%- assign minimum = minimum | minus: 1 -%}{%- assign maximum = maximum | plus: 1 -%}
+  {%- assign chart_values = all_hours | map: 'value' | sort -%}
+  {%- assign minimum = chart_values.first | minus: 1 -%}{%- assign maximum = chart_values.last | plus: 1 -%}
   {%- if all_hours.size > 1 -%}{%- assign span = all_hours.last.timestamp | minus: all_hours[0].timestamp -%}{%- endif -%}
 {%- endif -%}
 {%- assign chart_range = maximum | minus: minimum | times: 1.0 -%}
-{%- capture chart_points -%}
+{%- capture plot_rows_json -%}[
   {%- for hour in all_hours -%}
     {%- assign x = hour.timestamp | minus: all_hours[0].timestamp | times: 408.0 | divided_by: span | plus: 16 | plus: 0.5 | floor -%}
     {%- assign y_distance = hour.value | minus: minimum | times: 54 | divided_by: chart_range -%}
     {%- assign y = 70 | minus: y_distance | plus: 0.5 | floor -%}
-    {%- unless forloop.first -%}{{- ' ' -}}{%- endunless -%}{{- x -}},{{- y -}}
-  {%- endfor -%}
-{%- endcapture -%}
-{%- capture markers_json -%}[
-  {%- for hour in all_hours -%}
-    {%- assign remainder = forloop.index0 | modulo: 2 -%}{%- if remainder != 0 -%}{%- continue -%}{%- endif -%}
-    {%- assign x = hour.timestamp | minus: all_hours[0].timestamp | times: 408.0 | divided_by: span | plus: 16 | plus: 0.5 | floor -%}
-    {%- assign y_distance = hour.value | minus: minimum | times: 54 | divided_by: chart_range -%}
-    {%- assign y = 70 | minus: y_distance | plus: 0.5 | floor -%}
-    {%- unless forloop.first -%},{%- endunless -%}{"x":{{ x }},"y":{{ y }}}
+    {%- assign remainder = forloop.index0 | modulo: 2 -%}
+    {%- unless forloop.first -%},{%- endunless -%}
+    {"point":{{ x | append: ',' | append: y | json }},
+     {% if remainder == 0 %}"marker":{"x":{{ x }},"y":{{ y }}},"hour":{{ hour | json }}
+     {% else %}"marker":null,"hour":null{% endif %}}
   {%- endfor -%}]
 {%- endcapture -%}
-{%- capture hours_json -%}[
-  {%- for hour in all_hours -%}
-    {%- assign remainder = forloop.index0 | modulo: 2 -%}{%- if remainder != 0 -%}{%- continue -%}{%- endif -%}
-    {%- unless forloop.first -%},{%- endunless -%}{{- hour | json -}}
-  {%- endfor -%}]
-{%- endcapture -%}
-{%- assign hours = hours_json | parse_json -%}
+{%- assign plot_rows = plot_rows_json | parse_json -%}
+{%- assign chart_points = plot_rows | map: 'point' | join: ' ' -%}
+{%- assign markers = plot_rows | map: 'marker' | compact -%}
+{%- assign hours = plot_rows | map: 'hour' | compact -%}
 {%- capture chart_json -%}
-  {"points":{{ chart_points | json }},"markers":{{ markers_json }},
-   "low":{% capture text %}{% if all_hours.size > 0 %}{% assign value = minimum | plus: 1 %}{% render 'weather_value', value: value, suffix: '°' %}{% else %}—{% endif %}{% endcapture %}{{ text | json }},
-   "high":{% capture text %}{% if all_hours.size > 0 %}{% assign value = maximum | minus: 1 %}{% render 'weather_value', value: value, suffix: '°' %}{% else %}—{% endif %}{% endcapture %}{{ text | json }},
+  {"points":{{ chart_points | json }},"markers":{{ markers | json }},
+   "low":{% if all_hours.size > 0 %}{% assign value = minimum | plus: 1 %}{% render 'weather_value', value: value, suffix: '°' %}{% else %}"—"{% endif %},
+   "high":{% if all_hours.size > 0 %}{% assign value = maximum | minus: 1 %}{% render 'weather_value', value: value, suffix: '°' %}{% else %}"—"{% endif %},
    "from":{{ all_hours[0].time | default: '—' | json }},"to":{{ all_hours.last.time | default: '—' | json }}}
 {%- endcapture -%}
 {%- assign chart = chart_json | parse_json -%}
@@ -379,11 +356,12 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
 {%- assign alert_count = 0 -%}{%- assign alert_title = '' -%}
 {%- assign alerts_wire = alerts | json -%}{%- assign alerts_type = alerts_wire | slice: 0, 1 -%}
 {%- if location_valid and alerts_type == '[' -%}
-  {%- for alert in alerts -%}
-    {%- if alert.title == nil or alert.title == empty or alert.title == false -%}{%- continue -%}{%- endif -%}
-    {%- if alert_count == 0 -%}{%- assign alert_title = alert.title | append: '' -%}{%- endif -%}
-    {%- assign alert_count = alert_count | plus: 1 -%}
-  {%- endfor -%}
+  {%- comment -%}Native filters need explicit empty containers to match Liquid's empty comparison.{%- endcomment -%}
+  {%- assign empty_array = '[]' | parse_json -%}
+  {%- assign empty_object = '{}' | parse_json -%}
+  {%- assign valid_alerts = alerts | where_exp: 'alert', 'alert.title != nil and alert.title != empty and alert.title != false' | reject: 'title', empty_array | reject: 'title', empty_object -%}
+  {%- assign alert_count = valid_alerts.size -%}
+  {%- assign alert_title = valid_alerts.first.title | append: '' -%}
 {%- endif -%}
 {%- capture weather_brand_icon -%}
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="404" viewBox="17 8 71 56">

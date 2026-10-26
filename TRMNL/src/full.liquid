@@ -49,14 +49,8 @@
       <span class="label lg:label--large text--bold">THIS WEEK</span>
       <span class="label lg:label--large">
         {%- if days.size > 0 -%}
-          {%- assign week_low = days[0].low | remove: '°' | plus: 0 -%}
-          {%- assign week_high = days[0].high | remove: '°' | plus: 0 -%}
-          {%- for day in days -%}
-            {%- assign day_low = day.low | remove: '°' | plus: 0 -%}
-            {%- assign day_high = day.high | remove: '°' | plus: 0 -%}
-            {%- if day_low < week_low -%}{%- assign week_low = day_low -%}{%- endif -%}
-            {%- if day_high > week_high -%}{%- assign week_high = day_high -%}{%- endif -%}
-          {%- endfor -%}
+          {%- assign week_low = days | map: 'low' | map_to_i | sort | first -%}
+          {%- assign week_high = days | map: 'high' | map_to_i | sort | last -%}
           L<span class="hidden lg:visible">ow</span>&nbsp;{{ week_low }}° — H<span class="hidden lg:visible">igh</span>&nbsp;{{ week_high }}°
         {%- else -%}L<span class="hidden lg:visible">ow</span>&nbsp;— — H<span class="hidden lg:visible">igh</span>&nbsp;—{%- endif -%}
       </span>
