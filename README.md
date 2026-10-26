@@ -1,6 +1,6 @@
-# Xiaomi Weather
+# Atmosphere
 
-Current conditions and forecasts on your TRMNL, using the same weather endpoint as Xiaomi phones. See the temperature, hourly trend, five-day outlook and provider-reported alerts with TRMNL's official weather icons.
+Atmosphere (formerly Xiaomi Weather) displays current conditions and forecasts on your TRMNL, using the same weather endpoint as Xiaomi phones. See the temperature, hourly trend, five-day outlook and provider-reported alerts with TRMNL's official weather icons.
 
 <a href="https://github.com/taichikuji/trmnl-xiaomi-weather-plugin/tree/main/TRMNL#setup"><img width="150" alt="Works with TRMNL" src="https://trmnl.com/images/brand/badges/light/works-with-trmnl/trmnl-badge-works-with-light.svg" /></a>
 
@@ -9,6 +9,8 @@ Current conditions and forecasts on your TRMNL, using the same weather endpoint 
 ![Current weather, hourly temperatures and daily forecasts on TRMNL](TRMNL/media/preview_full.webp)
 
 Recorded weather for the public Paris demo point (`48.8584,2.2945`) from 25 October 2026, not a current forecast. [All layout previews](TRMNL/README.md#previews).
+
+The listing description is **Xiaomi Weather forecasts**. See [listing metadata](TRMNL/README.md#listing-metadata) for TRMNL's search limitations.
 
 ## Settings
 

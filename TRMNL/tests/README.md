@@ -23,10 +23,19 @@ allowing harmless whitespace differences. The expected values separately check
 data that may be hidden at smaller screen sizes. Update these baselines only
 when intentionally changing visible behavior, after reviewing the old/new output.
 
+The Atmosphere rename updates only the title-bar text in those layout hashes.
+Each new render was compared with the prior render to confirm that exact text
+substitution was the only change. Expected weather display values remain the
+original pre-removal values.
+
+Custom instance-name cases verify that all four title bars use TRMNL's configured
+name and escape HTML characters. The original fixtures omit the name and cover
+the Atmosphere fallback.
+
 Set `WEATHER_CHECK_OUTPUT` to a writable directory to retain the rendered HTML
 for browser/image inspection. Generated previews belong outside `src/` so they
 are not uploaded as plugin source. The existing four checked-in layout previews
-remain valid because the layout markup and displayed information are unchanged.
+retain the pre-rename title bar; the weather content and layout are unchanged.
 
 Migration verification on 25 October 2026 also compared 60 before/after image
 pairs: all four layouts on OG landscape, X landscape and X portrait, using

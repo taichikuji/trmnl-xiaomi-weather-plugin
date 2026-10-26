@@ -78,7 +78,7 @@ baseline.fetch('cases').each do |fixture|
     html = render(SHARED + File.read(File.join(ROOT, "src/#{layout}.liquid")), input)
     normalized = html.gsub(/\s+/, ' ').strip
     hash = Digest::SHA256.hexdigest(normalized)
-    failures << "#{fixture['id']}/#{layout}: rendered HTML differs from pre-removal baseline" unless hash == fixture.fetch('html_sha256').fetch(layout)
+    failures << "#{fixture['id']}/#{layout}: rendered HTML differs from recorded baseline" unless hash == fixture.fetch('html_sha256').fetch(layout)
     raise "#{fixture['id']}/#{layout}: Liquid render error" if html.include?('Liquid error:')
     if ENV['WEATHER_CHECK_OUTPUT']
       dir = File.join(ENV.fetch('WEATHER_CHECK_OUTPUT'), fixture.fetch('id'))
@@ -86,6 +86,16 @@ baseline.fetch('cases').each do |fixture|
       File.write(File.join(dir, "#{layout}.html"), html)
     end
     renders += 1
+  end
+end
+
+{ 'Balcony weather' => 'Balcony weather', 'Home & <weather>' => 'Home &amp; &lt;weather&gt;' }.each do |name, escaped|
+  input = JSON.parse(JSON.generate(baseline.fetch('base_input')))
+  input.fetch('trmnl').fetch('plugin_settings')['instance_name'] = name
+  LAYOUTS.each do |layout|
+    html = render(SHARED + File.read(File.join(ROOT, "src/#{layout}.liquid")), input)
+    expected_title = %(<div class="title" data-clamp="1">#{escaped} · Accu Weather</div>)
+    failures << "#{layout}: configured instance name missing or unescaped" unless html.include?(expected_title)
   end
 end
 
@@ -100,7 +110,8 @@ unless failures.empty?
   warn failures.join("\n")
   abort "#{failures.length} regression(s)"
 end
-puts "#{baseline['cases'].length} display fixtures and #{renders} native layout renders match the pre-removal baseline."
+puts "#{baseline['cases'].length} display fixtures and #{renders} native layout renders match the recorded baseline."
 puts "#{baseline['condition_cases'].length} condition inputs match in day and night modes."
 puts "#{valid_times.length + invalid_times.length} timestamp validation cases passed."
+puts 'Custom instance names and HTML escaping passed in all four layouts.'
 puts 'Serverless removal and upload configuration checks passed.'
