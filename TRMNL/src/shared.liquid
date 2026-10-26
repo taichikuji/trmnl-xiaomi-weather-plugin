@@ -76,7 +76,10 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
   {%- assign date_digits = date_part | remove: '-' -%}
   {%- assign date_residue = date_digits | remove: '0' | remove: '1' | remove: '2' | remove: '3' | remove: '4' | remove: '5' | remove: '6' | remove: '7' | remove: '8' | remove: '9' -%}
   {%- assign separator = value | slice: 10, 1 -%}
-  {%- if date_digits.size != 8 or date_residue != empty or separator != 'T' -%}null{%- else -%}
+  {%- assign prefix = value | slice: 0, 16 -%}
+  {%- assign normalized = value | date: '%Y-%m-%dT%H:%M' -%}
+  {%- comment -%}Ruby normalizes impossible dates and hours; reject those instead of inventing an observation.{%- endcomment -%}
+  {%- if date_digits.size != 8 or date_residue != empty or separator != 'T' or normalized != prefix -%}null{%- else -%}
     {%- assign seconds = value | date: '%s' -%}
     {%- capture numeric_json -%}{% render 'weather_decimal', value: seconds, kind: 'integer' %}{%- endcapture -%}
     {%- assign numeric = numeric_json | parse_json -%}
@@ -89,7 +92,8 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
   {%- assign residue = digits | remove: '0' | remove: '1' | remove: '2' | remove: '3' | remove: '4' | remove: '5' | remove: '6' | remove: '7' | remove: '8' | remove: '9' -%}
   {%- assign year_separator = prefix | slice: 4, 1 -%}{%- assign month_separator = prefix | slice: 7, 1 -%}
   {%- assign day_separator = prefix | slice: 10, 1 -%}{%- assign hour_separator = prefix | slice: 13, 1 -%}
-  {%- if digits.size == 12 and residue == empty and year_separator == '-' and month_separator == '-' and day_separator == 'T' and hour_separator == ':' -%}{{- prefix | slice: 11, 5 -}}{%- else -%}—{%- endif -%}
+  {%- assign normalized = value | date: '%Y-%m-%dT%H:%M' -%}
+  {%- if digits.size == 12 and residue == empty and year_separator == '-' and month_separator == '-' and day_separator == 'T' and hour_separator == ':' and normalized == prefix -%}{{- prefix | slice: 11, 5 -}}{%- else -%}—{%- endif -%}
 {% endtemplate %}
 {% template weather_values %}
   {%- assign wire = block.value | json -%}

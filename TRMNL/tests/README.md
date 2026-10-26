@@ -4,6 +4,11 @@ Run the Docker command in [the plugin README](../README.md#verification-and-refe
 The suite uses the real `trmnl-liquid` engine bundled in `trmnl/trmnlp:v0.16.0`,
 with strict parsing and unknown-filter errors enabled. It makes no requests.
 
+Additional timestamp checks reject impossible dates and hours that Ruby would
+otherwise normalize, while retaining valid UTC offsets, fractional seconds and
+leap days. These checks intentionally improve malformed-input handling beyond
+the original transform; the recorded weather baselines remain unchanged.
+
 `baseline.json` contains synthetic API-shaped inputs and expected display values
 captured from the original `run(input)` at commit `e5f2daa`, before deleting the
 runtime script. Every case has a fixed native render timestamp. The condition

@@ -2,6 +2,7 @@
 require 'digest'
 require 'fileutils'
 require 'json'
+require 'time'
 require 'yaml'
 require 'trmnl/liquid'
 
@@ -48,6 +49,19 @@ end
 baseline = JSON.parse(File.read(File.join(ROOT, 'tests/baseline.json')))
 failures = []
 renders = 0
+valid_times = %w[2026-10-05T10:17:00+02:00 2026-10-05T10:17:00Z 2026-10-05T10:17:00-04:00 2026-10-05T10:17:00.123+02:00 2028-02-29T10:17:00+02:00]
+invalid_times = %w[2026-10-05T25:17:00+02:00 2026-10-05T10:99:00+02:00 2026-02-30T10:17:00+02:00 2026-04-31T10:17:00+02:00 2026-10-05T10:17:00+99:00]
+time_probe = %q({"epoch":{% render 'weather_epoch', value: probe_value %},"time":{% capture text %}{% render 'weather_time', value: probe_value %}{% endcapture %}{{ text | json }}})
+(valid_times + invalid_times).each do |value|
+  actual = JSON.parse(render(SHARED + time_probe, { 'probe_value' => value }))
+  expected = if valid_times.include?(value)
+    { 'epoch' => Time.iso8601(value).to_i * 1000, 'time' => value[11, 5] }
+  else
+    { 'epoch' => nil, 'time' => '—' }
+  end
+  diff = difference(expected, actual)
+  failures << "timestamp #{value}: #{diff}" if diff
+end
 baseline.fetch('condition_cases').each do |fixture|
   probe = %q({"day":{% render 'weather_condition', value: probe_value %},"night":{% render 'weather_condition', value: probe_value, night: true %}})
   actual = JSON.parse(render(SHARED + probe, { 'probe_value' => fixture.fetch('value') }))
@@ -88,4 +102,5 @@ unless failures.empty?
 end
 puts "#{baseline['cases'].length} display fixtures and #{renders} native layout renders match the pre-removal baseline."
 puts "#{baseline['condition_cases'].length} condition inputs match in day and night modes."
+puts "#{valid_times.length + invalid_times.length} timestamp validation cases passed."
 puts 'Serverless removal and upload configuration checks passed.'
