@@ -8,7 +8,7 @@ polling_headers: ''
 polling_body: ''
 refresh_interval: 30
 framework_version: '3.4.0'
-serverless_language: node
+serverless_language: none
 icon: media/icon.svg
 no_screen_padding: 'no'
 dark_mode: 'no'

@@ -1,4 +1,390 @@
-{%- comment -%}Shared fragments run before each layout. Weather icons use TRMNL's hosted SVG pack.{%- endcomment -%}
+{%- comment -%}
+Native polling supplies the raw Xiaomi response. Shared prepares the same display
+variables for every layout. Helpers return JSON so null, zero and false stay distinct.
+TRMNL template/endtemplate tags use the plain documented syntax, without hyphens.
+{%- endcomment -%}
+{% template weather_decimal %}
+  {%- assign text = value | append: '' | strip -%}
+  {%- assign unsigned = text -%}
+  {%- assign sign = 1 -%}
+  {%- assign first = text | slice: 0, 1 -%}
+  {%- assign valid = true -%}
+  {%- if first == '+' or first == '-' -%}
+    {%- assign unsigned = text | slice: 1, text.size -%}
+    {%- if first == '-' -%}{%- assign sign = -1 -%}{%- endif -%}
+    {%- if kind == 'code' -%}{%- assign valid = false -%}{%- endif -%}
+  {%- endif -%}
+  {%- assign residue = unsigned | remove: '0' | remove: '1' | remove: '2' | remove: '3' | remove: '4' | remove: '5' | remove: '6' | remove: '7' | remove: '8' | remove: '9' -%}
+  {%- assign digits = unsigned | remove: '.' -%}
+  {%- if digits == empty -%}{%- assign valid = false -%}{%- endif -%}
+  {%- if residue != empty and residue != '.' -%}{%- assign valid = false -%}{%- endif -%}
+  {%- if kind == 'code' or kind == 'integer' -%}
+    {%- if residue != empty -%}{%- assign valid = false -%}{%- endif -%}
+  {%- endif -%}
+  {%- if valid -%}
+    {%- assign first = unsigned | slice: 0, 1 -%}
+    {%- if first == '.' -%}{%- assign unsigned = unsigned | prepend: '0' -%}{%- endif -%}
+    {%- assign numeric = unsigned | plus: 0.0 | times: sign -%}
+    {%- assign largest = '1.7976931348623157e308' | parse_json -%}
+    {%- assign magnitude = numeric | abs -%}
+    {%- if magnitude > largest -%}null{%- else -%}{{- numeric | json -}}{%- endif -%}
+  {%- else -%}null{%- endif -%}
+{% endtemplate %}
+{% template weather_number %}
+  {%- assign wire = value | json -%}
+  {%- assign type = wire | slice: 0, 1 -%}
+  {%- if value == nil or type == '[' or type == '{' -%}null
+  {%- elsif wire == 'true' or wire == 'false' -%}
+    {%- if kind != 'number' -%}null{%- elsif value -%}1{%- else -%}0{%- endif -%}
+  {%- elsif type != '"' -%}
+    {%- assign integral = value | floor -%}
+    {%- if kind == 'code' and integral != value -%}null{%- else -%}{{- value | json -}}{%- endif -%}
+  {%- else -%}
+    {%- assign text = value | strip | downcase -%}
+    {%- if kind == 'number' and text contains 'e' -%}
+      {%- assign parts = text | split: 'e' -%}
+      {%- capture mantissa_json -%}{% render 'weather_decimal', value: parts[0] %}{%- endcapture -%}
+      {%- capture exponent_json -%}{% render 'weather_decimal', value: parts[1], kind: 'integer' %}{%- endcapture -%}
+      {%- assign mantissa = mantissa_json | parse_json -%}
+      {%- assign exponent = exponent_json | parse_json -%}
+      {%- assign without_e = text | remove: 'e' | size -%}
+      {%- assign e_count = text.size | minus: without_e -%}
+      {%- if mantissa == nil or exponent == nil or e_count != 1 -%}null
+      {%- else -%}
+        {%- assign exponent = exponent | floor -%}
+        {%- assign mantissa_parts = mantissa | json | downcase | split: 'e' -%}
+        {%- assign exponent = mantissa_parts[1] | plus: 0 | plus: exponent -%}
+        {%- assign numeric = mantissa_parts[0] | append: 'e' | append: exponent | parse_json -%}
+        {%- assign largest = '1.7976931348623157e308' | parse_json -%}
+        {%- assign magnitude = numeric | abs -%}
+        {%- if magnitude > largest -%}null{%- else -%}{{- numeric | json -}}{%- endif -%}
+      {%- endif -%}
+    {%- else -%}{% render 'weather_decimal', value: text, kind: kind %}{%- endif -%}
+  {%- endif -%}
+{% endtemplate %}
+{% template weather_value %}
+  {%- capture numeric_json -%}{% render 'weather_number', value: value, kind: 'number' %}{%- endcapture -%}
+  {%- assign numeric = numeric_json | parse_json -%}
+  {%- if numeric == nil -%}—{%- else -%}
+    {%- if fahrenheit -%}{%- assign numeric = numeric | times: 9.0 | divided_by: 5.0 | plus: 32 -%}{%- endif -%}
+    {%- comment -%}Math.round ties go toward positive infinity, including negative temperatures.{%- endcomment -%}
+    {{- numeric | plus: 0.5 | floor -}}{{- suffix -}}
+  {%- endif -%}
+{% endtemplate %}
+{% template weather_epoch %}
+  {%- assign date_part = value | slice: 0, 10 -%}
+  {%- assign date_digits = date_part | remove: '-' -%}
+  {%- assign date_residue = date_digits | remove: '0' | remove: '1' | remove: '2' | remove: '3' | remove: '4' | remove: '5' | remove: '6' | remove: '7' | remove: '8' | remove: '9' -%}
+  {%- assign separator = value | slice: 10, 1 -%}
+  {%- assign prefix = value | slice: 0, 16 -%}
+  {%- assign normalized = value | date: '%Y-%m-%dT%H:%M' -%}
+  {%- comment -%}Ruby normalizes impossible dates and hours; reject those instead of inventing an observation.{%- endcomment -%}
+  {%- if date_digits.size != 8 or date_residue != empty or separator != 'T' or normalized != prefix -%}null{%- else -%}
+    {%- assign seconds = value | date: '%s' -%}
+    {%- capture numeric_json -%}{% render 'weather_decimal', value: seconds, kind: 'integer' %}{%- endcapture -%}
+    {%- assign numeric = numeric_json | parse_json -%}
+    {%- if numeric == nil -%}null{%- else -%}{{- numeric | times: 1000 | json -}}{%- endif -%}
+  {%- endif -%}
+{% endtemplate %}
+{% template weather_time %}
+  {%- assign prefix = value | slice: 0, 16 -%}
+  {%- assign digits = prefix | remove: '-' | remove: 'T' | remove: ':' -%}
+  {%- assign residue = digits | remove: '0' | remove: '1' | remove: '2' | remove: '3' | remove: '4' | remove: '5' | remove: '6' | remove: '7' | remove: '8' | remove: '9' -%}
+  {%- assign year_separator = prefix | slice: 4, 1 -%}{%- assign month_separator = prefix | slice: 7, 1 -%}
+  {%- assign day_separator = prefix | slice: 10, 1 -%}{%- assign hour_separator = prefix | slice: 13, 1 -%}
+  {%- assign normalized = value | date: '%Y-%m-%dT%H:%M' -%}
+  {%- if digits.size == 12 and residue == empty and year_separator == '-' and month_separator == '-' and day_separator == 'T' and hour_separator == ':' and normalized == prefix -%}{{- prefix | slice: 11, 5 -}}{%- else -%}—{%- endif -%}
+{% endtemplate %}
+{% template weather_values %}
+  {%- assign wire = block.value | json -%}
+  {%- assign type = wire | slice: 0, 1 -%}
+  {%- if type == '[' -%}
+    {%- if block.status == nil or block.status == 0 -%}{{- wire -}}{%- else -%}[]{%- endif -%}
+  {%- else -%}[]{%- endif -%}
+{% endtemplate %}
+{% template weather_condition %}
+  {%- capture code_json -%}{% render 'weather_number', value: value, kind: 'code' %}{%- endcapture -%}
+  {%- assign code = code_json | parse_json -%}
+  {%- if code != nil -%}{%- assign code = code | floor -%}{%- endif -%}
+  {%- assign names = 'Clear sky|Partly cloudy|Overcast|Showers|Thunderstorms|Storms with hail|Sleet|Light rain|Rain|Heavy rain|Torrential rain|Torrential rain|Torrential rain|Snow showers|Light snow|Snow|Heavy snow|Blizzard|Fog|Freezing rain|Dust storm|Rain|Heavy rain|Heavy rain|Torrential rain|Torrential rain|Snow|Heavy snow|Blizzard|Dust|Blowing sand|Severe dust storm|Squall|Tornado|Blowing snow|Mist' | split: '|' -%}
+  {%- assign icons = 'day-sunny|day-cloudy|cloudy|showers|thunderstorm|hail|rain-mix|sprinkle|rain|rain|rain|rain|rain|snow|snow|snow|snow|snow-wind|fog|sleet|sandstorm|rain|rain|rain|rain|rain|snow|snow|snow-wind|dust|sandstorm|sandstorm|strong-wind|tornado|snow-wind|fog' | split: '|' -%}
+  {%- assign text = 'Conditions unavailable' -%}{%- assign icon = 'na' -%}
+  {%- if code != nil and code >= 0 and code <= 35 -%}
+    {%- assign text = names[code] -%}{%- assign icon = icons[code] -%}
+  {%- else -%}
+    {%- case code -%}
+      {%- when 49 -%}{%- assign text = 'Strong fog' -%}{%- assign icon = 'fog' -%}
+      {%- when 53 -%}{%- assign text = 'Haze' -%}{%- assign icon = 'smog' -%}
+      {%- when 54 -%}{%- assign text = 'Moderate haze' -%}{%- assign icon = 'smog' -%}
+      {%- when 55 -%}{%- assign text = 'Heavy haze' -%}{%- assign icon = 'smog' -%}
+      {%- when 56 -%}{%- assign text = 'Severe haze' -%}{%- assign icon = 'smog' -%}
+      {%- when 57 -%}{%- assign text = 'Heavy fog' -%}{%- assign icon = 'fog' -%}
+      {%- when 58 -%}{%- assign text = 'Extra heavy fog' -%}{%- assign icon = 'fog' -%}
+      {%- when 301 -%}{%- assign text = 'Rain' -%}{%- assign icon = 'rain' -%}
+      {%- when 302 -%}{%- assign text = 'Snow' -%}{%- assign icon = 'snow' -%}
+    {%- endcase -%}
+  {%- endif -%}
+  {%- if code == 0 and night -%}{%- assign text = 'Clear night' -%}{%- assign icon = 'night-clear' -%}
+  {%- elsif code == 1 and night -%}{%- assign icon = 'night-alt-cloudy' -%}{%- endif -%}
+  {"text":{{- text | json -}},"icon_url":{{- icon | prepend: 'https://trmnl.com/images/plugins/weather/wi-' | append: '.svg' | json -}}}
+{% endtemplate %}
+{%- comment -%}Validate settings before using any weather data.{%- endcomment -%}
+{%- liquid
+  assign fields = trmnl.plugin_settings.custom_fields_values
+  assign fahrenheit = false
+  assign unit = '°C'
+  if fields.temperature_unit == 'fahrenheit'
+    assign fahrenheit = true
+    assign unit = '°F'
+  endif
+  assign coordinates = fields.lat_lon | append: '' | strip
+  assign coordinate_parts = coordinates | split: ','
+  assign without_comma = coordinates | remove: ',' | size
+  assign comma_count = coordinates.size | minus: without_comma
+-%}
+{%- capture latitude_json -%}{% render 'weather_number', value: coordinate_parts[0], kind: 'coordinate' %}{%- endcapture -%}
+{%- capture longitude_json -%}{% render 'weather_number', value: coordinate_parts[1], kind: 'coordinate' %}{%- endcapture -%}
+{%- liquid
+  assign latitude = latitude_json | parse_json
+  assign longitude = longitude_json | parse_json
+  assign latitude_abs = latitude | abs
+  assign longitude_abs = longitude | abs
+  assign location_valid = true
+  assign error_message = ''
+  if coordinates == empty
+    assign location_valid = false
+    assign error_message = 'Choose a Location in the plugin settings.'
+  elsif comma_count != 1 or coordinate_parts.size != 2 or latitude == nil or longitude == nil or latitude_abs > 90 or longitude_abs > 180
+    assign location_valid = false
+    assign error_message = 'Invalid coordinates. Choose a Location or enter latitude, longitude; e.g. 48.8584, 2.2945.'
+  endif
+  assign current_weather = nil
+  assign daily_weather = nil
+  assign hourly_weather = nil
+  if location_valid
+    assign current_weather = current
+    if forecastDaily.status == 0
+      assign daily_weather = forecastDaily
+    endif
+    if forecastHourly.status == 0
+      assign hourly_weather = forecastHourly
+    endif
+  endif
+  assign city = 'Weather'
+-%}
+{%- capture render_numeric_json -%}{% render 'weather_number', value: trmnl.system.timestamp_utc, kind: 'coordinate' %}{%- endcapture -%}
+{%- assign render_numeric = render_numeric_json | parse_json -%}
+{%- capture render_epoch_json -%}{% render 'weather_epoch', value: trmnl.system.timestamp_utc %}{%- endcapture -%}
+{%- assign render_epoch = render_epoch_json | parse_json -%}
+{%- if render_numeric != nil -%}{%- assign reference_time = render_numeric | times: 1000 -%}
+{%- elsif render_epoch != nil -%}{%- assign reference_time = render_epoch -%}
+{%- else -%}{%- assign reference_time = 'now' | date: '%s' | times: 1000 -%}{%- endif -%}
+{%- capture observed_json -%}{% render 'weather_epoch', value: current_weather.pubTime %}{%- endcapture -%}
+{%- capture sun_json -%}{% render 'weather_values', block: daily_weather.sunRiseSet %}{%- endcapture -%}
+{%- assign sun_times = sun_json | parse_json -%}
+{%- capture rise_json -%}{% render 'weather_epoch', value: sun_times[0].from %}{%- endcapture -%}
+{%- capture set_json -%}{% render 'weather_epoch', value: sun_times[0].to %}{%- endcapture -%}
+{%- liquid
+  assign observed = observed_json | parse_json
+  assign rise = rise_json | parse_json
+  assign set = set_json | parse_json
+  assign night = false
+  if observed != nil and rise != nil and set != nil
+    if observed < rise or observed >= set
+      assign night = true
+    endif
+  endif
+  assign stale = false
+  assign age = reference_time | minus: observed
+  if observed != nil and age > 10800000
+    assign stale = true
+  endif
+  assign observed_date = current_weather.pubTime | default: '' | slice: 0, 10
+  assign date_label = 'Waiting for weather'
+  if observed != nil
+    assign date_label = observed_date | append: 'T12:00:00Z' | date: '%a · %-d %b'
+  endif
+-%}
+{%- capture observed_at -%}{% render 'weather_time', value: current_weather.pubTime %}{%- endcapture -%}
+{%- capture sunrise -%}{% render 'weather_time', value: sun_times[0].from %}{%- endcapture -%}
+{%- capture sunset -%}{% render 'weather_time', value: sun_times[0].to %}{%- endcapture -%}
+{%- capture condition_json -%}{% render 'weather_condition', value: current_weather.weather, night: night %}{%- endcapture -%}
+{%- assign condition = condition_json | parse_json -%}
+{%- capture temperature_json -%}{% render 'weather_number', value: current_weather.temperature.value, kind: 'number' %}{%- endcapture -%}
+{%- assign temperature = temperature_json | parse_json -%}
+{%- assign available = false -%}
+{%- if temperature != nil -%}{%- assign available = true -%}{%- endif -%}
+{%- if location_valid and available == false -%}{%- assign error_message = 'Xiaomi returned no current temperature. Try the next refresh.' -%}{%- endif -%}
+{%- capture direction_json -%}{% render 'weather_number', value: current_weather.wind.direction.value, kind: 'number' %}{%- endcapture -%}
+{%- assign direction = direction_json | parse_json -%}
+{%- assign wind_direction = '' -%}
+{%- if direction != nil -%}
+  {%- assign directions = 'N,NE,E,SE,S,SW,W,NW' | split: ',' -%}
+  {%- assign direction_index = direction | modulo: 360 | plus: 360 | modulo: 360 | divided_by: 45.0 | plus: 0.5 | floor | modulo: 8 -%}
+  {%- assign wind_direction = directions[direction_index] -%}
+{%- endif -%}
+{%- capture now_json -%}
+  {"temperature":{% capture text %}{% render 'weather_value', value: temperature, fahrenheit: fahrenheit, suffix: '°' %}{% endcapture %}{{ text | json }},
+   "feels_like":{% capture text %}{% render 'weather_value', value: current_weather.feelsLike.value, fahrenheit: fahrenheit, suffix: '°' %}{% endcapture %}{{ text | json }},
+   "condition":{{ condition.text | json }},"icon_url":{{ condition.icon_url | json }},
+   "humidity":{% capture text %}{% render 'weather_value', value: current_weather.humidity.value, suffix: '%' %}{% endcapture %}{{ text | json }},
+   "wind":{% capture text %}{% render 'weather_value', value: current_weather.wind.speed.value %}{% endcapture %}{{ text | json }},
+   "wind_unit":{{ current_weather.wind.speed.unit | default: 'km/h' | json }},"wind_direction":{{ wind_direction | json }},
+   "uv":{% capture text %}{% render 'weather_value', value: current_weather.uvIndex %}{% endcapture %}{{ text | json }}}
+{%- endcapture -%}
+{%- assign now = now_json | parse_json -%}
+{%- comment -%}Daily rows keep the provider's array indexes, even when a range is missing.{%- endcomment -%}
+{%- capture temperatures_json -%}{% render 'weather_values', block: daily_weather.temperature %}{%- endcapture -%}
+{%- capture conditions_json -%}{% render 'weather_values', block: daily_weather.weather %}{%- endcapture -%}
+{%- capture rain_json -%}{% render 'weather_values', block: daily_weather.precipitationProbability %}{%- endcapture -%}
+{%- assign temperatures = temperatures_json | parse_json -%}
+{%- assign conditions = conditions_json | parse_json -%}
+{%- assign rain = rain_json | parse_json -%}
+{%- assign day_base = daily_weather.pubTime | default: current_weather.pubTime | slice: 0, 10 | append: 'T12:00:00Z' -%}
+{%- capture day_base_json -%}{% render 'weather_epoch', value: day_base %}{%- endcapture -%}
+{%- assign day_base_epoch = day_base_json | parse_json -%}
+{%- capture days_json -%}[
+  {%- assign emitted = 0 -%}
+  {%- for range in temperatures limit: 5 -%}
+    {%- assign i = forloop.index0 -%}
+    {%- if i >= conditions.size -%}{%- break -%}{%- endif -%}
+    {%- capture first_json -%}{% render 'weather_number', value: range.from, kind: 'number' %}{%- endcapture -%}
+    {%- capture second_json -%}{% render 'weather_number', value: range.to, kind: 'number' %}{%- endcapture -%}
+    {%- assign first = first_json | parse_json -%}{%- assign second = second_json | parse_json -%}
+    {%- if first == nil or second == nil -%}{%- continue -%}{%- endif -%}
+    {%- assign high = first | at_least: second -%}{%- assign low = first | at_most: second -%}
+    {%- assign day_date = '—' -%}{%- assign day_label = nil -%}
+    {%- if day_base_epoch != nil -%}
+      {%- assign day_offset = i | times: 86400 -%}
+      {%- assign day_epoch = day_base_epoch | divided_by: 1000 | plus: day_offset -%}
+      {%- assign day_date = day_epoch | floor | date: '%-d/%-m' -%}{%- assign day_label = day_epoch | floor | date: '%a' -%}
+    {%- endif -%}
+    {%- if i == 0 -%}{%- assign day_label = 'Today' -%}{%- elsif i == 1 -%}{%- assign day_label = 'Tomorrow' -%}{%- endif -%}
+    {%- capture state_json -%}{% render 'weather_condition', value: conditions[i].from %}{%- endcapture -%}
+    {%- assign state = state_json | parse_json -%}
+    {%- capture probability_json -%}{% render 'weather_number', value: rain[i], kind: 'number' %}{%- endcapture -%}
+    {%- assign probability = probability_json | parse_json -%}
+    {%- assign rain_text = '—' -%}
+    {%- if probability != nil and probability >= 0 and probability <= 100 -%}{%- assign rain_text = probability | plus: 0.5 | floor | append: '%' -%}{%- endif -%}
+    {%- if emitted > 0 -%},{%- endif -%}{%- assign emitted = emitted | plus: 1 -%}
+    { {% if day_label != nil %}"label":{{ day_label | json }},{% endif %}"date":{{ day_date | json }},
+      "high":{% capture text %}{% render 'weather_value', value: high, fahrenheit: fahrenheit, suffix: '°' %}{% endcapture %}{{ text | json }},
+      "low":{% capture text %}{% render 'weather_value', value: low, fahrenheit: fahrenheit, suffix: '°' %}{% endcapture %}{{ text | json }},
+      "condition":{{ state.text | json }},"icon_url":{{ state.icon_url | json }},"rain":{{ rain_text | json }}}
+  {%- endfor -%}]
+{%- endcapture -%}
+{%- assign days = days_json | parse_json -%}
+{%- comment -%}Keep twelve valid future hours; sample labels only after computing the full trend.{%- endcomment -%}
+{%- capture temperatures_json -%}{% render 'weather_values', block: hourly_weather.temperature %}{%- endcapture -%}
+{%- capture conditions_json -%}{% render 'weather_values', block: hourly_weather.weather %}{%- endcapture -%}
+{%- capture wind_json -%}{% render 'weather_values', block: hourly_weather.wind %}{%- endcapture -%}
+{%- assign temperatures = temperatures_json | parse_json -%}{%- assign conditions = conditions_json | parse_json -%}{%- assign wind = wind_json | parse_json -%}
+{%- assign start_iso = hourly_weather.temperature.pubTime | default: hourly_weather.weather.pubTime -%}
+{%- capture start_json -%}{% render 'weather_epoch', value: start_iso %}{%- endcapture -%}
+{%- assign start = start_json | parse_json -%}
+{%- assign offset_text = start_iso | slice: -6, 6 -%}{%- assign offset_sign = offset_text | slice: 0, 1 -%}
+{%- assign offset = 0 -%}
+{%- if offset_sign == '+' or offset_sign == '-' -%}
+  {%- assign offset_hours = offset_text | slice: 1, 2 | plus: 0 | times: 3600 -%}
+  {%- assign offset = offset_text | slice: 4, 2 | plus: 0 | times: 60 | plus: offset_hours -%}
+  {%- if offset_sign == '-' -%}{%- assign offset = offset | times: -1 -%}{%- endif -%}
+{%- endif -%}
+{%- capture all_hours_json -%}[
+  {%- assign emitted = 0 -%}
+  {%- for raw_temperature in temperatures -%}
+    {%- assign i = forloop.index0 -%}
+    {%- if i >= conditions.size or start == nil or emitted == 12 -%}{%- break -%}{%- endif -%}
+    {%- capture numeric_json -%}{% render 'weather_number', value: raw_temperature, kind: 'number' %}{%- endcapture -%}
+    {%- assign numeric = numeric_json | parse_json -%}
+    {%- assign stamp = i | times: 3600000 | plus: start -%}
+    {%- if numeric == nil or stamp < reference_time -%}{%- continue -%}{%- endif -%}
+    {%- assign local_epoch = stamp | divided_by: 1000 | plus: offset -%}
+    {%- assign local = local_epoch | floor | date: '%Y-%m-%dT%H:%M:%SZ' -%}
+    {%- if wind[i].datetime != nil and wind[i].datetime != empty -%}{%- assign local = wind[i].datetime -%}{%- endif -%}
+    {%- assign local_date = local | slice: 0, 10 -%}
+    {%- assign night = false -%}
+    {%- for sun in sun_times -%}
+      {%- assign sun_date = sun.from | slice: 0, 10 -%}
+      {%- if sun_date != local_date -%}{%- continue -%}{%- endif -%}
+      {%- capture rise_json -%}{% render 'weather_epoch', value: sun.from %}{%- endcapture -%}
+      {%- capture set_json -%}{% render 'weather_epoch', value: sun.to %}{%- endcapture -%}
+      {%- assign rise = rise_json | parse_json -%}{%- assign set = set_json | parse_json -%}
+      {%- if rise != nil and set != nil -%}{%- if stamp < rise or stamp >= set -%}{%- assign night = true -%}{%- endif -%}{%- endif -%}
+      {%- break -%}
+    {%- endfor -%}
+    {%- capture state_json -%}{% render 'weather_condition', value: conditions[i], night: night %}{%- endcapture -%}
+    {%- assign state = state_json | parse_json -%}
+    {%- capture hour_time -%}{% render 'weather_time', value: local %}{%- endcapture -%}
+    {%- assign chart_value = numeric -%}
+    {%- if fahrenheit -%}{%- assign chart_value = numeric | times: 9.0 | divided_by: 5.0 | plus: 32 -%}{%- endif -%}
+    {%- if emitted > 0 -%},{%- endif -%}{%- assign emitted = emitted | plus: 1 -%}
+    {"time":{{ hour_time | json }},"timestamp":{{ stamp | json }},
+     "temperature":{% capture text %}{% render 'weather_value', value: numeric, fahrenheit: fahrenheit, suffix: '°' %}{% endcapture %}{{ text | json }},
+     "value":{{ chart_value | json }},"icon_url":{{ state.icon_url | json }},"condition":{{ state.text | json }}}
+  {%- endfor -%}]
+{%- endcapture -%}
+{%- assign all_hours = all_hours_json | parse_json -%}
+{%- assign minimum = 0 -%}{%- assign maximum = 1 -%}{%- assign span = 1 -%}
+{%- if all_hours.size > 0 -%}
+  {%- assign minimum = all_hours[0].value -%}{%- assign maximum = minimum -%}
+  {%- for hour in all_hours -%}
+    {%- assign minimum = minimum | at_most: hour.value -%}{%- assign maximum = maximum | at_least: hour.value -%}
+  {%- endfor -%}
+  {%- assign minimum = minimum | minus: 1 -%}{%- assign maximum = maximum | plus: 1 -%}
+  {%- if all_hours.size > 1 -%}{%- assign span = all_hours.last.timestamp | minus: all_hours[0].timestamp -%}{%- endif -%}
+{%- endif -%}
+{%- assign chart_range = maximum | minus: minimum | times: 1.0 -%}
+{%- capture chart_points -%}
+  {%- for hour in all_hours -%}
+    {%- assign x = hour.timestamp | minus: all_hours[0].timestamp | times: 408.0 | divided_by: span | plus: 16 | plus: 0.5 | floor -%}
+    {%- assign y_distance = hour.value | minus: minimum | times: 54 | divided_by: chart_range -%}
+    {%- assign y = 70 | minus: y_distance | plus: 0.5 | floor -%}
+    {%- unless forloop.first -%}{{- ' ' -}}{%- endunless -%}{{- x -}},{{- y -}}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- capture markers_json -%}[
+  {%- for hour in all_hours -%}
+    {%- assign remainder = forloop.index0 | modulo: 2 -%}{%- if remainder != 0 -%}{%- continue -%}{%- endif -%}
+    {%- assign x = hour.timestamp | minus: all_hours[0].timestamp | times: 408.0 | divided_by: span | plus: 16 | plus: 0.5 | floor -%}
+    {%- assign y_distance = hour.value | minus: minimum | times: 54 | divided_by: chart_range -%}
+    {%- assign y = 70 | minus: y_distance | plus: 0.5 | floor -%}
+    {%- unless forloop.first -%},{%- endunless -%}{"x":{{ x }},"y":{{ y }}}
+  {%- endfor -%}]
+{%- endcapture -%}
+{%- capture hours_json -%}[
+  {%- for hour in all_hours -%}
+    {%- assign remainder = forloop.index0 | modulo: 2 -%}{%- if remainder != 0 -%}{%- continue -%}{%- endif -%}
+    {%- unless forloop.first -%},{%- endunless -%}{{- hour | json -}}
+  {%- endfor -%}]
+{%- endcapture -%}
+{%- assign hours = hours_json | parse_json -%}
+{%- capture chart_json -%}
+  {"points":{{ chart_points | json }},"markers":{{ markers_json }},
+   "low":{% capture text %}{% if all_hours.size > 0 %}{% assign value = minimum | plus: 1 %}{% render 'weather_value', value: value, suffix: '°' %}{% else %}—{% endif %}{% endcapture %}{{ text | json }},
+   "high":{% capture text %}{% if all_hours.size > 0 %}{% assign value = maximum | minus: 1 %}{% render 'weather_value', value: value, suffix: '°' %}{% else %}—{% endif %}{% endcapture %}{{ text | json }},
+   "from":{{ all_hours[0].time | default: '—' | json }},"to":{{ all_hours.last.time | default: '—' | json }}}
+{%- endcapture -%}
+{%- assign chart = chart_json | parse_json -%}
+{%- capture source -%}
+  {%- if location_valid -%}
+    {%- assign emitted = 0 -%}
+    {%- for brand in brandInfo.brands -%}
+      {%- assign name = brand.names.en_US | default: brand.brandId -%}
+      {%- if name == nil or name == empty -%}{%- continue -%}{%- endif -%}
+      {%- if emitted > 0 -%}{{- ' / ' -}}{%- endif -%}{{- name -}}{%- assign emitted = emitted | plus: 1 -%}
+    {%- endfor -%}
+  {%- endif -%}
+{%- endcapture -%}
+{%- assign source = source | default: 'Xiaomi Weather' -%}
+{%- assign alert_count = 0 -%}{%- assign alert_title = '' -%}
+{%- assign alerts_wire = alerts | json -%}{%- assign alerts_type = alerts_wire | slice: 0, 1 -%}
+{%- if location_valid and alerts_type == '[' -%}
+  {%- for alert in alerts -%}
+    {%- if alert.title == nil or alert.title == empty or alert.title == false -%}{%- continue -%}{%- endif -%}
+    {%- if alert_count == 0 -%}{%- assign alert_title = alert.title | append: '' -%}{%- endif -%}
+    {%- assign alert_count = alert_count | plus: 1 -%}
+  {%- endfor -%}
+{%- endif -%}
 {%- capture weather_brand_icon -%}
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="404" viewBox="17 8 71 56">
   <path fill="#000000" d="M72.556,42.187C73.501,40.271,74,38.166,74,36c0-7.72-6.28-14-14-14c-4.601,0-8.895,2.281-11.496,6.021 C48.336,28.016,48.17,28,48.001,28c-7.664,0-14.219,5.012-16.311,12.184C31.113,40.079,30.508,40,30.001,40 c-6.066,0-11,4.935-11,11s4.934,11,11,11h36c6.065,0,11-4.935,11-11C77.001,47.392,75.247,44.194,72.556,42.187z M60,26 c5.514,0,10,4.486,10,10c0,1.548-0.36,3.05-1.036,4.417C68.019,40.152,67.028,40,66.001,40c-0.508,0-1.112,0.079-1.69,0.184 c-1.608-5.511-5.854-9.735-11.21-11.401C54.939,27.03,57.397,26,60,26z M66.001,58h-36c-3.859,0-7-3.141-7-7s3.141-7,7-7 c0.277,0,0.723,0.068,1.193,0.162V46c0,1.104,0.896,2,2,2c1.104,0,2-0.896,2-2v-3.219C36.267,36.528,41.63,32,48.001,32 c6.372,0,11.736,4.53,12.807,10.786V46c0,1.104,0.896,2,2,2s2-0.896,2-2v-1.837C65.279,44.069,65.727,44,66.001,44 c3.859,0,7,3.141,7,7S69.86,58,66.001,58z M60,18c1.104,0,2-0.896,2-2v-4c0-1.104-0.896-2-2-2c-1.105,0-2,0.896-2,2v4C58,17.104,58.895,18,60,18z M84,34h-4c-1.105,0-2,0.896-2,2s0.895,2,2,2h4c1.104,0,2-0.896,2-2S85.104,34,84,34z M74.143,23.857c0.512,0,1.023-0.195,1.414-0.586l2.828-2.828c0.781-0.781,0.781-2.047,0-2.828 c-0.781-0.781-2.047-0.781-2.828,0l-2.828,2.828c-0.781,0.781-0.781,2.047,0,2.828C73.119,23.662,73.631,23.857,74.143,23.857z M44.443,23.271c0.391,0.391,0.902,0.586,1.414,0.586c0.512,0,1.023-0.195,1.414-0.586c0.781-0.781,0.781-2.047,0-2.828 l-2.828-2.828c-0.781-0.781-2.047-0.781-2.828,0c-0.781,0.781-0.781,2.047,0,2.828L44.443,23.271z"/>

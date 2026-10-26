@@ -20,7 +20,7 @@ Full shows current conditions, the hourly trend, five daily forecasts, wind, hum
 
 ## Develop locally
 
-Install [trmnlp](https://github.com/usetrmnl/trmnlp) 0.16.0 or newer with Node Serverless support. Set `custom_fields.lat_lon` in [TRMNL/.trmnlp.yml](TRMNL/.trmnlp.yml) to a public demo location such as `48.8584,2.2945`, then run from the repository root:
+Install [trmnlp](https://github.com/usetrmnl/trmnlp) 0.16.0 or newer. Weather uses native polling and Liquid formatting, with no Serverless runtime. Set `custom_fields.lat_lon` in [TRMNL/.trmnlp.yml](TRMNL/.trmnlp.yml) to a public demo location such as `48.8584,2.2945`, then run from the repository root:
 
 ```sh
 cd TRMNL
@@ -28,6 +28,8 @@ trmnlp serve
 ```
 
 Templates and settings live in [TRMNL/src/](TRMNL/src/). See the [plugin guide](TRMNL/README.md) for installation and verification, and the [API notes](docs/api-overview.md) for request examples and data limits.
+
+See the [offline regression checks](TRMNL/README.md#verification-and-references) for the pinned Docker command.
 
 Weather data is provided by AccuWeather via Xiaomi in the tested locations; displayed attribution follows the returned provider.
 

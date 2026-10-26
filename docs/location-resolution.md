@@ -1,8 +1,9 @@
 # Location resolution
 
 See [the live verification record](api-overview.md#live-verification-record). Search and geo return
-a **top-level array**, not an object containing `data`. TRMNL's polling wrapper
-supplies that array as `input.data` to Serverless.
+a **top-level array**, not an object containing `data`. These endpoints are
+documented for API research; the plugin uses its native `lat_lon` picker and
+polls `weather/all` directly, without a location lookup or Serverless step.
 
 Observed successful item for the public Eiffel Tower demo coordinates in Paris
 (`48.8584,2.2945`, checked on 5 October 2026):
@@ -29,9 +30,10 @@ to depend on the alias. Offsets describe these observations, not future DST rule
 
 `GET location/city/search?name=Barcelona&locale=en_us` returned 20 candidates,
 including Spain, Venezuela and other countries. Provider order is not a
-guarantee of user intent. The plugin searches the text before the first comma
-and matches remaining country/region qualifiers against `affiliation`, ignoring
-case and accents. Matching names can include provider aliases.
+guarantee of user intent. The earlier city-search implementation searched the
+text before the first comma and matched remaining country/region qualifiers
+against `affiliation`, ignoring case and accents. The current plugin uses the
+native picker instead. Matching API names can include provider aliases.
 
 `La Sagrada Família` returned `accu:304344`; `Beijing` returned
 `weathercn:101010100`. `BCN` returned `[]`. A deliberately nonsensical search
