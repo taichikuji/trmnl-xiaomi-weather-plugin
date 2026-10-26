@@ -2,9 +2,9 @@
 
 Atmosphere (formerly Xiaomi Weather) displays current conditions and forecasts on your TRMNL, using the same weather endpoint as Xiaomi phones. See the temperature, hourly trend, five-day outlook and provider-reported alerts with TRMNL's official weather icons.
 
-<a href="https://github.com/taichikuji/trmnl-xiaomi-weather-plugin/tree/main/TRMNL#setup"><img width="150" alt="Works with TRMNL" src="https://trmnl.com/images/brand/badges/light/works-with-trmnl/trmnl-badge-works-with-light.svg" /></a>
+<a href="https://trmnl.com/recipes/495797"><img width="150" alt="Works with TRMNL" src="https://trmnl.com/images/brand/badges/light/works-with-trmnl/trmnl-badge-works-with-light.svg" /></a>
 
-[Set up a Private Plugin](TRMNL/README.md#setup)
+[Install on TRMNL](https://trmnl.com/recipes/495797)
 
 ![Current weather, hourly temperatures and daily forecasts on TRMNL](TRMNL/media/preview_full.webp)
 
@@ -16,7 +16,7 @@ The listing description is **Xiaomi Weather forecasts**. See [listing metadata](
 
 - **Location:** search for a city, address or postal code, or enter latitude, longitude.
 - **Temperature unit:** Celsius or Fahrenheit (defaults to Celsius).
-- No personal weather API key or separate server needed. Private plugins require TRMNL Developer or BYOD access.
+- No personal weather API key or separate server needed.
 
 Full shows current conditions, the hourly trend, five daily forecasts, wind, humidity, sun times and UV. Half layouts keep current weather and three daily forecasts; quadrant keeps the essentials. All four layouts adapt to TRMNL OG and TRMNL X, including portrait. Data refreshes every 30 minutes.
 
