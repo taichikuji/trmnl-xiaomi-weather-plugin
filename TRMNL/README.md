@@ -12,7 +12,7 @@ The plugin listing icon uses the supplied sun-and-cloud artwork, simplified to o
 
 ## Previews
 
-Previews use a recorded Barcelona response from **4 October 2026**, not a current forecast. These four OG layout previews use a 1-bit palette.
+Previews were rendered before the native Liquid migration with a recorded response for the public Paris demo point (`48.8584,2.2945`), observed **25 October 2026 at 21:16 CET**. Regression checks preserve the displayed weather and layout markup. These are not a current forecast. All four use Framework **3.4.0** and the OG 1-bit palette; partial layouts are cropped to their native view.
 
 | Full View | Half Horizontal View |
 |------------|----------------------|
