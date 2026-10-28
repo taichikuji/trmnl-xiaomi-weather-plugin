@@ -1,7 +1,7 @@
 # Native Liquid regression checks
 
 Run the Docker command in [the plugin README](../README.md#verification-and-references).
-The suite uses the real `trmnl-liquid` engine bundled in `trmnl/trmnlp:v0.32.3`,
+The suite uses the real `trmnl-liquid` engine bundled in `trmnl/trmnlp:latest`,
 with strict parsing and unknown-filter errors enabled. It makes no requests.
 
 Additional timestamp checks reject impossible dates and hours that Ruby would

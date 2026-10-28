@@ -22,7 +22,7 @@ Full shows current conditions, the hourly trend, five daily forecasts, wind, hum
 
 ## Develop locally
 
-Install [trmnlp](https://github.com/usetrmnl/trmnlp) 0.32.3, the version pinned in the publishing workflow. Weather uses native polling and Liquid formatting, with no Serverless runtime. Set `custom_fields.lat_lon` in [TRMNL/.trmnlp.yml](TRMNL/.trmnlp.yml) to a public demo location such as `48.8584,2.2945`, then run from the repository root:
+Install the latest [trmnlp](https://github.com/usetrmnl/trmnlp) release, matching the publishing workflow. Weather uses native polling and Liquid formatting, with no Serverless runtime. Set `custom_fields.lat_lon` in [TRMNL/.trmnlp.yml](TRMNL/.trmnlp.yml) to a public demo location such as `48.8584,2.2945`, then run from the repository root:
 
 ```sh
 cd TRMNL
