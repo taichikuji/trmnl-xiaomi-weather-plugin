@@ -34,7 +34,7 @@ These recorded previews predate the Atmosphere rename; the current title bar use
 
 Create a TRMNL Private Plugin with Polling / GET, Framework **3.4.0**, screen padding enabled and a **30-minute** refresh interval. Private plugins require Developer or BYOD access.
 
-Use [TRMNLP](https://github.com/usetrmnl/trmnlp) **0.16.0 or newer**, open this directory and run:
+Use [TRMNLP](https://github.com/usetrmnl/trmnlp) **0.32.3**, open this directory and run:
 
 ```sh
 trmnlp serve
@@ -61,7 +61,7 @@ The GitHub **Publish to TRMNL** workflow runs when changes to `TRMNL/src/`, `TRM
 4. Set `TRMNL_PLUGIN_SETTING_ID` to the number in your plugin's `/plugin_settings/<ID>/edit` URL. This is the installed plugin setting ID, not a recipe or device ID.
 5. Run **Publish to TRMNL** once to verify access. Subsequent pushes to `main` publish automatically when the relevant files change.
 
-The workflow uses the official `trmnl/trmnlp:v0.16.0` image and passes the key through `TRMNL_API_KEY`; TRMNLP adds the Bearer header. No CI login step or separate OAuth flow is needed. A missing capability or plugin access produces a TRMNL 403: recreate the key for a missing capability, or edit its access for a missing plugin grant. See [Account API Keys](https://help.trmnl.com/en/articles/11195228-account-api-keys) and [TRMNLP authentication](https://github.com/usetrmnl/trmnlp#authentication).
+The workflow uses the official `trmnl/trmnlp:v0.32.3` image and passes the key through `TRMNL_API_KEY`; TRMNLP adds the Bearer header. No CI login step or separate OAuth flow is needed. A missing capability or plugin access produces a TRMNL 403: recreate the key for a missing capability, or edit its access for a missing plugin grant. See [Account API Keys](https://help.trmnl.com/en/articles/11195228-account-api-keys) and [TRMNLP authentication](https://github.com/usetrmnl/trmnlp#authentication).
 
 ## Templates
 
@@ -117,7 +117,7 @@ Run the offline regression checks from this directory using the same official im
 ```sh
 docker run --rm --network none \
   --volume "$PWD:/plugin:ro" --entrypoint ruby \
-  trmnl/trmnlp:v0.16.0 /plugin/tests/check.rb
+  trmnl/trmnlp:v0.32.3 /plugin/tests/check.rb
 ```
 
 The native Ruby Liquid checks compare 46 fixed-clock weather fixtures with the pre-removal baseline and verify all four rendered layouts, including the intentional Atmosphere title-bar rename. They also check 60 condition inputs in day and night modes, 26 valid or malformed timestamps, seven formatted JSON values and seven alert edge cases. Coverage includes coordinate boundaries, both units, negative rounding, missing/invalid data, partial forecasts, alerts and escaping, observation-age boundaries, hourly sampling, chart coordinates, timezone offsets and a DST transition. They verify that Serverless is disabled and no transform is included in upload inputs. See [test fixture provenance](tests/README.md).
