@@ -28,17 +28,9 @@ custom_fields:
     field_type: author_bio
     name: About This Plugin
     description: >-
-      Atmosphere, formerly Xiaomi Weather, brings current conditions and weather
-      forecasts to your TRMNL using the same endpoint as Xiaomi phones. Choose a
-      city, address, postal code or coordinates with the searchable Location
-      picker, then select Celsius or Fahrenheit. See the current temperature,
-      feels-like temperature, hourly trend and daily outlook, plus precipitation
-      chances, wind, humidity, sunrise, sunset and UV when the provider supplies
-      them. All four layouts support TRMNL OG and TRMNL X, including portrait.
-      Observations older than three hours are marked, missing values remain
-      visible as unavailable, and alerts are reported as supplied by the provider.
-      No personal weather API key or separate server is required. Created by Ivan
-      Perez; use the GitHub link for support and setup instructions.
+      Atmosphere brings beautiful weather forecasts to your TRMNL, powered by
+      Xiaomi Weather. Check current conditions, hourly and daily forecasts, and
+      more, wherever you are.
     category: environment
     github_url: https://github.com/taichikuji/trmnl-xiaomi-weather-plugin
     learn_more_url: https://github.com/taichikuji/trmnl-xiaomi-weather-plugin/tree/main/TRMNL#setup
