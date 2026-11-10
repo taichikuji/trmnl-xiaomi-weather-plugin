@@ -29,9 +29,7 @@ cd TRMNL
 trmnlp serve
 ```
 
-Templates and settings live in [TRMNL/src/](TRMNL/src/). See the [plugin guide](TRMNL/README.md) for installation and verification, and the [API notes](docs/api-overview.md) for request examples and data limits.
-
-See the [offline regression checks](TRMNL/README.md#verification-and-references) for the pinned Docker command.
+Templates and settings live in [TRMNL/src/](TRMNL/src/). See the [plugin guide](TRMNL/README.md) for installation and manual verification, and the [API notes](docs/api-overview.md) for request examples and data limits.
 
 Weather data is provided by AccuWeather via Xiaomi in the tested locations; displayed attribution follows the returned provider.
 

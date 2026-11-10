@@ -56,9 +56,6 @@ settings require no migration. See [setup](../TRMNL/README.md#setup).
 
 ## Checks and limits
 
-The [offline native Liquid checks](../TRMNL/README.md#verification-and-references)
-compare display values and all four rendered layouts against fixed pre-removal
-baselines. The [fixture notes](../TRMNL/tests/README.md) explain their provenance.
 Use the [documented API examples](weather-endpoint.md) to repeat live checks;
 publication times and weather blocks matter more than full payload equality.
 

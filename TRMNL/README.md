@@ -18,7 +18,7 @@ The plugin listing icon uses the supplied sun-and-cloud artwork, simplified to o
 
 ## Previews
 
-Previews were rendered before the native Liquid migration with a recorded response for the public Paris demo point (`48.8584,2.2945`), observed **25 October 2026 at 21:16 CET**. Regression checks preserve the displayed weather and layout markup. These are not a current forecast. All four use Framework **3.4.0** and the OG 1-bit palette; partial layouts are cropped to their native view.
+Previews were rendered before the native Liquid migration with a recorded response for the public Paris demo point (`48.8584,2.2945`), observed **25 October 2026 at 21:16 CET**. These are not a current forecast. All four use Framework **3.4.0** and the OG 1-bit palette; partial layouts are cropped to their native view.
 
 These recorded previews predate the Atmosphere rename; the current title bar uses Atmosphere with provider attribution.
 
@@ -80,7 +80,7 @@ Reviewed against [TRMNL's publishing best practices](https://trmnl.com/blog/plug
 - Xiaomi provides a distinct data source; all four layouts ship in one recipe.
 - The About section links to setup instructions and the GitHub repository for support, with the environment category. Settings contain no personal defaults or weather credentials.
 - Polling fetches weather directly using the picker’s coordinates. Markup uses native Framework classes and Liquid, a shared embedded title-bar icon, and an SVG chart without chart libraries or client-side API calls.
-- Chromium checks covered all four views on OG landscape, X landscape and X portrait, including Fahrenheit, long names, stale observations and unavailable forecasts. Narrow title bars clamp their title while reserving room for observation time and unit.
+- Narrow title bars clamp their title while reserving room for observation time and unit.
 
 Before submitting in TRMNL, choose a public demo location such as Paris with the picker, save and Force Refresh. Confirm that the install preview shows weather for the selected location, and save both a search selection and direct coordinates plus each temperature unit to check the account-side form behavior. Run CHEF and address any feedback before acknowledging the practices. Keep the Recipe Master configured for public demo weather and install a separate copy for personal use. These account-side steps and the human review are not confirmed by a successful GitHub upload.
 
@@ -112,17 +112,7 @@ When upgrading from the removed city and Coordinates fields, choose Location aga
 
 ## Verification and references
 
-Run the offline regression checks from this directory using the same official image as publishing:
-
-```sh
-docker run --rm --pull=always --network none \
-  --volume "$PWD:/plugin:ro" --entrypoint ruby \
-  trmnl/trmnlp:latest /plugin/tests/check.rb
-```
-
-The native Ruby Liquid checks compare 46 fixed-clock weather fixtures with the pre-removal baseline and verify all four rendered layouts, including the intentional Atmosphere title-bar rename. They also check 60 condition inputs in day and night modes, 26 valid or malformed timestamps, seven formatted JSON values and seven alert edge cases. Coverage includes coordinate boundaries, both units, negative rounding, missing/invalid data, partial forecasts, alerts and escaping, observation-age boundaries, hourly sampling, chart coordinates, timezone offsets and a DST transition. They verify that Serverless is disabled and no transform is included in upload inputs. See [test fixture provenance](tests/README.md).
-
-The refactor follows TRMNL's [Shared preprocessing guidance](https://help.trmnl.com/en/articles/13216853-reusing-markup-with-shared) and [documented filters](https://help.trmnl.com/en/articles/10347358-custom-plugin-filters). Helpers use explicit render arguments, serialize strings with `json`, preserve null/zero distinctions with `parse_json`, and escape provider text at the HTML boundary. Native collection filters prepare chart data, filter alerts and find weekly extremes; rendered markup and the Framework version remain unchanged. Local development checks use Ruby; the installed plugin needs only native polling and Liquid.
+The refactor follows TRMNL's [Shared preprocessing guidance](https://help.trmnl.com/en/articles/13216853-reusing-markup-with-shared) and [documented filters](https://help.trmnl.com/en/articles/10347358-custom-plugin-filters). Helpers use explicit render arguments, serialize strings with `json`, preserve null/zero distinctions with `parse_json`, and escape provider text at the HTML boundary. Native collection filters prepare chart data, filter alerts and find weekly extremes; rendered markup and the Framework version remain unchanged. The installed plugin needs only native polling and Liquid.
 
 Account-side autocomplete, form validation, scheduled refresh, CHEF and physical e-ink output still require verification in TRMNL.
 
