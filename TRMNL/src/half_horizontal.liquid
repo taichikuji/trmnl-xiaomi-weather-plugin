@@ -1,29 +1,19 @@
 {% if available %}
-<div class="layout layout--col gap--small">
-  <div class="grid grid--cols-12 gap--medium">
-    <div class="col--span-5 lg:portrait:col--span-4 flex flex--col flex--left gap--small">
-      <span class="title lg:title--large w--full" data-clamp="1">{{ city | escape }}</span>
-      <div class="flex flex--row lg:portrait:flex--col flex--center-y gap--medium">
-        <div class="grow w--min-0">
-          <span class="value value--xlarge lg:value--xxxlarge" data-value-fit="true">{{ now.temperature }}</span>
-        </div>
-        <div class="w--16 h--16 lg:w--24 lg:h--24 no-shrink"><img class="w--full h--full" src="{{ now.icon_url }}" alt="{{ now.condition | escape }}"></div>
+<div class="layout layout--col gap--xsmall">
+  <div class="grid grid--cols-12 portrait:grid--cols-1 gap--small grow">
+    <div class="col--span-5 portrait:col--span-1 flex flex--col flex--between gap--xsmall">
+      <div class="flex flex--row flex--between w--full">
+        <span class="title grow" data-clamp="1">{{ city | escape }}</span>
+        <span class="label no-shrink">{{ unit }}</span>
       </div>
-      <span class="label lg:label--xlarge w--full" data-clamp="1" data-clamp-lg="2">{{ now.condition | escape }} · Feels {{ now.feels_like }}</span>
+      {% render 'weather_current', now: now, days: days, size: 'value--large lg:value--xxxlarge', range_class: 'hidden' %}
     </div>
-    <div class="col--span-7 lg:portrait:col--span-8 grid grid--cols-3 gap--small border--v-10 pl--3">
-      {% for day in days limit:3 %}
-      <div class="flex flex--col flex--center gap--small lg:portrait:gap--large">
-        <span class="label lg:label--xlarge text--bold">{{ day.label }}</span>
-        <div class="w--12 h--12 lg:w--20 lg:h--20"><img class="w--full h--full" src="{{ day.icon_url }}" alt="{{ day.condition | escape }}"></div>
-        <span class="value value--small lg:value--large">{{ day.high }} <span class="label label--large">/ {{ day.low }}</span></span>
-        <span class="label lg:label--xlarge">Precip. {{ day.rain }}</span>
-      </div>
-      {% else %}<span class="label lg:label--xlarge col--span-3">Daily forecast unavailable</span>{% endfor %}
+    <div class="col--span-7 portrait:col--span-1 outline p--2 lg:p--4 flex flex--col gap--xsmall flex--between">
+      {% render 'weather_forecast', days: days, count: 3 %}
     </div>
   </div>
-  {% if stale %}<span class="label lg:label--xlarge label--outline w--full">Old observation · {{ observed_date }}</span>
-  {% elsif alert_count > 0 %}<span class="label lg:label--xlarge label--filled w--full" data-clamp="1">Provider alert · {{ alert_title | escape }} ({{ alert_count }})</span>{% endif %}
+  {% if stale %}<span class="label label--outline w--full">Old observation · {{ observed_date }}</span>
+  {% elsif alert_count > 0 %}<span class="label label--filled w--full" data-clamp="1">Provider alert · {{ alert_title | escape }} ({{ alert_count }})</span>{% endif %}
 </div>
 {% else %}{{ weather_error }}{% endif %}
 {{ weather_footer }}

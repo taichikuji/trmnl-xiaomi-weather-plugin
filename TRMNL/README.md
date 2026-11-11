@@ -32,7 +32,7 @@ These recorded previews predate the Atmosphere rename; the current title bar use
 
 ## Setup
 
-Create a TRMNL Private Plugin with Polling / GET, Framework **3.4.0**, screen padding enabled and a **30-minute** refresh interval. Private plugins require Developer or BYOD access.
+Create a TRMNL Private Plugin with Polling / GET, Framework **3.4.6**, screen padding enabled and a **30-minute** refresh interval. Private plugins require Developer or BYOD access.
 
 Use the latest [TRMNLP](https://github.com/usetrmnl/trmnlp) release, open this directory and run:
 
@@ -65,13 +65,13 @@ The workflow uses the official `trmnl/trmnlp:latest` image on a fresh GitHub-hos
 
 ## Templates
 
-- **shared.liquid**: Validates coordinates and prepares display values, condition icons and SVG chart coordinates from the raw polling response, then captures attribution, unavailable-data state, provider notices and the hourly chart.
-- **full.liquid**: Current conditions, hourly temperatures, five daily forecasts, wind, humidity, sun times and UV.
+- **shared.liquid**: Validates coordinates and prepares display values, condition icons and SVG chart coordinates from the raw polling response; supplies shared current-weather and forecast markup, attribution, unavailable-data state and provider notices.
+- **full.liquid**: Current conditions and detail panels beside five daily forecast rows with temperature range bars, plus hourly temperatures below.
 - **half_horizontal.liquid**: Current weather beside three daily forecasts and a provider notice.
 - **half_vertical.liquid**: Large current temperature, sun times, three daily forecasts and a provider notice.
 - **quadrant.liquid**: Current temperature, condition, feels-like temperature and alert count; X also shows wind, humidity, daily high/low, precipitation and sun times.
 
-All four layouts use Framework 3.4.0 utilities without custom CSS. Their OG areas are 800 × 480, 800 × 240, 400 × 480 and 400 × 240; X uses the corresponding portions of 1040 × 780, or 780 × 1040 in portrait. The full portrait view stacks current conditions and hourly weather, with three columns for the daily forecasts. Platform margins and title bars reduce the usable content area.
+All four layouts use Framework 3.4.6 utilities without custom CSS. Their OG areas are 800 × 480, 800 × 240, 400 × 480 and 400 × 240; X uses the corresponding portions of 1040 × 780, or 780 × 1040 in portrait. The full portrait view stacks the current-weather overview, daily forecast rows and hourly section. Platform margins and title bars reduce the usable content area.
 
 ## Public recipe submission
 
@@ -112,7 +112,7 @@ When upgrading from the removed city and Coordinates fields, choose Location aga
 
 ## Verification and references
 
-The refactor follows TRMNL's [Shared preprocessing guidance](https://help.trmnl.com/en/articles/13216853-reusing-markup-with-shared) and [documented filters](https://help.trmnl.com/en/articles/10347358-custom-plugin-filters). Helpers use explicit render arguments, serialize strings with `json`, preserve null/zero distinctions with `parse_json`, and escape provider text at the HTML boundary. Native collection filters prepare chart data, filter alerts and find weekly extremes; rendered markup and the Framework version remain unchanged. The installed plugin needs only native polling and Liquid.
+The data preparation follows TRMNL's [Shared preprocessing guidance](https://help.trmnl.com/en/articles/13216853-reusing-markup-with-shared) and [documented filters](https://help.trmnl.com/en/articles/10347358-custom-plugin-filters). Helpers use explicit render arguments, serialize strings with `json`, preserve null/zero distinctions with `parse_json`, and escape provider text at the HTML boundary. Native collection filters prepare chart data, filter alerts and find forecast extremes. The installed plugin uses Framework 3.4.6, native polling and Liquid.
 
 Account-side autocomplete, form validation, scheduled refresh, CHEF and physical e-ink output still require verification in TRMNL.
 
