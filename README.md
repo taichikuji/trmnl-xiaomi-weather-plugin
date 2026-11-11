@@ -8,7 +8,7 @@ Atmosphere (formerly Xiaomi Weather) displays current conditions and forecasts o
 
 ![Current weather, hourly temperatures and daily forecasts on TRMNL](TRMNL/media/preview_full.webp)
 
-Recorded weather for the public Paris demo point (`48.8584,2.2945`) from 25 October 2026, not a current forecast. [All layout previews](TRMNL/README.md#previews).
+Recorded weather for the public Paris demo point (`48.8584,2.2945`) observed 11 November 2026 at 10:37 CET, not a current forecast. [All layout previews](TRMNL/README.md#previews).
 
 The listing description is **Xiaomi Weather forecasts**. See [listing metadata](TRMNL/README.md#listing-metadata) for TRMNL's search limitations.
 

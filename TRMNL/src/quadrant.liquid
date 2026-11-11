@@ -1,9 +1,6 @@
 {% if available %}
 <div class="layout layout--col gap--xsmall">
-  <div class="flex flex--row flex--between w--full">
-    <span class="title grow" data-clamp="1">{{ city | escape }}</span>
-    {% if stale %}<span class="label label--outline no-shrink">Old data</span>{% elsif alert_count > 0 %}<span class="label label--filled no-shrink">{{ alert_count }} alerts</span>{% endif %}
-  </div>
+  {% if stale %}<span class="label label--outline no-shrink self--end">Old data</span>{% elsif alert_count > 0 %}<span class="label label--filled no-shrink self--end">{{ alert_count }} alerts</span>{% endif %}
   <div class="flex flex--col flex--center grow w--full">
     {% render 'weather_current', now: now, days: days, size: 'value--xlarge lg:value--xxxlarge', range_class: 'hidden lg:inline' %}
   </div>

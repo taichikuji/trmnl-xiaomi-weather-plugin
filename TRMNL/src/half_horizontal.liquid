@@ -1,11 +1,7 @@
 {% if available %}
 <div class="layout layout--col gap--xsmall">
   <div class="grid grid--cols-12 portrait:grid--cols-1 gap--small grow">
-    <div class="col--span-5 portrait:col--span-1 flex flex--col flex--between gap--xsmall">
-      <div class="flex flex--row flex--between w--full">
-        <span class="title grow" data-clamp="1">{{ city | escape }}</span>
-        <span class="label no-shrink">{{ unit }}</span>
-      </div>
+    <div class="col--span-5 portrait:col--span-1 flex flex--col flex--center gap--xsmall">
       {% render 'weather_current', now: now, days: days, size: 'value--xlarge lg:value--xxxlarge lg:portrait:value--xxlarge', range_class: 'hidden' %}
     </div>
     <div class="col--span-7 portrait:col--span-1 outline p--1 lg:p--4 flex flex--col gap--none flex--between">

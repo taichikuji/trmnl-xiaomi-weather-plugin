@@ -1,6 +1,6 @@
 # Atmosphere for TRMNL
 
-Atmosphere (formerly Xiaomi Weather) displays current conditions and forecasts with native TRMNL typography and [TRMNL's official weather SVGs](https://help.trmnl.com/en/articles/11823386-weather-icons). Choose **Location** with TRMNL’s searchable `lat_lon` picker: search for a city, address or postal code, or enter decimal coordinates. Weather is fetched directly using the selected coordinates. The heading reads **Weather** because the forecast response does not include a city name. No separate server or personal weather API key is required.
+Atmosphere (formerly Xiaomi Weather) displays current conditions and forecasts with native TRMNL typography and [TRMNL's official weather SVGs](https://help.trmnl.com/en/articles/11823386-weather-icons). Choose **Location** with TRMNL’s searchable `lat_lon` picker: search for a city, address or postal code, or enter decimal coordinates. Weather is fetched directly using the selected coordinates. The response does not include a city name; available-weather layouts leave out the heading to make room for the forecast. No separate server or personal weather API key is required.
 
 ## Listing metadata
 
@@ -18,9 +18,7 @@ The plugin listing icon uses the supplied sun-and-cloud artwork, simplified to o
 
 ## Previews
 
-Previews were rendered before the native Liquid migration with a recorded response for the public Paris demo point (`48.8584,2.2945`), observed **25 October 2026 at 21:16 CET**. These are not a current forecast. All four use Framework **3.4.0** and the OG 1-bit palette; partial layouts are cropped to their native view.
-
-These recorded previews predate the Atmosphere rename; the current title bar uses Atmosphere with provider attribution.
+Previews use the current templates and a recorded response for the public Paris demo point (`48.8584,2.2945`), observed **11 November 2026 at 10:37 CET**. These are not a current forecast. All four use Framework **3.4.6** and the OG 1-bit palette; partial layouts are cropped to their native view.
 
 | Full View | Half Horizontal View |
 |------------|----------------------|
@@ -95,7 +93,7 @@ CHEF may flag these intentional choices:
 
 The required **Location** field uses TRMNL’s [native `lat_lon` picker](https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder#h_07a70ff721). Search for a city, address or postal code and select a match, or enter decimal degrees in **latitude, longitude** order, for example `48.8584,2.2945` (a public landmark in Paris). Latitude must be between −90 and 90 and longitude between −180 and 180. There is no personal default.
 
-TRMNL stores the selection as comma-separated coordinates. Native polling calls Xiaomi’s `/weather/all` endpoint directly, without a location key or lookup request. Shared Liquid validates the coordinates and formats the forecast. The forecast response has no city name, so the heading reads **Weather**.
+TRMNL stores the selection as comma-separated coordinates. Native polling calls Xiaomi’s `/weather/all` endpoint directly, without a location key or lookup request. Shared Liquid validates the coordinates and formats the forecast. The forecast response has no city name. Available-weather layouts omit the heading; provider attribution, observation time and temperature unit remain in the footer.
 
 When upgrading from the removed city and Coordinates fields, choose Location again; those older values are not migrated automatically. Invalid coordinates and unavailable forecasts show an unavailable state. Temperature unit defaults to Celsius and accepts `celsius` or `fahrenheit`.
 
