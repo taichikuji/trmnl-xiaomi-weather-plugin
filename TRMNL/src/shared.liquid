@@ -401,10 +401,14 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
 {%- endcapture -%}
 {%- capture hourly_chart -%}
 {% if chart.markers.size > 0 %}
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 90" class="w--full h--14 portrait:h--10 lg:h--24 lg:portrait:h--14 text--black" role="img" aria-label="Hourly temperature trend from {{ chart.from }} to {{ chart.to }}; {{ chart.low }} to {{ chart.high }}">
-  <path d="M16 76H424" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 5"/>
-  <polyline points="{{ chart.points }}" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  {% for point in chart.markers %}<circle cx="{{ point.x }}" cy="{{ point.y }}" r="4" fill="white" stroke="currentColor" stroke-width="2"/>{% endfor %}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 90" preserveAspectRatio="none" class="w--full h--0 grow text--black" role="img" aria-label="Hourly temperature trend from {{ chart.from }} to {{ chart.to }}; {{ chart.low }} to {{ chart.high }}">
+  <path d="M16 76H424" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 5" vector-effect="non-scaling-stroke" shape-rendering="crispEdges"/>
+  <polyline points="{{ chart.points }}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+  <!-- Round caps keep markers circular while the plot stretches. -->
+  {% for point in chart.markers %}
+  <path d="M{{ point.x }} {{ point.y }}h0" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+  <path d="M{{ point.x }} {{ point.y }}h0" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+  {% endfor %}
 </svg>
 {% else %}<div class="flex flex--center h--24"><span class="label">Hourly forecast unavailable</span></div>{% endif %}
 {%- endcapture -%}

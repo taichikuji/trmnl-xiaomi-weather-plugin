@@ -33,7 +33,7 @@
     </div>
     {% if hours.size > 0 %}
     <div class="grid grid--cols-3 gap--small">
-      <div class="col--span-1">{{ hourly_chart }}</div>
+      <div class="col--span-1 flex flex--col">{{ hourly_chart }}</div>
       <div class="col--span-2">
         <div class="grid grid--cols-6 gap--xsmall">
           {% for hour in hours %}
