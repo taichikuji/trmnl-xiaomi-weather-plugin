@@ -393,9 +393,9 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
   <span class="label">Check next refresh</span>
 </div>
 {%- elsif alert_count > 0 -%}
-<div class="flex flex--row flex--between w--full bg--black text--white px--2 py--1">
+<div class="outline p--2 flex flex--row flex--between gap--xsmall w--full bg--black text--white">
   <span class="label text--white text--bold grow" data-clamp="1">Provider alert · {{ alert_title | escape }}</span>
-  <span class="label text--white no-shrink">{{ alert_count }} reported</span>
+  <span class="label label--small lg:label--base text--white no-shrink">{{ alert_count }} alert{% unless alert_count == 1 %}s{% endunless %}</span>
 </div>
 {%- endif -%}
 {%- endcapture -%}

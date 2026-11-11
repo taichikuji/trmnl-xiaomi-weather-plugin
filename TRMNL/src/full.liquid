@@ -1,14 +1,13 @@
 {% if available %}
 <div class="layout layout--col layout--top {% if stale or alert_count > 0 %}gap--none lg:gap--small{% else %}gap--small{% endif %}">
-  <div class="flex flex--row flex--between w--full">
-    <span class="title grow" data-clamp="1">{{ city | escape }}</span>
-    <span class="label no-shrink">{{ date_label | escape }} · {{ unit }}</span>
-  </div>
-  {{ provider_notice }}
+  {% if stale %}{{ provider_notice }}{% endif %}
   <div class="grid grid--cols-12 portrait:grid--cols-1 gap--small lg:gap--large grow">
     <div class="col--span-6 portrait:col--span-1 flex flex--col gap--xsmall lg:gap--medium self--center portrait:grid portrait:grid--cols-2">
       {% render 'weather_current', now: now, days: days, size: 'value--xxlarge portrait:w--full lg:value--giga lg:portrait:value--xxxlarge', large_details: true, icon_class: 'w--20 h--20 lg:w--40 lg:h--40 lg:portrait:w--24 lg:portrait:h--24', row_class: 'portrait:flex--col-reverse portrait:w--full' %}
-      <div class="grid grid--cols-2 gap--xsmall portrait:self--center">
+      {% if stale == false and alert_count > 0 %}
+      <div class="w--full portrait:col--span-2 portrait:order--3">{{ provider_notice }}</div>
+      {% endif %}
+      <div class="grid grid--cols-2 gap--xsmall portrait:self--center portrait:order--2">
         <div class="outline p--2 flex flex--col gap--none">
           <span class="label">WIND</span>
           <span class="label">{{ now.wind }} {{ now.wind_unit | escape }} {{ now.wind_direction }}</span>
