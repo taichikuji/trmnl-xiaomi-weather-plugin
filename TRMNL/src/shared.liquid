@@ -409,13 +409,15 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
 {% else %}<div class="flex flex--center h--24"><span class="label">Hourly forecast unavailable</span></div>{% endif %}
 {%- endcapture -%}
 {% template weather_current %}
-<div class="flex flex--col flex--center gap--xsmall w--full w--min-0">
-  <div class="flex flex--row flex--center-y gap--small no-shrink">
-    <span class="value {{ size }}" data-value-fit="true">{{ now.temperature }}</span>
-    <img class="w--12 h--12 lg:w--20 lg:h--20 no-shrink" src="{{ now.icon_url }}" alt="{{ now.condition | escape }}">
+<div class="flex flex--col flex--center gap--none w--full w--min-0">
+  <div class="flex flex--row {{ row_class }} flex--center-y gap--small no-shrink w--max-full">
+    <div class="w--min-0 w--max-full">
+      <span class="value text--center {{ size }}" data-value-fit="true">{{ now.temperature }}</span>
+    </div>
+    <img class="{{ icon_class | default: 'w--16 h--16 lg:w--24 lg:h--24' }} no-shrink" src="{{ now.icon_url }}" alt="{{ now.condition | escape }}">
   </div>
-  <span class="title w--full text--center" data-clamp="2">{{ now.condition | escape }}</span>
-  <span class="label block text--center">Feels like {{ now.feels_like }}{% if days.size > 0 %}<span class="{{ range_class | default: 'inline' }}"> · High {{ days[0].high }} · Low {{ days[0].low }}</span>{% endif %}</span>
+  <span class="title {% if large_details %}lg:title--large{% endif %} w--full text--center" data-clamp="2">{{ now.condition | escape }}</span>
+  <span class="label {% if large_details %}lg:label--large{% endif %} block text--center">Feels like {{ now.feels_like }}{% if days.size > 0 %}<span class="{{ range_class | default: 'inline' }}"> · High {{ days[0].high }} · Low {{ days[0].low }}</span>{% endif %}</span>
 </div>
 {% endtemplate %}
 {% template weather_forecast %}
@@ -424,19 +426,19 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
   {%- assign forecast_high = forecast_days | map: 'high' | map_to_i | sort | last -%}
   {%- assign forecast_span = forecast_high | minus: forecast_low | at_least: 1 -%}
   <div class="flex flex--row flex--between w--full">
-    <span class="label label--small">{% if forecast_days.size > 0 %}{{ forecast_days.size }}-DAY FORECAST{% else %}DAILY FORECAST{% endif %}</span>
-    {% if forecast_days.size > 0 %}<span class="label label--small no-shrink">{{ forecast_low }}° — {{ forecast_high }}°</span>{% endif %}
+    <span class="label">{% if forecast_days.size > 0 %}{{ forecast_days.size }}-DAY FORECAST{% else %}DAILY FORECAST{% endif %}</span>
+    {% if forecast_days.size > 0 %}<span class="label no-shrink">{{ forecast_low }}° — {{ forecast_high }}°</span>{% endif %}
   </div>
-  <div class="flex flex--col flex--between gap--xsmall w--full grow">
+  <div class="flex flex--col flex--between gap--none w--full grow">
     {% for day in forecast_days %}
-    <div class="grid grid--cols-12 gap--xsmall {% unless forloop.last %}border--h-5 pb--0.5{% endunless %}">
+    <div class="grid grid--cols-12 gap--xsmall {% unless forloop.last %}border--h-5{% endunless %}">
       <div class="col--span-3 flex flex--col flex--start gap--none w--min-0">
         <span class="label w--full" data-clamp="1">{{ day.label | default: '—' | replace: 'Tomorrow', 'Tmrw' }}</span>
-        <span class="label label--small w--full">{{ day.date }}</span>
+        <span class="label label--small lg:label--base w--full">{{ day.date }}</span>
       </div>
       <div class="col--span-2 flex flex--col flex--center gap--none">
-        <img class="w--5 h--5 lg:w--9 lg:h--9" src="{{ day.icon_url }}" alt="{{ day.condition | escape }}">
-        <span class="label label--small" aria-label="Precipitation probability {{ day.rain }}">{{ day.rain }}</span>
+        <img class="{{ icon_class | default: 'w--6 h--6 lg:w--12 lg:h--12 lg:portrait:w--10 lg:portrait:h--10' }}" src="{{ day.icon_url }}" alt="{{ day.condition | escape }}">
+        <span class="label label--small lg:label--base" aria-label="Precipitation probability {{ day.rain }}">{{ day.rain }}</span>
       </div>
       <div class="col--span-7 flex flex--row flex--center-y gap--xsmall w--min-0">
         <span class="value value--xsmall lg:value--small w--10 lg:w--14 no-shrink text--right">{{ day.low }}</span>
