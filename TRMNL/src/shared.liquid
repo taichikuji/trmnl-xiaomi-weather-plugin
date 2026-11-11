@@ -395,7 +395,7 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
 {%- elsif alert_count > 0 -%}
 <div class="outline p--2 flex flex--row flex--between gap--xsmall w--full bg--black text--white">
   <span class="label text--white text--bold grow" data-clamp="1">Provider alert · {{ alert_title | escape }}</span>
-  <span class="label label--small lg:label--base text--white no-shrink">{{ alert_count }} alert{% unless alert_count == 1 %}s{% endunless %}</span>
+  <span class="label text--white no-shrink">{{ alert_count }} alert{% unless alert_count == 1 %}s{% endunless %}</span>
 </div>
 {%- endif -%}
 {%- endcapture -%}
@@ -432,13 +432,13 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
   <div class="flex flex--col flex--between gap--none w--full grow">
     {% for day in forecast_days %}
     <div class="grid grid--cols-12 gap--xsmall {% unless forloop.last %}border--h-5{% endunless %}">
-      <div class="col--span-3 flex flex--col flex--start gap--none w--min-0">
-        <span class="label w--full" data-clamp="1">{{ day.label | default: '—' | replace: 'Tomorrow', 'Tmrw' }}</span>
-        <span class="label label--small lg:label--base w--full">{{ day.date }}</span>
+      <div class="col--span-2 flex flex--col flex--start gap--none w--min-0 {% if portrait_compact %}portrait:col--span-12 portrait:flex--row portrait:flex--between{% endif %}">
+        <span class="label w--full {% if portrait_compact %}portrait:w--auto{% endif %}" data-clamp="1">{{ day.label | default: '—' | replace: 'Tomorrow', 'Tmrw' }}</span>
+        <span class="label w--full {% if portrait_compact %}portrait:w--auto{% endif %}">{{ day.date }}</span>
       </div>
-      <div class="col--span-2 flex flex--col flex--center gap--none">
-        <img class="{{ icon_class | default: 'w--6 h--6 lg:w--12 lg:h--12 lg:portrait:w--10 lg:portrait:h--10' }}" src="{{ day.icon_url }}" alt="{{ day.condition | escape }}">
-        <span class="label label--small lg:label--base" aria-label="Precipitation probability {{ day.rain }}">{{ day.rain }}</span>
+      <div class="col--span-3 flex flex--row flex--center-y flex--center-x gap--xsmall {% if portrait_compact %}portrait:col--span-5{% endif %}">
+        <span class="label w--10 no-shrink" aria-label="Precipitation probability {{ day.rain }}">{{ day.rain }}</span>
+        <img class="{{ icon_class | default: 'w--9 h--9 lg:w--14 lg:h--14 lg:portrait:w--12 lg:portrait:h--12' }} no-shrink" src="{{ day.icon_url }}" alt="{{ day.condition | escape }}">
       </div>
       <div class="col--span-7 flex flex--row flex--center-y gap--xsmall w--min-0">
         <span class="value value--xsmall lg:value--small w--10 lg:w--14 no-shrink text--right">{{ day.low }}</span>
