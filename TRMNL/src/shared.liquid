@@ -446,7 +446,7 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
         {%- assign range_end = day.high | plus: 0 | minus: forecast_low | times: 100.0 | divided_by: forecast_span -%}
         {% if forecast_high == forecast_low %}{% assign range_start = 50 %}{% assign range_end = 50 %}{% endif %}
         <svg class="grow w--0 h--3" viewBox="-3 0 106 12" preserveAspectRatio="none" role="img" aria-label="Low {{ day.low }}, high {{ day.high }}">
-          <path d="M0 6H100" fill="none" stroke="black" stroke-width="1" stroke-dasharray="1 3"/>
+          <path d="M0 6H100" fill="none" stroke="black" stroke-width="2" stroke-dasharray="1 3" vector-effect="non-scaling-stroke" shape-rendering="crispEdges"/>
           <path d="M{{ range_start }} 6H{{ range_end }}" fill="none" stroke="black" stroke-width="6" stroke-linecap="round"/>
         </svg>
         <span class="value value--xsmall lg:value--small w--10 lg:w--14 no-shrink text--right">{{ day.high }}</span>
