@@ -1,34 +1,17 @@
 {% if available %}
-<div class="layout layout--col gap--distribute">
-  <div class="flex flex--row flex--between w--full">
-    <span class="title title--large lg:title--xlarge grow" data-clamp="1">{{ city | escape }}</span>
-    <span class="label lg:label--xlarge">{{ unit }}</span>
+<div class="layout layout--col gap--xsmall lg:gap--medium">
+  <div class="flex flex--col flex--center grow w--full">
+    {% render 'weather_current', now: now, days: days, size: 'value--xlarge portrait:value--xxxlarge portrait:w--full lg:value--xxxlarge', row_class: 'portrait:flex--col-reverse portrait:w--full' %}
   </div>
-  <div class="flex flex--col flex--left gap--small w--full">
-    <div class="flex flex--row lg:portrait:flex--col flex--center-y flex--between w--full lg:portrait:gap--large">
-      <div class="grow w--min-0">
-        <span class="value value--xxxlarge lg:value--mega" data-value-fit="true">{{ now.temperature }}</span>
-      </div>
-      <div class="w--24 h--24 lg:w--32 lg:h--32 no-shrink"><img class="w--full h--full" src="{{ now.icon_url }}" alt="{{ now.condition | escape }}"></div>
-    </div>
-    <span class="title lg:title--large w--full" data-clamp="1" data-clamp-lg="2">{{ now.condition | escape }}</span>
-    <span class="label lg:label--xlarge">Feels {{ now.feels_like }} · Wind {{ now.wind }} {{ now.wind_unit | escape }}</span>
+  <div class="outline p--2 flex flex--row portrait:flex--col flex--between gap--xsmall w--full">
+    <span class="label">Sunrise {{ sunrise }}</span>
+    <span class="label">Sunset {{ sunset }}</span>
   </div>
-  <div class="flex flex--row flex--between w--full border--h-10 py--2">
-    <span class="label lg:label--xlarge">Sunrise {{ sunrise }}</span>
-    <span class="label lg:label--xlarge">Sunset {{ sunset }}</span>
+  <div class="outline p--2 flex flex--row flex--center-x w--full">
+    <span class="label">Wind {{ now.wind }} {{ now.wind_unit | escape }}</span>
   </div>
-  <div class="grid grid--cols-3 portrait:grid--cols-1 gap--small lg:portrait:gap--large">
-    {% for day in days limit:3 %}
-    <div class="flex flex--col flex--center gap--small">
-      <div class="flex flex--col portrait:flex--row flex--center-y gap--small portrait:gap--none lg:portrait:gap--medium">
-        <span class="label lg:label--xlarge text--bold">{{ day.label }}</span>
-        <div class="w--11 h--11 lg:w--16 lg:h--16"><img class="w--full h--full" src="{{ day.icon_url }}" alt="{{ day.condition | escape }}"></div>
-        <span class="value value--xsmall lg:value--base">{{ day.high }} <span class="label lg:label--xlarge">/ {{ day.low }}</span></span>
-      </div>
-      <span class="label lg:label--xlarge">Precip. {{ day.rain }}</span>
-    </div>
-    {% else %}<span class="label col--span-3 portrait:col--span-1">Daily forecast unavailable</span>{% endfor %}
+  <div class="outline p--1 lg:p--4 flex flex--col gap--none w--full">
+    {% render 'weather_forecast', days: days, count: 3 %}
   </div>
   {% if stale %}<span class="label label--outline w--full">Old observation · {{ observed_date }}</span>
   {% elsif alert_count > 0 %}<span class="label label--filled w--full" data-clamp="1">{{ alert_count }} provider alerts · {{ alert_title | escape }}</span>{% endif %}

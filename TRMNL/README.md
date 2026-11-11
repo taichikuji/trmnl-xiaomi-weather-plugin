@@ -1,6 +1,6 @@
 # Atmosphere for TRMNL
 
-Atmosphere (formerly Xiaomi Weather) displays current conditions and forecasts with native TRMNL typography and [TRMNL's official weather SVGs](https://help.trmnl.com/en/articles/11823386-weather-icons). Choose **Location** with TRMNL’s searchable `lat_lon` picker: search for a city, address or postal code, or enter decimal coordinates. Weather is fetched directly using the selected coordinates. The heading reads **Weather** because the forecast response does not include a city name. No separate server or personal weather API key is required.
+Atmosphere (formerly Xiaomi Weather) displays current conditions and forecasts with native TRMNL typography and [TRMNL's official weather SVGs](https://help.trmnl.com/en/articles/11823386-weather-icons). Choose **Location** with TRMNL’s searchable `lat_lon` picker: search for a city, address or postal code, or enter decimal coordinates. Weather is fetched directly using the selected coordinates. The response does not include a city name; available-weather layouts leave out the heading to make room for the forecast. No separate server or personal weather API key is required.
 
 ## Listing metadata
 
@@ -18,9 +18,7 @@ The plugin listing icon uses the supplied sun-and-cloud artwork, simplified to o
 
 ## Previews
 
-Previews were rendered before the native Liquid migration with a recorded response for the public Paris demo point (`48.8584,2.2945`), observed **25 October 2026 at 21:16 CET**. These are not a current forecast. All four use Framework **3.4.0** and the OG 1-bit palette; partial layouts are cropped to their native view.
-
-These recorded previews predate the Atmosphere rename; the current title bar uses Atmosphere with provider attribution.
+Previews use the current templates and a recorded response for the public Paris demo point (`48.8584,2.2945`), observed **11 November 2026 at 10:37 CET**. These are not a current forecast. All four use Framework **3.4.6** and the OG 1-bit palette; partial layouts are cropped to their native view.
 
 | Full View | Half Horizontal View |
 |------------|----------------------|
@@ -32,7 +30,7 @@ These recorded previews predate the Atmosphere rename; the current title bar use
 
 ## Setup
 
-Create a TRMNL Private Plugin with Polling / GET, Framework **3.4.0**, screen padding enabled and a **30-minute** refresh interval. Private plugins require Developer or BYOD access.
+Create a TRMNL Private Plugin with Polling / GET, Framework **3.4.6**, screen padding enabled and a **30-minute** refresh interval. Private plugins require Developer or BYOD access.
 
 Use the latest [TRMNLP](https://github.com/usetrmnl/trmnlp) release, open this directory and run:
 
@@ -65,13 +63,13 @@ The workflow uses the official `trmnl/trmnlp:latest` image on a fresh GitHub-hos
 
 ## Templates
 
-- **shared.liquid**: Validates coordinates and prepares display values, condition icons and SVG chart coordinates from the raw polling response, then captures attribution, unavailable-data state, provider notices and the hourly chart.
-- **full.liquid**: Current conditions, hourly temperatures, five daily forecasts, wind, humidity, sun times and UV.
+- **shared.liquid**: Validates coordinates and prepares display values, condition icons and SVG chart coordinates from the raw polling response; supplies shared current-weather and forecast markup, attribution, unavailable-data state and provider notices.
+- **full.liquid**: Current conditions and detail panels beside five daily forecast rows with temperature range bars, plus hourly temperatures below.
 - **half_horizontal.liquid**: Current weather beside three daily forecasts and a provider notice.
 - **half_vertical.liquid**: Large current temperature, sun times, three daily forecasts and a provider notice.
 - **quadrant.liquid**: Current temperature, condition, feels-like temperature and alert count; X also shows wind, humidity, daily high/low, precipitation and sun times.
 
-All four layouts use Framework 3.4.0 utilities without custom CSS. Their OG areas are 800 × 480, 800 × 240, 400 × 480 and 400 × 240; X uses the corresponding portions of 1040 × 780, or 780 × 1040 in portrait. The full portrait view stacks current conditions and hourly weather, with three columns for the daily forecasts. Platform margins and title bars reduce the usable content area.
+All four layouts use Framework 3.4.6 utilities without custom CSS. Their OG areas are 800 × 480, 800 × 240, 400 × 480 and 400 × 240; X uses the corresponding portions of 1040 × 780, or 780 × 1040 in portrait. The full portrait view stacks the current-weather overview, daily forecast rows and hourly section. Platform margins and title bars reduce the usable content area.
 
 ## Public recipe submission
 
@@ -95,7 +93,7 @@ CHEF may flag these intentional choices:
 
 The required **Location** field uses TRMNL’s [native `lat_lon` picker](https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder#h_07a70ff721). Search for a city, address or postal code and select a match, or enter decimal degrees in **latitude, longitude** order, for example `48.8584,2.2945` (a public landmark in Paris). Latitude must be between −90 and 90 and longitude between −180 and 180. There is no personal default.
 
-TRMNL stores the selection as comma-separated coordinates. Native polling calls Xiaomi’s `/weather/all` endpoint directly, without a location key or lookup request. Shared Liquid validates the coordinates and formats the forecast. The forecast response has no city name, so the heading reads **Weather**.
+TRMNL stores the selection as comma-separated coordinates. Native polling calls Xiaomi’s `/weather/all` endpoint directly, without a location key or lookup request. Shared Liquid validates the coordinates and formats the forecast. The forecast response has no city name. Available-weather layouts omit the heading; provider attribution, observation time and temperature unit remain in the footer.
 
 When upgrading from the removed city and Coordinates fields, choose Location again; those older values are not migrated automatically. Invalid coordinates and unavailable forecasts show an unavailable state. Temperature unit defaults to Celsius and accepts `celsius` or `fahrenheit`.
 
@@ -112,7 +110,7 @@ When upgrading from the removed city and Coordinates fields, choose Location aga
 
 ## Verification and references
 
-The refactor follows TRMNL's [Shared preprocessing guidance](https://help.trmnl.com/en/articles/13216853-reusing-markup-with-shared) and [documented filters](https://help.trmnl.com/en/articles/10347358-custom-plugin-filters). Helpers use explicit render arguments, serialize strings with `json`, preserve null/zero distinctions with `parse_json`, and escape provider text at the HTML boundary. Native collection filters prepare chart data, filter alerts and find weekly extremes; rendered markup and the Framework version remain unchanged. The installed plugin needs only native polling and Liquid.
+The data preparation follows TRMNL's [Shared preprocessing guidance](https://help.trmnl.com/en/articles/13216853-reusing-markup-with-shared) and [documented filters](https://help.trmnl.com/en/articles/10347358-custom-plugin-filters). Helpers use explicit render arguments, serialize strings with `json`, preserve null/zero distinctions with `parse_json`, and escape provider text at the HTML boundary. Native collection filters prepare chart data, filter alerts and find forecast extremes. The installed plugin uses Framework 3.4.6, native polling and Liquid.
 
 Account-side autocomplete, form validation, scheduled refresh, CHEF and physical e-ink output still require verification in TRMNL.
 

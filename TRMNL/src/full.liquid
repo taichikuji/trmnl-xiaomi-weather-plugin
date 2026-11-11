@@ -1,80 +1,52 @@
 {% if available %}
-<div class="layout layout--col gap--distribute">
-  <div class="flex flex--row flex--between w--full">
-    <span class="title title--large lg:title--xxlarge grow" data-clamp="1">{{ city | escape }}</span>
-    <span class="label label--large lg:label--xlarge no-shrink">{{ date_label | escape }}</span>
-  </div>
-  {{ provider_notice }}
-  <div class="grid grid--cols-12 portrait:grid--cols-1 gap--large">
-    <div class="col--span-5 portrait:col--span-1 flex flex--col flex--left gap--small">
-      <div class="flex flex--row flex--center-y gap--small w--full">
-        <div class="grow w--min-0">
-          <span class="value value--xxxlarge lg:value--mega" data-value-fit="true">{{ now.temperature }}</span>
-        </div>
-        <div class="w--24 h--24 lg:w--36 lg:h--36 no-shrink"><img class="w--full h--full" src="{{ now.icon_url }}" alt="{{ now.condition | escape }}"></div>
-      </div>
-      <span class="title lg:title--large w--full" data-clamp="1">{{ now.condition | escape }}</span>
-      <span class="label lg:label--large">Feels {{ now.feels_like }}{% if days.size > 0 %} · Low {{ days[0].low }} — High {{ days[0].high }}{% endif %}</span>
-      <div class="flex flex--row gap--medium">
-        <span class="label lg:label--large">Wind {{ now.wind }} {{ now.wind_unit | escape }} {{ now.wind_direction }}</span>
-        <span class="label lg:label--large">Humidity {{ now.humidity }}</span>
-      </div>
-    </div>
-    <div class="col--span-7 portrait:col--span-1 flex flex--col gap--small flex--between border--v-10 pl--3">
-      <div class="flex flex--row flex--between w--full">
-        <span class="label lg:label--large text--bold">TODAY</span>
-        <span class="label lg:label--large">L<span class="hidden lg:visible">ow</span>&nbsp;{{ chart.low }} — H<span class="hidden lg:visible">igh</span>&nbsp;{{ chart.high }}</span>
-      </div>
-      {{ hourly_chart }}
-      {% if hours.size > 0 %}
-      <div class="grid grid--cols-6 gap--small">
-        {% for hour in hours %}
-        <div class="flex flex--col flex--center gap--none">
-          <span class="label lg:label--large">{{ hour.time }}</span>
-          <span class="value value--xsmall lg:value--base">{{ hour.temperature }}</span>
-          <div class="w--7 h--7 lg:w--10 lg:h--10"><img class="w--full h--full" src="{{ hour.icon_url }}" alt="{{ hour.condition | escape }}"></div>
-        </div>
-        {% endfor %}
-      </div>
+<div class="layout layout--col layout--top {% if stale or alert_count > 0 %}gap--none lg:gap--small{% else %}gap--small{% endif %}">
+  {% if stale %}{{ provider_notice }}{% endif %}
+  <div class="grid grid--cols-12 portrait:grid--cols-1 gap--small lg:gap--large grow">
+    <div class="col--span-6 portrait:col--span-1 flex flex--col gap--xsmall lg:gap--medium self--center portrait:grid portrait:grid--cols-2">
+      {% render 'weather_current', now: now, days: days, size: 'value--xxlarge portrait:w--full lg:value--giga lg:portrait:value--xxxlarge', large_details: true, icon_class: 'w--20 h--20 lg:w--40 lg:h--40 lg:portrait:w--24 lg:portrait:h--24', row_class: 'portrait:flex--col-reverse portrait:w--full' %}
+      {% if stale == false and alert_count > 0 %}
+      <div class="w--full portrait:col--span-2 portrait:order--3">{{ provider_notice }}</div>
       {% endif %}
-      <div class="flex flex--row flex--between w--full pt--1">
-        <span class="label lg:label--large">Sunrise {{ sunrise }} · Sunset {{ sunset }}</span>
-        <span class="label lg:label--large">UV {{ now.uv }}</span>
+      <div class="grid grid--cols-2 gap--xsmall portrait:self--center portrait:order--2">
+        <div class="outline p--2 flex flex--col gap--none">
+          <span class="label">WIND</span>
+          <span class="label">{{ now.wind }} {{ now.wind_unit | escape }} {{ now.wind_direction }}</span>
+        </div>
+        <div class="outline p--2 flex flex--col gap--none">
+          <span class="label">HUMIDITY</span>
+          <span class="label">{{ now.humidity }} · UV {{ now.uv }}</span>
+        </div>
+        <div class="outline p--2 flex flex--row flex--between col--span-2 gap--xsmall">
+          <span class="label">Sunrise {{ sunrise }}</span>
+          <span class="label">Sunset {{ sunset }}</span>
+        </div>
       </div>
+    </div>
+    <div class="col--span-6 portrait:col--span-1 outline p--1 lg:p--4 flex flex--col gap--none flex--between">
+      {% render 'weather_forecast', days: days, count: 5, icon_class: 'w--7 h--7 lg:w--14 lg:h--14 lg:portrait:w--10 lg:portrait:h--10' %}
     </div>
   </div>
-  <div class="flex flex--col gap--small w--full pt--1">
-    <div class="divider"></div>
+  <div class="outline p--1 lg:p--4 flex flex--col gap--none w--full no-shrink">
     <div class="flex flex--row flex--between w--full">
-      <span class="label lg:label--large text--bold">THIS WEEK</span>
-      <span class="label lg:label--large">
-        {%- if days.size > 0 -%}
-          {%- assign week_low = days | map: 'low' | map_to_i | sort | first -%}
-          {%- assign week_high = days | map: 'high' | map_to_i | sort | last -%}
-          L<span class="hidden lg:visible">ow</span>&nbsp;{{ week_low }}° — H<span class="hidden lg:visible">igh</span>&nbsp;{{ week_high }}°
-        {%- else -%}L<span class="hidden lg:visible">ow</span>&nbsp;— — H<span class="hidden lg:visible">igh</span>&nbsp;—{%- endif -%}
-      </span>
+      <span class="label">HOURLY FORECAST</span>
+      <span class="label">Low {{ chart.low }} · High {{ chart.high }}</span>
     </div>
-    {% if days.size > 0 %}
-    <div class="grid grid--cols-5 portrait:grid--cols-3 gap--small">
-      {% for day in days %}
-      <div class="flex flex--col flex--left gap--small p--1 {% if forloop.first %}bg--gray-75{% endif %}">
-        <div class="flex flex--row flex--between w--full">
-          <span class="label lg:label--large text--bold">{{ day.label }}</span>
-          <span class="label lg:label--large">{{ day.date }}</span>
-        </div>
-        <div class="flex flex--row flex--between w--full">
-          <div class="w--9 h--9 lg:w--14 lg:h--14"><img class="w--full h--full" src="{{ day.icon_url }}" alt="{{ day.condition | escape }}"></div>
-          <div class="flex flex--row flex--center-y gap--small">
-            <span class="value value--small lg:value--base">{{ day.high }}</span>
-            <span class="label label--large lg:label--xlarge">{{ day.low }}</span>
+    {% if hours.size > 0 %}
+    <div class="grid grid--cols-3 gap--small">
+      <div class="col--span-1">{{ hourly_chart }}</div>
+      <div class="col--span-2">
+        <div class="grid grid--cols-6 gap--xsmall">
+          {% for hour in hours %}
+          <div class="flex flex--col flex--center gap--none">
+            <span class="label lg:label--large">{{ hour.time }}</span>
+            <img class="w--7 h--7 lg:w--14 lg:h--14 lg:portrait:w--12 lg:portrait:h--12" src="{{ hour.icon_url }}" alt="{{ hour.condition | escape }}">
+            <span class="value value--xsmall lg:value--small">{{ hour.temperature }}</span>
           </div>
+          {% endfor %}
         </div>
-        <span class="label lg:label--large">Precip. {{ day.rain }}</span>
       </div>
-      {% endfor %}
     </div>
-    {% else %}<span class="label lg:label--large">Daily forecast unavailable</span>{% endif %}
+    {% else %}<span class="label">Hourly forecast unavailable</span>{% endif %}
   </div>
 </div>
 {% else %}{{ weather_error }}{% endif %}

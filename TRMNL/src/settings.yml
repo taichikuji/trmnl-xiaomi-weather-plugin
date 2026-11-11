@@ -7,7 +7,7 @@ polling_url: 'https://weatherapi.market.xiaomi.com/wtr-v3/weather/all?latitude={
 polling_headers: ''
 polling_body: ''
 refresh_interval: 30
-framework_version: '3.4.0'
+framework_version: '3.4.6'
 serverless_language: none
 icon: media/icon.svg
 no_screen_padding: 'no'
