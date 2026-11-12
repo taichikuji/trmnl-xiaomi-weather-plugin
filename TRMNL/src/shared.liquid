@@ -383,22 +383,26 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
   {%- assign forecast_days = days | slice: 0, count -%}
   {%- assign forecast_low = forecast_days | map: 'low' | map_to_i | sort | first -%}
   {%- assign forecast_high = forecast_days | map: 'high' | map_to_i | sort | last -%}
-  {%- assign forecast_span = forecast_high | minus: forecast_low | at_least: 1 -%}
+  {%- assign forecast_data_span = forecast_high | minus: forecast_low -%}
+  {%- assign forecast_min_span = 30 -%}
+  {%- if fahrenheit -%}{%- assign forecast_min_span = 54 -%}{%- endif -%}
+  {%- assign forecast_span = forecast_data_span | at_least: forecast_min_span -%}
+  {%- assign forecast_padding = forecast_span | minus: forecast_data_span | divided_by: 2.0 -%}
   <div class="flex flex--col gap--none w--full grow">
     {% for day in forecast_days %}
     <div class="grid grid--cols-12 gap--xsmall grow {% unless forloop.last %}border--h-5{% endunless %}">
       <div class="col--span-2 flex flex--col flex--start gap--none w--min-0 self--center {% if portrait_compact %}portrait:col--span-12 portrait:flex--row portrait:flex--between{% endif %}">
-        <span class="label w--full {% if portrait_compact %}portrait:w--auto{% endif %}" data-clamp="1">{{ day.label | default: '—' | replace: 'Tomorrow', 'Tmrw' }}</span>
+        <span class="label {% if large_details %}lg:label--large lg:text--bold{% endif %} w--full {% if portrait_compact %}portrait:w--auto{% endif %}" data-clamp="1">{{ day.label | default: '—' | replace: 'Tomorrow', 'Tmrw' }}</span>
         <span class="label w--full {% if portrait_compact %}portrait:w--auto{% endif %}">{{ day.date }}</span>
       </div>
-      <div class="col--span-3 flex flex--row flex--center-y flex--center-x gap--xsmall {% if portrait_compact %}portrait:col--span-5{% endif %}">
-        <span class="label w--10 no-shrink" aria-label="Precipitation probability {{ day.rain }}">{{ day.rain }}</span>
+      <div class="col--span-3 flex flex--row flex--center-y flex--center-x gap--xsmall {% if large_details %}lg:gap--none{% endif %} {% if portrait_compact %}portrait:col--span-5{% endif %}">
+        <span class="label {% if large_details %}lg:label--large{% endif %} w--10 {% if large_details %}lg:w--14{% endif %} no-shrink" aria-label="Precipitation probability {{ day.rain }}">{{ day.rain }}</span>
         <img class="{{ icon_class | default: 'w--9 h--9 lg:w--14 lg:h--14 lg:portrait:w--12 lg:portrait:h--12' }} no-shrink" src="{{ day.icon_url }}" alt="{{ day.condition | escape }}">
       </div>
       <div class="col--span-7 flex flex--row flex--center-y gap--xsmall w--min-0">
         <span class="value value--xsmall lg:value--small w--10 lg:w--14 no-shrink text--right">{{ day.low }}</span>
-        {%- assign range_start = day.low | plus: 0 | minus: forecast_low | times: 100.0 | divided_by: forecast_span -%}
-        {%- assign range_end = day.high | plus: 0 | minus: forecast_low | times: 100.0 | divided_by: forecast_span -%}
+        {%- assign range_start = day.low | plus: 0 | minus: forecast_low | plus: forecast_padding | times: 100.0 | divided_by: forecast_span -%}
+        {%- assign range_end = day.high | plus: 0 | minus: forecast_low | plus: forecast_padding | times: 100.0 | divided_by: forecast_span -%}
         {% if forecast_high == forecast_low %}{% assign range_start = 50 %}{% assign range_end = 50 %}{% endif %}
         <svg class="grow w--0 h--3" viewBox="-3 0 106 12" preserveAspectRatio="none" role="img" aria-label="Low {{ day.low }}, high {{ day.high }}">
           <path d="M0 6H100" fill="none" stroke="black" stroke-width="2" stroke-dasharray="1 3" vector-effect="non-scaling-stroke" shape-rendering="crispEdges"/>

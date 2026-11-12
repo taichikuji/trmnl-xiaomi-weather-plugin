@@ -101,6 +101,7 @@ When upgrading from the removed city and Coordinates fields, choose Location aga
 
 - [Verified API mapping](../docs/api-overview.md) records live request comparisons, parameter behavior, request examples and the captured `301` rain regression.
 - Xiaomi supplied five daily forecasts and 23 hourly entries for Barcelona despite a seven-day request. The full view shows up to twelve eligible hourly entries in one row, with eight visible on OG portrait. Each entry represents its own API hour; missing values are omitted without inventing replacements.
+- Daily range tracks share a scale across the displayed days, spanning at least **30°C (54°F of difference)**. Narrower forecasts receive equal padding at both ends; wider forecasts expand the scale. Numeric lows/highs are retained, and equal temperatures appear as a centered point. The full X layout uses bold 21px day labels, original 16px dates and 21px precipitation labels; compact layouts retain their smaller label sizes.
 - The observation time remains visible. Observations older than three hours are marked as old data when rendered; elapsed hourly entries are removed.
 - Missing optional values display an em dash. Missing current temperature produces an explicit unavailable state. Missing precipitation is never reported as 0%.
 - European air-quality fields were unavailable and are omitted. Attribution follows the returned provider, AccuWeather via Xiaomi in the tested cities.

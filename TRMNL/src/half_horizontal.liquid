@@ -5,7 +5,7 @@
       {% render 'weather_current', now: now, days: days, size: 'value--xlarge lg:value--xxxlarge lg:portrait:value--xxlarge', range_class: 'hidden' %}
     </div>
     <div class="col--span-7 portrait:col--span-1 outline p--1 lg:p--4 flex flex--col gap--none">
-      {% render 'weather_forecast', days: days, count: 3 %}
+      {% render 'weather_forecast', days: days, count: 3, fahrenheit: fahrenheit %}
     </div>
   </div>
   {% if stale %}<span class="label label--outline w--full">Old observation · {{ observed_date }}</span>
