@@ -392,7 +392,7 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
     <div class="grid grid--cols-12 gap--xsmall grow {% unless forloop.last %}border--h-5{% endunless %}">
       <div class="col--span-2 flex flex--col flex--start gap--none w--min-0 self--center {% if portrait_compact %}portrait:col--span-12 portrait:flex--row portrait:flex--between{% endif %}">
         <span class="label {% if large_details %}lg:label--large lg:text--bold{% endif %} w--full {% if portrait_compact %}portrait:w--auto{% endif %}" data-clamp="1">{{ day.label | default: '—' | replace: 'Tomorrow', 'Tmrw' }}</span>
-        <span class="label w--full {% if portrait_compact %}portrait:w--auto{% endif %}">{{ day.date }}</span>
+        <span class="label text--regular w--full {% if portrait_compact %}portrait:w--auto{% endif %}">{{ day.date }}</span>
       </div>
       <div class="col--span-3 flex flex--row flex--center-y flex--center-x gap--xsmall {% if large_details %}lg:gap--none{% endif %} {% if portrait_compact %}portrait:col--span-5{% endif %}">
         <span class="label {% if large_details %}lg:label--large{% endif %} w--10 {% if large_details %}lg:w--14{% endif %} no-shrink" aria-label="Precipitation probability {{ day.rain }}">{{ day.rain }}</span>
