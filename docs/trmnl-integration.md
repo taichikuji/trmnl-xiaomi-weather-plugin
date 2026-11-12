@@ -9,15 +9,16 @@ request is required. The refresh interval remains 30 minutes.
 
 The [recorded coordinate/key comparison](location-resolution.md) supports this
 direct path. Search and geo remain API research references, rather than plugin
-dependencies. The forecast has no city name, so the heading remains **Weather**.
+dependencies. Available-weather layouts omit the heading because the response
+has no city name; provider attribution remains in the footer.
 
 ## Shared Liquid responsibilities
 
 [Shared markup runs before each layout](https://help.trmnl.com/en/articles/13216853-reusing-markup-with-shared).
 It validates coordinates and prepares the existing display variables from the raw
 response: current conditions, daily/hourly rows, units, local times, observation
-age, attribution, provider alerts and numeric SVG chart coordinates. The four
-layout templates consume the same variables and retain their existing markup.
+age, attribution, provider alerts and daily temperature ranges. The four
+layout templates consume the prepared display values.
 
 Reusable helpers use TRMNL's documented `template`/`render` tags, with all context
 passed explicitly. Use plain `{% endtemplate %}` tags; the pinned parser does not
@@ -28,9 +29,9 @@ not custom Ruby filters that would need a separate hosted runtime.
 
 Validate numeric input before Liquid arithmetic, which otherwise coerces bad
 strings to zero. Round with `plus: 0.5 | floor` to preserve the former JavaScript
-behavior for negative half values. Keep unrounded temperatures for chart scaling,
-and use floating-point divisions. Convert numeric epochs to integers before the
-Liquid `date` filter. Observation age and future-hour filtering use the native
+behavior for negative half values. Use floating-point divisions for daily
+temperature ranges. Convert numeric epochs to integers before the Liquid `date`
+filter. Observation age and future-hour filtering use the native
 `trmnl.system.timestamp_utc` render clock, with `now` as a local fallback.
 
 Nonzero child statuses disable only that child. Missing optional values remain
@@ -42,8 +43,9 @@ without inferring warning expiration. Provider text is escaped when rendered.
 Hourly timestamps retain the response's offset, preferring hourly wind datetime
 labels when present. The existing fixed-offset fallback has the same DST limit:
 without those datetime values, a later refresh may be needed to correct labels.
-The SVG chart still uses up to twelve eligible future entries, with every other
-entry shown in the six hourly labels. Daily views use up to five returned rows.
+The full view uses up to twelve eligible future hourly entries in one row, with
+eight visible on OG portrait. Entries are not sampled or interpolated. Daily views
+use up to five returned rows, vertically centered in evenly sized slots.
 
 ## Migrating an existing installation
 

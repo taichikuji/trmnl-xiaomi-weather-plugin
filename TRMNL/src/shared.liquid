@@ -262,7 +262,7 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
   {%- endfor -%}]
 {%- endcapture -%}
 {%- assign days = days_json | parse_json -%}
-{%- comment -%}Keep twelve valid future hours; sample labels only after computing the full trend.{%- endcomment -%}
+{%- comment -%}Keep up to twelve eligible hourly entries in source order.{%- endcomment -%}
 {%- capture temperatures_json -%}{% render 'weather_values', block: hourly_weather.temperature %}{%- endcapture -%}
 {%- capture conditions_json -%}{% render 'weather_values', block: hourly_weather.weather %}{%- endcapture -%}
 {%- capture wind_json -%}{% render 'weather_values', block: hourly_weather.wind %}{%- endcapture -%}
@@ -277,7 +277,7 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
   {%- assign offset = offset_text | slice: 4, 2 | plus: 0 | times: 60 | plus: offset_hours -%}
   {%- if offset_sign == '-' -%}{%- assign offset = offset | times: -1 -%}{%- endif -%}
 {%- endif -%}
-{%- capture all_hours_json -%}[
+{%- capture hours_json -%}[
   {%- assign emitted = 0 -%}
   {%- for raw_temperature in temperatures -%}
     {%- assign i = forloop.index0 -%}
@@ -303,45 +303,13 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
     {%- capture state_json -%}{% render 'weather_condition', value: conditions[i], night: night %}{%- endcapture -%}
     {%- assign state = state_json | parse_json -%}
     {%- capture hour_time -%}{% render 'weather_time', value: local %}{%- endcapture -%}
-    {%- assign chart_value = numeric -%}
-    {%- if fahrenheit -%}{%- assign chart_value = numeric | times: 9.0 | divided_by: 5.0 | plus: 32 -%}{%- endif -%}
     {%- if emitted > 0 -%},{%- endif -%}{%- assign emitted = emitted | plus: 1 -%}
     {"time":{{ hour_time | json }},"timestamp":{{ stamp | json }},
      "temperature":{% render 'weather_value', value: numeric, fahrenheit: fahrenheit, suffix: '°' %},
-     "value":{{ chart_value | json }},"icon_url":{{ state.icon_url | json }},"condition":{{ state.text | json }}}
+     "icon_url":{{ state.icon_url | json }},"condition":{{ state.text | json }}}
   {%- endfor -%}]
 {%- endcapture -%}
-{%- assign all_hours = all_hours_json | parse_json -%}
-{%- assign minimum = 0 -%}{%- assign maximum = 1 -%}{%- assign span = 1 -%}
-{%- if all_hours.size > 0 -%}
-  {%- assign chart_values = all_hours | map: 'value' | sort -%}
-  {%- assign minimum = chart_values.first | minus: 1 -%}{%- assign maximum = chart_values.last | plus: 1 -%}
-  {%- if all_hours.size > 1 -%}{%- assign span = all_hours.last.timestamp | minus: all_hours[0].timestamp -%}{%- endif -%}
-{%- endif -%}
-{%- assign chart_range = maximum | minus: minimum | times: 1.0 -%}
-{%- capture plot_rows_json -%}[
-  {%- for hour in all_hours -%}
-    {%- assign x = hour.timestamp | minus: all_hours[0].timestamp | times: 408.0 | divided_by: span | plus: 16 | plus: 0.5 | floor -%}
-    {%- assign y_distance = hour.value | minus: minimum | times: 54 | divided_by: chart_range -%}
-    {%- assign y = 70 | minus: y_distance | plus: 0.5 | floor -%}
-    {%- assign remainder = forloop.index0 | modulo: 2 -%}
-    {%- unless forloop.first -%},{%- endunless -%}
-    {"point":{{ x | append: ',' | append: y | json }},
-     {% if remainder == 0 %}"marker":{"x":{{ x }},"y":{{ y }}},"hour":{{ hour | json }}
-     {% else %}"marker":null,"hour":null{% endif %}}
-  {%- endfor -%}]
-{%- endcapture -%}
-{%- assign plot_rows = plot_rows_json | parse_json -%}
-{%- assign chart_points = plot_rows | map: 'point' | join: ' ' -%}
-{%- assign markers = plot_rows | map: 'marker' | compact -%}
-{%- assign hours = plot_rows | map: 'hour' | compact -%}
-{%- capture chart_json -%}
-  {"points":{{ chart_points | json }},"markers":{{ markers | json }},
-   "low":{% if all_hours.size > 0 %}{% assign value = minimum | plus: 1 %}{% render 'weather_value', value: value, suffix: '°' %}{% else %}"—"{% endif %},
-   "high":{% if all_hours.size > 0 %}{% assign value = maximum | minus: 1 %}{% render 'weather_value', value: value, suffix: '°' %}{% else %}"—"{% endif %},
-   "from":{{ all_hours[0].time | default: '—' | json }},"to":{{ all_hours.last.time | default: '—' | json }}}
-{%- endcapture -%}
-{%- assign chart = chart_json | parse_json -%}
+{%- assign hours = hours_json | parse_json -%}
 {%- capture source -%}
   {%- if location_valid -%}
     {%- assign emitted = 0 -%}
@@ -399,19 +367,6 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
 </div>
 {%- endif -%}
 {%- endcapture -%}
-{%- capture hourly_chart -%}
-{% if chart.markers.size > 0 %}
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 90" preserveAspectRatio="none" class="w--full h--0 grow text--black" role="img" aria-label="Hourly temperature trend from {{ chart.from }} to {{ chart.to }}; {{ chart.low }} to {{ chart.high }}">
-  <path d="M16 76H424" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 5" vector-effect="non-scaling-stroke" shape-rendering="crispEdges"/>
-  <polyline points="{{ chart.points }}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-  <!-- Round caps keep markers circular while the plot stretches. -->
-  {% for point in chart.markers %}
-  <path d="M{{ point.x }} {{ point.y }}h0" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-  <path d="M{{ point.x }} {{ point.y }}h0" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-  {% endfor %}
-</svg>
-{% else %}<div class="flex flex--center h--24"><span class="label">Hourly forecast unavailable</span></div>{% endif %}
-{%- endcapture -%}
 {% template weather_current %}
 <div class="flex flex--col flex--center gap--none w--full w--min-0">
   <div class="flex flex--row {{ row_class }} flex--center-y gap--small no-shrink w--max-full">
@@ -429,14 +384,10 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
   {%- assign forecast_low = forecast_days | map: 'low' | map_to_i | sort | first -%}
   {%- assign forecast_high = forecast_days | map: 'high' | map_to_i | sort | last -%}
   {%- assign forecast_span = forecast_high | minus: forecast_low | at_least: 1 -%}
-  <div class="flex flex--row flex--between w--full">
-    <span class="label">{% if forecast_days.size > 0 %}{{ forecast_days.size }}-DAY FORECAST{% else %}DAILY FORECAST{% endif %}</span>
-    {% if forecast_days.size > 0 %}<span class="label no-shrink">{{ forecast_low }}° — {{ forecast_high }}°</span>{% endif %}
-  </div>
-  <div class="flex flex--col flex--between gap--none w--full grow">
+  <div class="flex flex--col gap--none w--full grow">
     {% for day in forecast_days %}
-    <div class="grid grid--cols-12 gap--xsmall {% unless forloop.last %}border--h-5{% endunless %}">
-      <div class="col--span-2 flex flex--col flex--start gap--none w--min-0 {% if portrait_compact %}portrait:col--span-12 portrait:flex--row portrait:flex--between{% endif %}">
+    <div class="grid grid--cols-12 gap--xsmall grow {% unless forloop.last %}border--h-5{% endunless %}">
+      <div class="col--span-2 flex flex--col flex--start gap--none w--min-0 self--center {% if portrait_compact %}portrait:col--span-12 portrait:flex--row portrait:flex--between{% endif %}">
         <span class="label w--full {% if portrait_compact %}portrait:w--auto{% endif %}" data-clamp="1">{{ day.label | default: '—' | replace: 'Tomorrow', 'Tmrw' }}</span>
         <span class="label w--full {% if portrait_compact %}portrait:w--auto{% endif %}">{{ day.date }}</span>
       </div>
@@ -456,6 +407,6 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
         <span class="value value--xsmall lg:value--small w--10 lg:w--14 no-shrink text--right">{{ day.high }}</span>
       </div>
     </div>
-    {% else %}<span class="label">Daily forecast unavailable</span>{% endfor %}
+    {% else %}<span class="label grow self--center flex flex--col flex--center">Daily forecast unavailable</span>{% endfor %}
   </div>
 {% endtemplate %}

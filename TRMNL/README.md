@@ -18,7 +18,7 @@ The plugin listing icon uses the supplied sun-and-cloud artwork, simplified to o
 
 ## Previews
 
-Previews use the current templates and a recorded response for the public Paris demo point (`48.8584,2.2945`), observed **11 November 2026 at 10:37 CET**. These are not a current forecast. All four use Framework **3.4.6** and the OG 1-bit palette; partial layouts are cropped to their native view.
+Previews use the current templates and a recorded response for the public Paris demo point (`48.8584,2.2945`), observed **12 November 2026 at 15:37 CET**. These are not a current forecast. All four use Framework **3.4.6** and the OG 1-bit palette; partial layouts are cropped to their native view.
 
 | Full View | Half Horizontal View |
 |------------|----------------------|
@@ -63,7 +63,7 @@ The workflow uses the official `trmnl/trmnlp:latest` image on a fresh GitHub-hos
 
 ## Templates
 
-- **shared.liquid**: Validates coordinates and prepares display values, condition icons and SVG chart coordinates from the raw polling response; supplies shared current-weather and forecast markup, attribution, unavailable-data state and provider notices.
+- **shared.liquid**: Validates coordinates and prepares display values, condition icons and consecutive hourly entries from the raw polling response; supplies shared current-weather and forecast markup, attribution, unavailable-data state and provider notices.
 - **full.liquid**: Current conditions and detail panels beside five daily forecast rows with temperature range bars, plus hourly temperatures below.
 - **half_horizontal.liquid**: Current weather beside three daily forecasts and a provider notice.
 - **half_vertical.liquid**: Large current temperature, sun times, three daily forecasts and a provider notice.
@@ -77,7 +77,7 @@ Reviewed against [TRMNL's publishing best practices](https://trmnl.com/blog/plug
 
 - Xiaomi provides a distinct data source; all four layouts ship in one recipe.
 - The About section links to setup instructions and the GitHub repository for support, with the environment category. Settings contain no personal defaults or weather credentials.
-- Polling fetches weather directly using the picker’s coordinates. Markup uses native Framework classes and Liquid, a shared embedded title-bar icon, and an SVG chart without chart libraries or client-side API calls.
+- Polling fetches weather directly using the picker’s coordinates. Markup uses native Framework classes and Liquid, a shared embedded title-bar icon, and SVG temperature range bars without chart libraries or client-side API calls.
 - Narrow title bars clamp their title while reserving room for observation time and unit.
 
 Before submitting in TRMNL, choose a public demo location such as Paris with the picker, save and Force Refresh. Confirm that the install preview shows weather for the selected location, and save both a search selection and direct coordinates plus each temperature unit to check the account-side form behavior. Run CHEF and address any feedback before acknowledging the practices. Keep the Recipe Master configured for public demo weather and install a separate copy for personal use. These account-side steps and the human review are not confirmed by a successful GitHub upload.
@@ -100,7 +100,7 @@ When upgrading from the removed city and Coordinates fields, choose Location aga
 ## Data behavior
 
 - [Verified API mapping](../docs/api-overview.md) records live request comparisons, parameter behavior, request examples and the captured `301` rain regression.
-- Xiaomi supplied five daily forecasts and 23 hourly entries for Barcelona despite a seven-day request. The plugin shows returned data only, sampling up to six points across the next 12 hours.
+- Xiaomi supplied five daily forecasts and 23 hourly entries for Barcelona despite a seven-day request. The full view shows up to twelve eligible hourly entries in one row, with eight visible on OG portrait. Each entry represents its own API hour; missing values are omitted without inventing replacements.
 - The observation time remains visible. Observations older than three hours are marked as old data when rendered; elapsed hourly entries are removed.
 - Missing optional values display an em dash. Missing current temperature produces an explicit unavailable state. Missing precipitation is never reported as 0%.
 - European air-quality fields were unavailable and are omitted. Attribution follows the returned provider, AccuWeather via Xiaomi in the tested cities.
@@ -110,7 +110,7 @@ When upgrading from the removed city and Coordinates fields, choose Location aga
 
 ## Verification and references
 
-The data preparation follows TRMNL's [Shared preprocessing guidance](https://help.trmnl.com/en/articles/13216853-reusing-markup-with-shared) and [documented filters](https://help.trmnl.com/en/articles/10347358-custom-plugin-filters). Helpers use explicit render arguments, serialize strings with `json`, preserve null/zero distinctions with `parse_json`, and escape provider text at the HTML boundary. Native collection filters prepare chart data, filter alerts and find forecast extremes. The installed plugin uses Framework 3.4.6, native polling and Liquid.
+The data preparation follows TRMNL's [Shared preprocessing guidance](https://help.trmnl.com/en/articles/13216853-reusing-markup-with-shared) and [documented filters](https://help.trmnl.com/en/articles/10347358-custom-plugin-filters). Helpers use explicit render arguments, serialize strings with `json`, preserve null/zero distinctions with `parse_json`, and escape provider text at the HTML boundary. Native collection filters prepare forecast rows, filter alerts and find daily forecast extremes. The installed plugin uses Framework 3.4.6, native polling and Liquid.
 
 Account-side autocomplete, form validation, scheduled refresh, CHEF and physical e-ink output still require verification in TRMNL.
 
