@@ -11,7 +11,7 @@
     <span class="label">Wind {{ now.wind }} {{ now.wind_unit | escape }}</span>
   </div>
   <div class="outline p--1 lg:p--4 flex flex--col gap--none w--full">
-    {% render 'weather_forecast', days: days, count: 3, fahrenheit: fahrenheit, portrait_compact: true %}
+    {% render 'weather_forecast', days: days, count: 3, portrait_compact: true %}
   </div>
   {% if stale %}<span class="label label--outline w--full">Old observation · {{ observed_date }}</span>
   {% elsif alert_count > 0 %}<span class="label label--filled w--full" data-clamp="1">{{ alert_count }} provider alerts · {{ alert_title | escape }}</span>{% endif %}
