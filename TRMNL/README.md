@@ -4,7 +4,7 @@ Atmosphere (formerly Xiaomi Weather) displays current conditions and forecasts w
 
 ## Listing metadata
 
-The plugin name in `src/settings.yml` is **Atmosphere**, and the supported short description is **Xiaomi Weather forecasts**, within TRMNLP's [35-character limit](https://github.com/usetrmnl/trmnlp#srcsettingsyml-reference-plugin-config). The About text retains the former name and weather terminology, with the `environment` category for discovery. The on-screen title bar reads `trmnl.plugin_settings.instance_name`, falls back to Atmosphere when no instance name is supplied, and retains the returned provider attribution. Custom instance names are HTML-escaped.
+The plugin name in `src/settings.yml` is **Atmosphere**, and the supported short description is **Weather forecasts, no API key**, within TRMNLP's [35-character limit](https://github.com/usetrmnl/trmnlp#srcsettingsyml-reference-plugin-config). The About text explains the forecast and retains the Xiaomi Weather source, with the `environment` category for browsing. Its extended description follows TRMNL's search-engine guidance. The on-screen title bar reads `trmnl.plugin_settings.instance_name`, falls back to Atmosphere when no instance name is supplied, and retains the returned provider attribution. Custom instance names are HTML-escaped.
 
 TRMNL's [Recipes API](https://docs.trmnl.com/go/public-api/recipes-api) documents search as a partial name match. Its [recipe guidelines](https://help.trmnl.com/en/articles/11395668-recipe-best-practices) say the About text does not change TRMNL's own search. No documented keyword or alias setting was found, so description-based matches for “weather” and “xiaomi weather” are not guaranteed.
 
