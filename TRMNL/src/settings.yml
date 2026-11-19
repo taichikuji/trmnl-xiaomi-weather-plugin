@@ -1,6 +1,6 @@
 ---
 name: Atmosphere
-description: Weather forecasts, no API key
+description: AccuWeather forecasts on TRMNL
 strategy: polling
 polling_verb: get
 polling_url: 'https://weatherapi.market.xiaomi.com/wtr-v3/weather/all?latitude={{ lat_lon | split: "," | first | strip | url_encode }}&longitude={{ lat_lon | split: "," | last | strip | url_encode }}&days=7&appKey=weather20151024&sign=zUFJoAR2ZVrDy1vF3D07&isGlobal=true&locale=en_us'
@@ -33,9 +33,9 @@ custom_fields:
       current temperature, hourly outlook and coming days in a layout designed for e-paper
       screens. The full view can include wind, humidity, sunrise, sunset, UV information and
       weather alerts when the provider supplies them. Change between Celsius and Fahrenheit
-      in the settings. Atmosphere uses Xiaomi Weather's public endpoint, with forecast data
-      attributed to the upstream weather provider where available. You do not need a
-      separate weather account, personal API key or server. This is a simple weather
+      in the settings. Atmosphere fetches forecasts through Xiaomi Weather's public endpoint,
+      which returned AccuWeather data in our tested locations. The displayed attribution
+      follows the actual provider returned by the source. This is a simple weather
       dashboard for everyday planning, indoors or at your desk. Created by Ivan Perez.
     category: environment
     github_url: https://github.com/taichikuji/trmnl-xiaomi-weather-plugin
