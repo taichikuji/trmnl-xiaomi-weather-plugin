@@ -5,7 +5,7 @@
 TRMNL's native `lat_lon` picker stores comma-separated coordinates. Native polling
 renders the latitude/longitude into one direct `weather/all` request per refresh.
 No location lookup, Serverless function, external middleware or client-side API
-request is required. The refresh interval remains 30 minutes.
+request is required. The refresh interval is 60 minutes.
 
 The [recorded coordinate/key comparison](location-resolution.md) supports this
 direct path. Search and geo remain API research references, rather than plugin

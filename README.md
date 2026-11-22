@@ -18,7 +18,7 @@ The listing description is **AccuWeather forecasts on TRMNL**. See [listing meta
 - **Temperature unit:** Celsius or Fahrenheit (defaults to Celsius).
 - No personal weather API key or separate server needed.
 
-Full shows current conditions, up to twelve consecutive hourly entries (eight on OG portrait), five daily forecasts, wind, humidity, sun times and UV. Half layouts keep current weather and three daily forecasts; quadrant keeps the essentials. All four layouts adapt to TRMNL OG and TRMNL X, including portrait. Data refreshes every 30 minutes.
+Full shows current conditions, up to twelve consecutive hourly entries (eight on OG portrait), five daily forecasts, wind, humidity, sun times and UV. Half layouts keep current weather and three daily forecasts; quadrant keeps the essentials. All four layouts adapt to TRMNL OG and TRMNL X, including portrait. Data refreshes hourly.
 
 ## Develop locally
 

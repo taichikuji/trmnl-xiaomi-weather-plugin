@@ -30,7 +30,7 @@ Previews use the current templates and a recorded response for the public Paris 
 
 ## Setup
 
-Create a TRMNL Private Plugin with Polling / GET, Framework **3.4.6**, screen padding enabled and a **30-minute** refresh interval. Private plugins require Developer or BYOD access.
+Create a TRMNL Private Plugin with Polling / GET, Framework **3.4.6**, screen padding enabled and an **hourly** refresh interval. Private plugins require Developer or BYOD access.
 
 Use the latest [TRMNLP](https://github.com/usetrmnl/trmnlp) release, open this directory and run:
 

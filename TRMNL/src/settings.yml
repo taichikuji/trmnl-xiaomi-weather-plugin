@@ -6,7 +6,7 @@ polling_verb: get
 polling_url: 'https://weatherapi.market.xiaomi.com/wtr-v3/weather/all?latitude={{ lat_lon | split: "," | first | strip | url_encode }}&longitude={{ lat_lon | split: "," | last | strip | url_encode }}&days=7&appKey=weather20151024&sign=zUFJoAR2ZVrDy1vF3D07&isGlobal=true&locale=en_us'
 polling_headers: ''
 polling_body: ''
-refresh_interval: 30
+refresh_interval: 60
 framework_version: '3.4.6'
 serverless_language: none
 icon: media/icon.svg
