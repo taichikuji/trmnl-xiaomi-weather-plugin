@@ -18,11 +18,7 @@
           <span class="label">HUMIDITY</span>
           <span class="label">{{ now.humidity }}</span>
         </div>
-        <div class="outline p--2 grid grid--cols-5 col--span-2 gap--none">
-          <span class="label col--span-2 portrait:label--small lg:portrait:label--base">Sunrise {{ sunrise }}</span>
-          <span class="label block text--center portrait:label--small lg:portrait:label--base">UV {{ now.uv }}</span>
-          <span class="label block text--right col--span-2 portrait:label--small lg:portrait:label--base">Sunset {{ sunset }}</span>
-        </div>
+        {% render 'weather_sun', sunrise: sunrise, sunset: sunset, uv: now.uv, card_class: 'col--span-2' %}
       </div>
     </div>
     <div class="col--span-6 portrait:col--span-1 outline p--1 lg:p--4 flex flex--col gap--none">
