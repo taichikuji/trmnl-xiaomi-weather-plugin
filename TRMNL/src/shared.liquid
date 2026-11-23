@@ -380,6 +380,13 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
   <span class="label {% if large_details %}lg:label--large{% endif %} block text--center">Feels like {{ now.feels_like }}{% if days.size > 0 %}<span class="{{ range_class | default: 'inline' }}"> · High {{ days[0].high }} · Low {{ days[0].low }}</span>{% endif %}</span>
 </div>
 {% endtemplate %}
+{% template weather_sun %}
+<div class="outline p--2 grid grid--cols-5 gap--none {{ card_class }}">
+  <span class="label col--span-2 portrait:label--small lg:portrait:label--base">Sunrise {{ sunrise }}</span>
+  <span class="label block text--center portrait:label--small lg:portrait:label--base">UV {{ uv }}</span>
+  <span class="label block text--right col--span-2 portrait:label--small lg:portrait:label--base">Sunset {{ sunset }}</span>
+</div>
+{% endtemplate %}
 {% template weather_forecast %}
   {%- assign forecast_days = days | slice: 0, count -%}
   {%- assign forecast_low = forecast_days | map: 'range_low' | sort | first -%}
