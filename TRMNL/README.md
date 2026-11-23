@@ -4,7 +4,7 @@ Atmosphere (formerly Xiaomi Weather) displays current conditions and forecasts w
 
 ## Listing metadata
 
-The plugin name in `src/settings.yml` is **Atmosphere**, and the supported short description is **AccuWeather forecasts on TRMNL**, within TRMNLP's [35-character limit](https://github.com/usetrmnl/trmnlp#srcsettingsyml-reference-plugin-config). The About text describes the forecast and accurately credits AccuWeather as the provider in tested locations, accessed via Xiaomi Weather, with the `environment` category for browsing. Its extended description follows TRMNL's search-engine guidance. The on-screen title bar reads `trmnl.plugin_settings.instance_name`, falls back to Atmosphere when no instance name is supplied, and retains the returned provider attribution. Custom instance names are HTML-escaped.
+The plugin name in `src/settings.yml` is **Atmosphere Weather**, and the short description is **Your weather planning at a glance**, within TRMNLP's [35-character limit](https://github.com/usetrmnl/trmnlp#srcsettingsyml-reference-plugin-config). The About text describes the forecast and credits AccuWeather as the provider in tested locations, accessed via Xiaomi Weather, with the `environment` category for browsing. Set **Name** to a place such as Barcelona to show it in the title bar. The title falls back to Atmosphere when the instance name is empty. Custom instance names are HTML-escaped.
 
 TRMNL's [Recipes API](https://docs.trmnl.com/go/public-api/recipes-api) documents search as a partial name match. Its [recipe guidelines](https://help.trmnl.com/en/articles/11395668-recipe-best-practices) say the About text does not change TRMNL's own search. No documented keyword or alias setting was found, so description-based matches for “weather” and “xiaomi weather” are not guaranteed.
 
@@ -18,7 +18,7 @@ The plugin listing icon uses the supplied sun-and-cloud artwork, simplified to o
 
 ## Previews
 
-Previews use the current templates and a recorded response for the public Paris demo point (`48.8584,2.2945`), observed **12 November 2026 at 15:37 CET**. These are not a current forecast. All four use Framework **3.4.6** and the OG 1-bit palette; partial layouts are cropped to their native view.
+Previews use a recorded response for the public Paris demo point (`48.8584,2.2945`), observed **12 November 2026 at 15:37 CET**. All four use Framework **3.4.6** and the OG 1-bit palette. Partial layouts are cropped to their native view.
 
 | Full View | Half Horizontal View |
 |------------|----------------------|
@@ -63,7 +63,7 @@ The workflow uses the official `trmnl/trmnlp:latest` image on a fresh GitHub-hos
 
 ## Templates
 
-- **shared.liquid**: Validates coordinates and prepares display values, condition icons and consecutive hourly entries from the raw polling response; supplies shared current-weather and forecast markup, attribution, unavailable-data state and provider notices.
+- **shared.liquid** validates coordinates, prepares display values, condition icons and consecutive hourly entries from the raw polling response, and supplies shared current-weather and forecast markup, unavailable-data state and provider notices.
 - **full.liquid**: Current conditions and detail panels beside five daily forecast rows with temperature range bars, plus hourly temperatures below.
 - **half_horizontal.liquid**: Current weather beside three daily forecasts and a provider notice.
 - **half_vertical.liquid**: Large current temperature, sun times, three daily forecasts and a provider notice.
@@ -86,14 +86,14 @@ The original design, parsing logic and markup are also available under **CC BY 4
 
 CHEF may flag these intentional choices:
 
-- **Title bar include:** every layout outputs `weather_footer`, captured in `shared.liquid`. It contains the [standard native title bar](https://trmnl.com/framework/docs/3.4/title_bar), including our icon, provider attribution, observation time and unit; a separate render include is unnecessary.
+- Every layout outputs `weather_footer` from `shared.liquid`. It uses the [standard native title bar](https://trmnl.com/framework/docs/3.4/title_bar) to show the icon, instance name, observation time, and unit.
 - **Image dithering:** all display images are monochrome SVG icons. [TRMNL documents `image-dither` for raster images](https://trmnl.com/framework/docs/3.4/image); no photos or color raster images need conversion here.
 
 ## Choose a location
 
 The required **Location** field uses TRMNL’s [native `lat_lon` picker](https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder#h_07a70ff721). Search for a city, address or postal code and select a match, or enter decimal degrees in **latitude, longitude** order, for example `48.8584,2.2945` (a public landmark in Paris). Latitude must be between −90 and 90 and longitude between −180 and 180. There is no personal default.
 
-TRMNL stores the selection as comma-separated coordinates. Native polling calls Xiaomi’s `/weather/all` endpoint directly, without a location key or lookup request. Shared Liquid validates the coordinates and formats the forecast. The forecast response has no city name. Available-weather layouts omit the heading; provider attribution, observation time and temperature unit remain in the footer.
+TRMNL stores the selection as comma-separated coordinates. Native polling calls Xiaomi’s `/weather/all` endpoint directly, without a location key or lookup request. Shared Liquid validates the coordinates and formats the forecast. The **Name** field sets the title-bar label independently of the selected location.
 
 When upgrading from the removed city and Coordinates fields, choose Location again; those older values are not migrated automatically. Invalid coordinates and unavailable forecasts show an unavailable state. Temperature unit defaults to Celsius and accepts `celsius` or `fahrenheit`.
 
@@ -104,7 +104,7 @@ When upgrading from the removed city and Coordinates fields, choose Location aga
 - Daily range tracks share a scale across the displayed days, spanning at least **30°C (54°F of difference)**. Narrower forecasts receive equal padding at both ends; wider forecasts expand the scale. Numeric lows/highs are retained, and equal temperatures appear as a centered point. The full X layout uses bold 21px day labels, original 16px dates and 21px precipitation labels; compact layouts retain their smaller label sizes.
 - The observation time remains visible. Observations older than three hours are marked as old data when rendered; elapsed hourly entries are removed.
 - Missing optional values display an em dash. Missing current temperature produces an explicit unavailable state. Missing precipitation is never reported as 0%.
-- European air-quality fields were unavailable and are omitted. Attribution follows the returned provider, AccuWeather via Xiaomi in the tested cities.
+- European air-quality fields were unavailable and are omitted.
 - Alerts are **provider-reported** titles/counts. Xiaomi supplied no structured expiration fields, so the plugin does not determine whether a warning is still in effect. Consult the provider for details.
 - Local times preserve the API's UTC offset and hourly wind timestamps when supplied. Without those timestamps, a forecast crossing a DST transition may need a subsequent refresh for corrected hour labels.
 - Condition codes follow the [documented network mapping](../docs/condition-codes.md), including `301` rain, `302` snow and source-backed fog/haze extensions. Unknown codes retain the unavailable icon. Xiaomi's Android content-provider code table describes a different interface.

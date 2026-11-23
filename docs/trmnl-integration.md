@@ -9,15 +9,15 @@ request is required. The refresh interval is 60 minutes.
 
 The [recorded coordinate/key comparison](location-resolution.md) supports this
 direct path. Search and geo remain API research references, rather than plugin
-dependencies. Available-weather layouts omit the heading because the response
-has no city name; provider attribution remains in the footer.
+dependencies. The footer reads the label from `trmnl.plugin_settings.instance_name`.
+The location picker controls the latitude and longitude sent to Xiaomi.
 
 ## Shared Liquid responsibilities
 
 [Shared markup runs before each layout](https://help.trmnl.com/en/articles/13216853-reusing-markup-with-shared).
 It validates coordinates and prepares the existing display variables from the raw
 response: current conditions, daily/hourly rows, units, local times, observation
-age, attribution, provider alerts and daily temperature ranges. The four
+age, provider alerts and daily temperature ranges. The four
 layout templates consume the prepared display values.
 
 Reusable helpers use TRMNL's documented `template`/`render` tags, with all context

@@ -1,6 +1,6 @@
 ---
-name: Atmosphere
-description: AccuWeather forecasts on TRMNL
+name: Atmosphere Weather
+description: Your weather planning at a glance
 strategy: polling
 polling_verb: get
 polling_url: 'https://weatherapi.market.xiaomi.com/wtr-v3/weather/all?latitude={{ lat_lon | split: "," | first | strip | url_encode }}&longitude={{ lat_lon | split: "," | last | strip | url_encode }}&days=7&appKey=weather20151024&sign=zUFJoAR2ZVrDy1vF3D07&isGlobal=true&locale=en_us'
@@ -34,8 +34,8 @@ custom_fields:
       screens. <br/><br/> The full view can include wind, humidity, sunrise, sunset, UV
       information and weather alerts when the provider supplies them. Change between Celsius
       and Fahrenheit in the settings. <br/><br/> Atmosphere fetches forecasts through Xiaomi
-      Weather's public endpoint, which returned AccuWeather data in our tested locations. The
-      displayed attribution follows the actual provider returned by the source. <br/><br/>
+      Weather's public endpoint, which returned AccuWeather data in our tested locations.
+      <br/><br/>
       This is a simple weather dashboard for everyday planning, indoors or at your desk.
       Created by Ivan Perez.
     category: environment

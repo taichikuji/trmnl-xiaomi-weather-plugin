@@ -311,17 +311,6 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
   {%- endfor -%}]
 {%- endcapture -%}
 {%- assign hours = hours_json | parse_json -%}
-{%- capture source -%}
-  {%- if location_valid -%}
-    {%- assign emitted = 0 -%}
-    {%- for brand in brandInfo.brands -%}
-      {%- assign name = brand.names.en_US | default: brand.brandId -%}
-      {%- if name == nil or name == empty -%}{%- continue -%}{%- endif -%}
-      {%- if emitted > 0 -%}{{- ' / ' -}}{%- endif -%}{{- name -}}{%- assign emitted = emitted | plus: 1 -%}
-    {%- endfor -%}
-  {%- endif -%}
-{%- endcapture -%}
-{%- assign source = source | default: 'Xiaomi Weather' -%}
 {%- assign alert_count = 0 -%}{%- assign alert_title = '' -%}
 {%- assign alerts_wire = alerts | json -%}{%- assign alerts_type = alerts_wire | slice: 0, 1 -%}
 {%- if location_valid and alerts_type == '[' -%}
@@ -341,10 +330,10 @@ TRMNL template/endtemplate tags use the plain documented syntax, without hyphens
 <div class="title_bar">
   <img class="image image--adaptive w--7 h--7" src="data:image/svg+xml;base64,{{ svg_logo | base64_encode }}" alt="Atmosphere logo">
   <div class="grow w--min-0">
-    <div class="title" data-clamp="1">{{ trmnl.plugin_settings.instance_name | default: 'Atmosphere' | escape }} · {% if source == 'Xiaomi Weather' %}Xiaomi{% else %}{{ source | default: 'Xiaomi' | escape }}{% endif %}</div>
+    <div class="title" data-clamp="1">{{ trmnl.plugin_settings.instance_name | default: 'Atmosphere' | escape }}</div>
   </div>
   <div class="no-shrink">
-    <span class="instance">{% if available %}{% if stale %}Old{% else %}As of{% endif %} {{ observed_at | default: '—' }}{% else %}Waiting{% endif %} · {{ unit | default: '°C' }}</span>
+    <span class="instance">{% if available %}{% if stale %}Old {% else %}<span class="portrait:hidden lg:portrait:inline">As of </span>{% endif %}{{ observed_at | default: '—' }}{% else %}Waiting{% endif %} · {{ unit | default: '°C' }}</span>
   </div>
 </div>
 {%- endcapture -%}

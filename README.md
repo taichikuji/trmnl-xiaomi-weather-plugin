@@ -10,7 +10,7 @@ Atmosphere (formerly Xiaomi Weather) displays current conditions and forecasts o
 
 Recorded weather for the public Paris demo point (`48.8584,2.2945`) observed 12 November 2026 at 15:37 CET, not a current forecast. [All layout previews](TRMNL/README.md#previews).
 
-The listing description is **AccuWeather forecasts on TRMNL**. See [listing metadata](TRMNL/README.md#listing-metadata) for TRMNL's search limitations.
+The listing description is **Your weather planning at a glance**. See [listing metadata](TRMNL/README.md#listing-metadata) for TRMNL's search limitations.
 
 ## Settings
 
@@ -31,6 +31,6 @@ trmnlp serve
 
 Templates and settings live in [TRMNL/src/](TRMNL/src/). See the [plugin guide](TRMNL/README.md) for installation and manual verification, and the [API notes](docs/api-overview.md) for request examples and data limits.
 
-Weather data is provided by AccuWeather via Xiaomi in the tested locations; displayed attribution follows the returned provider.
+Weather data is provided by AccuWeather via Xiaomi in the tested locations.
 
 [Questions or ideas?](https://github.com/taichikuji/trmnl-xiaomi-weather-plugin/issues) · [License](LICENSE)
