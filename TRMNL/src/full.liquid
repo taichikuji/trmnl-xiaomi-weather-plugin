@@ -16,11 +16,12 @@
         </div>
         <div class="outline p--2 flex flex--col gap--none">
           <span class="label">HUMIDITY</span>
-          <span class="label">{{ now.humidity }} · UV {{ now.uv }}</span>
+          <span class="label">{{ now.humidity }}</span>
         </div>
-        <div class="outline p--2 flex flex--row flex--between col--span-2 gap--xsmall">
-          <span class="label">Sunrise {{ sunrise }}</span>
-          <span class="label">Sunset {{ sunset }}</span>
+        <div class="outline p--2 grid grid--cols-5 col--span-2 gap--none">
+          <span class="label col--span-2 portrait:label--small lg:portrait:label--base">Sunrise {{ sunrise }}</span>
+          <span class="label block text--center portrait:label--small lg:portrait:label--base">UV {{ now.uv }}</span>
+          <span class="label block text--right col--span-2 portrait:label--small lg:portrait:label--base">Sunset {{ sunset }}</span>
         </div>
       </div>
     </div>
